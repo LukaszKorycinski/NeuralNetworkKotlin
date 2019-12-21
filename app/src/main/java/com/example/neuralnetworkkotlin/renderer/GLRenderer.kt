@@ -5,12 +5,13 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.helpers.DrawGeomHelper
+import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
 
-    lateinit var drawGeomHelper : DrawGeomHelper
+    lateinit var backGround : BackGround
 
     private val viewProjectionMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
@@ -21,8 +22,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES20.glClearColor(0.0f, 0.5f, 0.0f, 1.0f)
 
-        drawGeomHelper =
-            DrawGeomHelper(context)
+        backGround = BackGround(context)
         textures.loadTexture()
     }
 
@@ -32,8 +32,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
     override fun onDrawFrame(unused: GL10) {
         setUpFrame()
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[1])
-        drawGeomHelper.drawBackground(viewProjectionMatrix)
+        backGround.drawBackground(viewProjectionMatrix, textures)
     }
 
 
@@ -50,7 +49,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
         Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-        val texturesUniformHandle = GLES20.glGetUniformLocation(drawGeomHelper.shaderLoader.shaderProgram, "u_Texture")
+        val texturesUniformHandle = GLES20.glGetUniformLocation(backGround.shaderLoader.shaderProgram, "u_Texture")
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glUniform1i(texturesUniformHandle, 0)
     }

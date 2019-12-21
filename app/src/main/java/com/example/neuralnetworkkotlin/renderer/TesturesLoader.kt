@@ -15,9 +15,13 @@ class TexturesLoader(var context: Context) {
     fun loadTexture() {
         GLES20.glGenTextures(3, textureHandle, 0)
         val textResIds: IntArray = IntArray(texturesQty)
-        textResIds[0] = R.drawable.car
-        textResIds[1] = R.drawable.track
-        textResIds[2] = R.drawable.selector
+        textResIds[0] = R.drawable.b1
+        textResIds[1] = R.drawable.b2
+        textResIds[2] = R.drawable.b3
+        textResIds[3] = R.drawable.b4
+        textResIds[4] = R.drawable.b5
+        textResIds[5] = R.drawable.b6
+        textResIds[6] = R.drawable.b7
 
         for (i in 0..texturesQty - 1) {
             val options = BitmapFactory.Options()
