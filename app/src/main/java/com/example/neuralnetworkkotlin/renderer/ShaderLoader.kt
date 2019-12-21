@@ -13,10 +13,10 @@ class ShaderLoader(context : Context){
 
     init {
         val basicVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
-            R.string.vs_bacic
+            R.string.vs_background
         ) )
         val basicFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(
-            R.string.ps_bacic
+            R.string.ps_background
         ) )
 
         shaderProgram = GLES20.glCreateProgram().also {

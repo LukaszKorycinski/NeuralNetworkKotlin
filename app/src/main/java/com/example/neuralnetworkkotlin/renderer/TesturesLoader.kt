@@ -8,12 +8,12 @@ import com.example.neuralnetworkkotlin.R
 
 class TexturesLoader(var context: Context) {
 
-    private val texturesQty = 3
+    private val texturesQty = 7
 
     val textureHandle = IntArray(texturesQty)
 
     fun loadTexture() {
-        GLES20.glGenTextures(3, textureHandle, 0)
+        GLES20.glGenTextures(texturesQty, textureHandle, 0)
         val textResIds: IntArray = IntArray(texturesQty)
         textResIds[0] = R.drawable.b1
         textResIds[1] = R.drawable.b2

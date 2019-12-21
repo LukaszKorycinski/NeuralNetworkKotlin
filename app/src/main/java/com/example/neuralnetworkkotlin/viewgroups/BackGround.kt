@@ -76,27 +76,30 @@ class BackGround(context: Context) {
     fun drawBackground(mvpMatrix: FloatArray, textures: TexturesLoader) {
         for (i in 0..6) {
             val zOffset = -1f*i
-            val rotMatrix = FloatArray(16)
-            val carMatrix = FloatArray(16)
+            //val rotMatrix = FloatArray(16)
+            val modelMatrix = FloatArray(16)
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix,0)
             Matrix.translateM(transMatrix, 0, 0f, 0f, zOffset)
-            Matrix.multiplyMM(carMatrix, 0, transMatrix, 0, rotMatrix, 0)
-            Matrix.multiplyMM(carMatrix, 0, vPMatrix, 0, carMatrix, 0)
+            //Matrix.multiplyMM(modelMatrix, 0, transMatrix, 0, rotMatrix, 0)
+            Matrix.multiplyMM(modelMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
-            drawLayer(mvpMatrix,textures.textureHandle[i])
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[i])
+
+            drawLayer(modelMatrix, transMatrix)
         }
     }
 
-    fun drawLayer(mvpMatrix: FloatArray, texture: Int) {
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture)
-
-
+    fun drawLayer(mvpMatrix: FloatArray, uMMatrix: FloatArray) {
 
 
         GLES20.glUseProgram(shaderLoader.shaderProgram)
         shaderLoader.vPMatrixHandle = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "uMVPMatrix")
         GLES20.glUniformMatrix4fv(shaderLoader.vPMatrixHandle, 1, false, mvpMatrix, 0)
+
+        shaderLoader.vPMatrixHandle = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "uMMatrix")
+        GLES20.glUniformMatrix4fv(shaderLoader.vPMatrixHandle, 1, false, uMMatrix, 0)
+
 
         positionHandle = GLES20.glGetAttribLocation(shaderLoader.shaderProgram, "vPosition").also {
             val mTextureCoordinateHandle =

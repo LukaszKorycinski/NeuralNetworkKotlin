@@ -1,3 +1,69 @@
 <resources>
     <string name="app_name">NeuralNetworkKotlin</string>
+
+    <string name="vs_bacic">
+
+        uniform mat4 uMVPMatrix;
+        attribute vec4 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 v_TexCoordinate;
+
+        void main() {
+            gl_Position = uMVPMatrix * vPosition;
+            v_TexCoordinate = a_TexCoordinate;
+        }
+    </string>
+
+    <string name="ps_bacic"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 v_TexCoordinate;
+
+        void main() {
+            vec4 color = texture2D(u_Texture, v_TexCoordinate);
+            if(color.a<0.5){ discard; }
+            gl_FragColor = color;
+        }
+    ]]></string>
+
+
+    <string name="vs_background"><![CDATA[
+
+        uniform mat4 uMVPMatrix;
+        uniform mat4 uMMatrix;
+        attribute vec4 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 v_TexCoordinate;
+        varying vec3 modelPosition;
+
+        void main() {
+            modelPosition = (uMMatrix * vPosition).xyz;
+
+            vec4 paralaxPosition = vPosition;
+            paralaxPosition.x = paralaxPosition.x + modelPosition.z;
+
+
+            gl_Position = uMVPMatrix * paralaxPosition;
+
+            v_TexCoordinate = a_TexCoordinate;
+        }
+    ]]></string>
+
+    <string name="ps_background"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 v_TexCoordinate;
+        varying vec3 modelPosition;
+
+        void main() {
+            vec4 color = texture2D(u_Texture, v_TexCoordinate);
+            if(color.a<0.5){
+                discard;
+            }
+
+            gl_FragColor = color - modelPosition.z *0.1;
+        }
+    ]]></string>
 </resources>
