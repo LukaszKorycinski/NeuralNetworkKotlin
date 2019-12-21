@@ -128,9 +128,9 @@ public class Textures {
 
 
         int[] textResIds = new int[3];
-        textResIds[0]=R.drawable.car;
-        textResIds[1]=R.drawable.track;
-        textResIds[2]=R.drawable.selector;
+        textResIds[0]=R.drawable.b1;
+        textResIds[1]=R.drawable.b2;
+        textResIds[2]=R.drawable.b3;
 
         for(int i=0;i<3;i++)
         {
