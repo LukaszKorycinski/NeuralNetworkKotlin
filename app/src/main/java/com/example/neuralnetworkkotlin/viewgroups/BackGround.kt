@@ -75,20 +75,23 @@ class BackGround(context: Context) {
 
     fun drawBackground(mvpMatrix: FloatArray, textures: TexturesLoader) {
         for (i in 0..6) {
-            drawLayer(mvpMatrix,textures.textureHandle[i], -1f*i)
+            val zOffset = -1f*i
+            val rotMatrix = FloatArray(16)
+            val carMatrix = FloatArray(16)
+            val transMatrix = FloatArray(16)
+            Matrix.setIdentityM(transMatrix,0)
+            Matrix.translateM(transMatrix, 0, 0f, 0f, zOffset)
+            Matrix.multiplyMM(carMatrix, 0, transMatrix, 0, rotMatrix, 0)
+            Matrix.multiplyMM(carMatrix, 0, vPMatrix, 0, carMatrix, 0)
+
+            drawLayer(mvpMatrix,textures.textureHandle[i])
         }
     }
 
-    fun drawLayer(mvpMatrix: FloatArray, texture: Int, zOffset:Float) {
+    fun drawLayer(mvpMatrix: FloatArray, texture: Int) {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture)
 
-        val rotMatrix = FloatArray(16)
-        val carMatrix = FloatArray(16)
-        val transMatrix = FloatArray(16)
-        Matrix.setIdentityM(transMatrix,0)
-        Matrix.translateM(transMatrix, 0, 0f, 0f, zOffset)
-        Matrix.multiplyMM(carMatrix, 0, transMatrix, 0, rotMatrix, 0)
-        Matrix.multiplyMM(carMatrix, 0, vPMatrix, 0, carMatrix, 0)
+
 
 
         GLES20.glUseProgram(shaderLoader.shaderProgram)
