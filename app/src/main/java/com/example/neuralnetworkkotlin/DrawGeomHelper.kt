@@ -17,10 +17,10 @@ var carCoords = floatArrayOf(
 )
 
 var trackCoords = floatArrayOf(
-    -8.333333f,  16.666666f, 0.0f,      // top left
-    -8.333333f, -16.666666f, 0.0f,      // bottom left
-     8.333333f, -16.666666f, 0.0f,      // bottom right
-     8.333333f,  16.666666f, 0.0f       // top right
+    -16.666666f,  16.666666f, 0.0f,      // top left
+    -16.666666f, -16.666666f, 0.0f,      // bottom left
+    16.666666f, -16.666666f, 0.0f,      // bottom right
+    16.666666f,  16.666666f, 0.0f       // top right
 )
 
 
@@ -122,7 +122,7 @@ class DrawGeomHelper{
         positionHandle = GLES20.glGetAttribLocation(shaderMy.mProgram, "vPosition").also {
 
 
-            var mTextureCoordinateHandle = GLES20.glGetAttribLocation(shaderMy.mProgram, "a_TexCoordinate")
+            val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shaderMy.mProgram, "a_TexCoordinate")
             GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
             GLES20.glVertexAttribPointer(
                 mTextureCoordinateHandle,

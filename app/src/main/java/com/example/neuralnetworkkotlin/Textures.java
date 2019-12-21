@@ -22,7 +22,7 @@ public class Textures {
 
     public int getTrackPixel(float x, float y){
 
-        Float xF=(-x+8.333333f)/16.666666f;
+        Float xF=(-x+16.666666f)/33.333333f;
         Float yF=(-y+16.666666f)/33.333333f;
 
         xF = xF*trackBitmap.getWidth();
@@ -45,7 +45,7 @@ public class Textures {
     }
 
     public ArrayList<Float> drawLane(float x, float y, Float angle){
-        Float xF=(-x+8.333333f)/16.666666f;
+        Float xF=(-x+16.666666f)/33.333333f;
         Float yF=(-y+16.666666f)/33.333333f;
 
         xF = xF*trackBitmap.getWidth();
@@ -67,7 +67,7 @@ public class Textures {
 
         Float angles;
         for(int i=0;i<5;i++) {
-            angles = angle - 50*ToRadians + i*25*ToRadians;
+            angles = angle - 50*ToRadians + i*50*ToRadians;
             Double xEndF=Double.valueOf( xStart );
             Double yEndF=Double.valueOf( yStart );
 

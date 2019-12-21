@@ -22,7 +22,6 @@ class ShaderMy{
                 "varying vec2 v_TexCoordinate;"+
                 "void main() {" +
                 "   vec4 color = texture2D(u_Texture, v_TexCoordinate);"+
-                "   if((color.r+color.g+color.g)>2.99){ discard; }"+
                 "   gl_FragColor = color;" +
                 "}"
 
