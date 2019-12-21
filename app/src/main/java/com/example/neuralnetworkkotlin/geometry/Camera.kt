@@ -4,16 +4,19 @@ import android.opengl.Matrix
 
 class Camera {
 
-     val viewProjectionMatrix = FloatArray(16)
-     val projectionMatrix = FloatArray(16)
-     var viewMatrix = FloatArray(16)
+    val viewProjectionMatrix = FloatArray(16)
+    val projectionMatrix = FloatArray(16)
+    var viewMatrix = FloatArray(16)
+    var nonCamMatrix = FloatArray(16)
+    var nonCamViewProjectionMatrix = FloatArray(16)
 
-    var position = Vector3f(0.0f, 0.0f, 0.0f)
-
-
-    fun setUpFrame() {
+    fun setUpFrame(position: Vector3f) {
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+        nonCamMatrix = viewMatrix.clone()
         Matrix.translateM(viewMatrix, 0, position.x, position.y, position.z)
+
+
+        Matrix.multiplyMM(nonCamViewProjectionMatrix, 0, projectionMatrix, 0, nonCamMatrix, 0)
         Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
     }
 

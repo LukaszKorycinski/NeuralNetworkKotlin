@@ -8,7 +8,6 @@ import timber.log.Timber
 
 class ShaderLoader(context : Context){
     var shaderProgram: Int
-    var vPMatrixHandle: Int = 0
 
 
     init {

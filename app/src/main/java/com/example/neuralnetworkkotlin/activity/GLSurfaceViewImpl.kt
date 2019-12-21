@@ -3,9 +3,8 @@ package com.example.neuralnetworkkotlin.activity
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
-import android.util.Log
+import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.renderer.GLRenderer
-import timber.log.Timber
 
 class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(context, attrs) {
 
@@ -22,11 +21,11 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         setRenderer(renderer)
     }
 
-    fun upKey() { renderer.upKey() }
+    fun upKey(action: MotionEvent) { renderer.upKey(action) }
 
-    fun downKey() { renderer.downKey() }
+    fun downKey(action: MotionEvent) { renderer.downKey(action) }
 
-    fun leftKey() { renderer.leftKey() }
+    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
 
-    fun rightKey() { renderer.rightKey() }
+    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
 }

@@ -2,7 +2,7 @@ package com.example.neuralnetworkkotlin.activity
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
+import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.R
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -18,10 +18,22 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
 
 
-        up.setOnClickListener { glSurfaceView.upKey() }
-        down.setOnClickListener { glSurfaceView.downKey() }
-        right.setOnClickListener { glSurfaceView.rightKey() }
-        left.setOnClickListener { glSurfaceView.leftKey() }
+        up.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.upKey(motionEvent)
+            true
+        }
+        down.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.downKey(motionEvent)
+            true
+        }
+        left.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.leftKey(motionEvent)
+            true
+        }
+        right.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.rightKey(motionEvent)
+            true
+        }
 
     }
 
