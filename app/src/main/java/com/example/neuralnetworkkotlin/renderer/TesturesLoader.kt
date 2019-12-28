@@ -9,15 +9,15 @@ import com.example.neuralnetworkkotlin.R
 class TexturesLoader(var context: Context) {
 
     companion object{
-        const val TEXTURES_QTY = 9
+        const val TEXTURES_QTY = 13
     }
 
 
-    val textureHandle = IntArray(TEXTURES_QTY)
+    val textureHandle = IntArray(TEXTURES_QTY+1)
 
     fun loadTexture() {
         GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
-        val textResIds: IntArray = IntArray(TEXTURES_QTY)
+        val textResIds: IntArray = IntArray(TEXTURES_QTY+1)
         textResIds[0] = R.drawable.b0
         textResIds[1] = R.drawable.b1
         textResIds[2] = R.drawable.b2
@@ -27,8 +27,13 @@ class TexturesLoader(var context: Context) {
         textResIds[6] = R.drawable.b6
         textResIds[7] = R.drawable.b7
         textResIds[8] = R.drawable.b8
+        textResIds[9] = R.drawable.b9
+        textResIds[10] = R.drawable.b10
+        textResIds[11] = R.drawable.b11
+        textResIds[12] = R.drawable.fog_background
+        textResIds[13] = R.drawable.sky
 
-        for (i in 0..TEXTURES_QTY - 1) {
+        for (i in 0..TEXTURES_QTY) {
             val options = BitmapFactory.Options()
             options.inScaled = true // No pre-scaling
 
@@ -46,17 +51,29 @@ class TexturesLoader(var context: Context) {
                 GLES20.GL_TEXTURE_MAG_FILTER,
                 GLES20.GL_NEAREST
             )
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_WRAP_S,
-                GLES20.GL_MIRRORED_REPEAT
-            )
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_WRAP_T,
-                GLES20.GL_CLAMP_TO_EDGE
-            )
-
+            if(i==12){
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_S,
+                    GLES20. GL_REPEAT
+                )
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_T,
+                    GLES20.GL_CLAMP_TO_EDGE
+                )
+            }else {
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_S,
+                    GLES20. GL_REPEAT
+                )
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_T,
+                    GLES20.GL_CLAMP_TO_EDGE
+                )
+            }
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
 

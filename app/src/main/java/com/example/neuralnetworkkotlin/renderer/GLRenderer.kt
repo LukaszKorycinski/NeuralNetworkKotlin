@@ -4,39 +4,40 @@ import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.gameLogic.PlayableCharacter
 import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.DrawModel
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
+class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    lateinit var backGround : BackGround
+    lateinit var backGround: BackGround
     private val camera = Camera()
     val controlHelper = ControlHelper()
+    var textures = TexturesLoader(context)
+    val playableCharacter: PlayableCharacter = PlayableCharacter()
 
-    var textures =
-        TexturesLoader(context)
-
-    fun upKey(action: MotionEvent){
+    fun upKey(action: MotionEvent) {
         controlHelper.upKey(action)
     }
 
-    fun downKey(action: MotionEvent){
+    fun downKey(action: MotionEvent) {
         controlHelper.downKey(action)
     }
 
-    fun leftKey(action: MotionEvent){
+    fun leftKey(action: MotionEvent) {
         controlHelper.leftKey(action)
     }
 
-    fun rightKey(action: MotionEvent){
+    fun rightKey(action: MotionEvent) {
         controlHelper.rightKey(action)
     }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
-        GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f)
+        GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
         backGround = BackGround(context)
         textures.loadTexture()
@@ -48,7 +49,16 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
     override fun onDrawFrame(unused: GL10) {
         setUpFrame()
 
-        backGround.drawBackground(camera.nonCamViewProjectionMatrix, controlHelper.position, textures)
+        playableCharacter.draw()
+
+
+        backGround.drawBackground(
+            camera.nonCamViewProjectionMatrix,
+            controlHelper.position,
+            textures
+        )
+        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures)
+        backGround.drawFog(camera.nonCamViewProjectionMatrix, controlHelper.position, textures)
     }
 
 
@@ -68,8 +78,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer{
         camera.setUpFrame(controlHelper.updatePosition())
 
 
-
-        val texturesUniformHandle = GLES20.glGetUniformLocation(backGround.shaderLoader.shaderProgram, "u_Texture")
+        val texturesUniformHandle = GLES20.glGetUniformLocation(
+            backGround.shaderLoader.shaderProgramBackground,
+            "u_Texture"
+        )
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glUniform1i(texturesUniformHandle, 0)
     }

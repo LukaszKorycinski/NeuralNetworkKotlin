@@ -3,7 +3,6 @@ package com.example.neuralnetworkkotlin.viewgroups
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
-import android.util.Log
 import com.example.neuralnetworkkotlin.geometry.Vector3f
 
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
@@ -13,6 +12,8 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.sin
 
 const val COORDS_PER_VERTEX = 3
 
@@ -81,15 +82,73 @@ class BackGround(context: Context) {
 
     var wave = 0f
 
+    val LAYERS_QTY = 12
+
+
+    fun drawSky(mvpMatrix: FloatArray, eyePosition: Vector3f, textures: TexturesLoader) {
+        val mvptMatrix = FloatArray(16)
+        val transMatrix = FloatArray(16)
+        Matrix.setIdentityM(transMatrix, 0)
+        Matrix.translateM(transMatrix, 0, 0f, 9f, 12f)
+        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
+
+            val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "u_Texture")
+            GLES20.glUniform1i(texHandler, 0)
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[13])
+
+        GLES20.glUseProgram(shaderLoader.shaderProgramFogSky)
+        var propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "uMVPMatrix")
+        GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvptMatrix, 0)
+
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "wave")
+        GLES20.glUniform1f(propertyHandler, wave)
+
+        positionHandle = GLES20.glGetAttribLocation(shaderLoader.shaderProgramBackground, "vPosition").also {
+            val mTextureCoordinateHandle =
+                GLES20.glGetAttribLocation(shaderLoader.shaderProgramBackground, "a_TexCoordinate")
+
+            GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
+
+
+            GLES20.glVertexAttribPointer(
+                mTextureCoordinateHandle,
+                2,
+                GLES20.GL_FLOAT,
+                false,
+                2 * 4,
+                vertexBufferTextCoords
+            )
+
+            GLES20.glEnableVertexAttribArray(it)
+
+            GLES20.glVertexAttribPointer(
+                it,
+                COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT,
+                false,
+                vertexStride,
+                vertexBufferBackground
+            )
+
+            GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, drawOrder.size,
+                GLES20.GL_UNSIGNED_SHORT, drawListBufferTrack
+            )
+
+            GLES20.glDisableVertexAttribArray(it)
+        }
+    }
+
     fun drawBackground(mvpMatrix: FloatArray, eyePosition: Vector3f, textures: TexturesLoader) {
 
         Matrix.translateM(mvpMatrix, 0, 0f, 0f, -5.0f)
 
         wave = wave + 0.025f
-        if (wave > 2f * PI) wave = 0f
+        if (wave > (2f * PI)) {wave = 0f}
 
-
-        for (i in 0..TexturesLoader.TEXTURES_QTY-1) {
+        for (i in 0..LAYERS_QTY) {
             val zOffset = 1f * i
             //val rotMatrix = FloatArray(16)
             val mvptMatrix = FloatArray(16)
@@ -99,31 +158,136 @@ class BackGround(context: Context) {
             //Matrix.multiplyMM(modelMatrix, 0, transMatrix, 0, rotMatrix, 0)
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
+
+            val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "u_Texture")
+            GLES20.glUniform1i(texHandler, 0)
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[i])
 
-            val aspect = TexturesLoader.TEXTURES_QTY-1.toFloat() + 0.5f
+
+            val aspect = LAYERS_QTY.toFloat() + 0.5f
             drawLayer(mvptMatrix, eyePosition, zOffset / aspect)
         }
     }
 
-    fun drawLayer(mvpMatrix: FloatArray, eyePosition: Vector3f, modelPositionZ: Float) {
-        GLES20.glUseProgram(shaderLoader.shaderProgram)
-        var propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "uMVPMatrix")
+    var waveFog = ArrayList<Float>()
+
+    val FOG_LAYERS_QTY = 6
+
+    init{
+        for (i in FOG_LAYERS_QTY downTo 0){
+            waveFog.add(0.0321f*i)
+        }
+    }
+
+    fun drawFog(mvpMatrix: FloatArray, eyePosition: Vector3f, textures: TexturesLoader) {
+
+        GLES20.glEnable(GLES20.GL_BLEND)
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+        GLES20.glBlendEquationSeparate(GLES20.GL_FUNC_ADD, GLES20.GL_FUNC_ADD)
+
+        for (i in FOG_LAYERS_QTY downTo 0) {
+            val zOffset = 2f * i +0.5f
+
+            val mvptMatrix = FloatArray(16)
+            val transMatrix = FloatArray(16)
+            Matrix.setIdentityM(transMatrix, 0)
+            Matrix.translateM(transMatrix, 0, 0f, 0f, zOffset)
+            Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
+
+            var newWave = waveFog.get(i) + 0.0004f*(12f-zOffset) + 0.00025f
+            if(newWave>1f)newWave=0f
+
+            waveFog.set( i, newWave )
+
+            val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "u_Texture")
+            GLES20.glUniform1i(texHandler, 0)
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[12])
+
+
+            val aspect = TexturesLoader.TEXTURES_QTY.toFloat() + 0.5f
+            drawFogLayer(mvptMatrix, eyePosition, zOffset / aspect, waveFog.get(i))
+        }
+
+        GLES20.glDisable(GLES20.GL_BLEND)
+    }
+
+
+
+    fun drawFogLayer(mvpMatrix: FloatArray, eyePosition: Vector3f, modelPositionZ: Float, waveFogLayer: Float) {
+        GLES20.glUseProgram(shaderLoader.shaderProgramFog)
+        var propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramFog, "uMVPMatrix")
         GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
 
-        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "modelPositionIN")
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramFog, "modelPositionIN")
         GLES20.glUniform1f(propertyHandler, 1.0f - modelPositionZ)
 
-        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "eyePosition")
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramFog, "eyePosition")
         GLES20.glUniform3f(propertyHandler, eyePosition.x, eyePosition.y, eyePosition.z)
 
-        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgram, "wave")
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramFog, "wave")
+        GLES20.glUniform1f(propertyHandler, waveFogLayer)
+
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramFog, "waveSin")
         GLES20.glUniform1f(propertyHandler, wave)
 
-
-        positionHandle = GLES20.glGetAttribLocation(shaderLoader.shaderProgram, "vPosition").also {
+        positionHandle = GLES20.glGetAttribLocation(shaderLoader.shaderProgramFog, "vPosition").also {
             val mTextureCoordinateHandle =
-                GLES20.glGetAttribLocation(shaderLoader.shaderProgram, "a_TexCoordinate")
+                GLES20.glGetAttribLocation(shaderLoader.shaderProgramFog, "a_TexCoordinate")
+
+            GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
+
+
+            GLES20.glVertexAttribPointer(
+                mTextureCoordinateHandle,
+                2,
+                GLES20.GL_FLOAT,
+                false,
+                2 * 4,
+                vertexBufferTextCoords
+            )
+
+            GLES20.glEnableVertexAttribArray(it)
+
+            GLES20.glVertexAttribPointer(
+                it,
+                COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT,
+                false,
+                vertexStride,
+                vertexBufferBackground
+            )
+
+            GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, drawOrder.size,
+                GLES20.GL_UNSIGNED_SHORT, drawListBufferTrack
+            )
+
+            GLES20.glDisableVertexAttribArray(it)
+        }
+    }
+
+
+    fun drawLayer(mvpMatrix: FloatArray, eyePosition: Vector3f, modelPositionZ: Float) {
+        GLES20.glUseProgram(shaderLoader.shaderProgramBackground)
+        var propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "uMVPMatrix")
+        GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
+
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "modelPositionIN")
+        GLES20.glUniform1f(propertyHandler, 1.0f - modelPositionZ)
+
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "eyePosition")
+        GLES20.glUniform3f(propertyHandler, eyePosition.x, eyePosition.y, eyePosition.z)
+
+        propertyHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBackground, "wave")
+        GLES20.glUniform1f(propertyHandler, wave)
+
+        positionHandle = GLES20.glGetAttribLocation(shaderLoader.shaderProgramBackground, "vPosition").also {
+            val mTextureCoordinateHandle =
+                GLES20.glGetAttribLocation(shaderLoader.shaderProgramBackground, "a_TexCoordinate")
 
             GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
 
