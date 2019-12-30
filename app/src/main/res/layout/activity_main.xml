@@ -57,5 +57,26 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"/>
 
+    <ImageView
+            android:id="@+id/eKey"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_up"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/right"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/qKey"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_down"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/left"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

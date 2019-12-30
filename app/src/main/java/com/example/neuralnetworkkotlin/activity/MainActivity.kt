@@ -35,6 +35,15 @@ class MainActivity : Activity() {
             true
         }
 
+        qKey.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.qKey(motionEvent)
+            true
+        }
+
+        eKey.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.eKey(motionEvent)
+            true
+        }
     }
 
 

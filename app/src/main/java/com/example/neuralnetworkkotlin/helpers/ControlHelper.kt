@@ -1,7 +1,8 @@
 package com.example.neuralnetworkkotlin.helpers
 
+import android.util.Log
 import android.view.MotionEvent
-import com.example.neuralnetworkkotlin.geometry.Vector3f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 
 class ControlHelper {
 
@@ -9,7 +10,8 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
-
+    var forward = false
+    var backward = false
 
     fun upKey(action: MotionEvent){
         when(action.action){
@@ -39,9 +41,25 @@ class ControlHelper {
         }
     }
 
-    val position = Vector3f()
+    fun qKey(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> forward = true
+            MotionEvent.ACTION_UP -> forward = false
+        }
+    }
+
+    fun eKey(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> backward = true
+            MotionEvent.ACTION_UP -> backward = false
+        }
+    }
+
+    val position = Vector3f(0f, 0f, 15.0f)
 
     fun updatePosition(): Vector3f {
+        //Log.e("position", ""+position.toString())
+
         if(up){
             position.y = position.y - 0.1f
         }
@@ -53,6 +71,12 @@ class ControlHelper {
         }
         if(left){
             position.x = position.x + 0.1f
+        }
+        if(forward){
+            position.z = position.z - 0.1f
+        }
+        if(backward){
+            position.z = position.z + 0.1f
         }
         return position
     }

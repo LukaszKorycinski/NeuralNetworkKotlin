@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry
 
 import android.opengl.Matrix
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 
 class Camera {
 
@@ -13,6 +14,8 @@ class Camera {
     fun setUpFrame(position: Vector3f) {
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
         nonCamMatrix = viewMatrix.clone()
+
+        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
         Matrix.translateM(viewMatrix, 0, position.x, position.y, position.z)
 
 

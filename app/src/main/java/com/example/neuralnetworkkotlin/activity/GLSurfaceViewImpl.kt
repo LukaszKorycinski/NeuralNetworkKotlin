@@ -28,4 +28,8 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
     fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
 
     fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
+
+    fun qKey(action: MotionEvent) { renderer.qKey(action) }
+
+    fun eKey(action: MotionEvent) { renderer.eKey(action) }
 }
