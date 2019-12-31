@@ -16,24 +16,29 @@ class Mesh {
 
 
     var bones = ArrayList<Bone>()
-    var bonesIndices: ArrayList<Float>? = null
-        private set
+    var bonesIndices = ArrayList<Float>()
 
     //    private ArrayList<Matrix> bonesMatrixes = new ArrayList<>();
     //    private ArrayList<Integer> bonesIndex = new ArrayList<>();
 
 
     fun setBonesIndicesFromDataWithWeights(indicesIN: ArrayList<Float>) {
-
-        bonesIndices = ArrayList()
-
         for (i in indicesIN.indices) {
             if (i % 2 == 0) {
-                bonesIndices!!.add(indicesIN[i])
+                bonesIndices.add(indicesIN[i])
             }
         }
+    }
 
+    fun getAnimQty():Int{
+        bones.get(0).posesMatrices?.size?.let {
+            return ( it / 16)
+        }
+        return 0
+    }
 
+    fun getBonesQty():Int{
+        return bones.size
     }
 
 

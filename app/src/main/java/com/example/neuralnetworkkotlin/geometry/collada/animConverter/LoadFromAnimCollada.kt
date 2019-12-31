@@ -1,18 +1,18 @@
-package com.example.neuralnetworkkotlin.geometry.collada.converter
+package com.example.neuralnetworkkotlin.geometry.collada.animConverter
 
 import android.content.Context
 import android.util.Log
 import com.example.neuralnetworkkotlin.R
-
-import com.google.gson.Gson
-
-import com.example.neuralnetworkkotlin.geometry.collada.pojos.ColladaModel
 import com.example.neuralnetworkkotlin.geometry.collada.FileOperation
-
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Bone
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Json
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Mesh
+import com.example.neuralnetworkkotlin.geometry.collada.pojos.ColladaModel
+import com.google.gson.Gson
 import java.util.ArrayList
 
 
-class LoadFromCollada(private val ctx: Context) {
+class LoadFromAnimCollada(private val ctx: Context) {
 
 
     fun load(): Mesh {
@@ -45,6 +45,33 @@ class LoadFromCollada(private val ctx: Context) {
             }
             iterator++
         }
+
+
+
+        var bones_indices = colladaModel.collada!!.library_controllers!!.controller!!.skin!!.vertex_weights!!.v
+
+        bones_indices = removeTrash(bones_indices)
+
+        mesh.setBonesIndicesFromDataWithWeights(stringToFloatList(bones_indices!!))
+
+
+        for (animation in colladaModel.collada!!.library_animations!!.animation!!) {
+            val bone = Bone()
+
+            for (s in animation.source!!) {
+                //mesh.setAnimByFloat(floatList);
+                if (s.float_array != null) {
+                    val matrixes = getMatrixesListFromString(s.float_array!!.content!!)
+
+                    if (matrixes.size > 15) {//są tam macierze
+                        bone.posesMatrices = matrixes
+                    }
+                }
+            }
+            mesh.addBone(bone)
+        }
+
+
 
 
 

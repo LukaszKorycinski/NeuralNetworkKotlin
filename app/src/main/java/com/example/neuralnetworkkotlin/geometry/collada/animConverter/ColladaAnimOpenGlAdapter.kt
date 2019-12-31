@@ -1,15 +1,17 @@
-package com.example.neuralnetworkkotlin.geometry.collada.converter
+package com.example.neuralnetworkkotlin.geometry.collada.animConverter
 
 
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Bone
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Mesh
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector4f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.VertexV4N3T2
 import java.util.ArrayList
 
-class ColladaOpenGlAdapter(mesh: Mesh) {
+class ColladaAnimOpenGlAdapter(mesh: Mesh) {
 
-    private val vertexVNTList = ArrayList<VertexV3N3T2>()
+    val faces = ArrayList<VertexV4N3T2>()
     val indices = ArrayList<Short>()
-
-    val faces: List<VertexV3N3T2>
-        get() = vertexVNTList
+    var bones = ArrayList<Bone>()
 
 
     init {
@@ -23,29 +25,32 @@ class ColladaOpenGlAdapter(mesh: Mesh) {
 
 
     private fun buildFacesMap(mesh: Mesh) {
+        bones = mesh.bones
+
         for (i in 0 until mesh.indices.size) {
-            vertexVNTList.add(VertexV3N3T2(
-                    mesh.pos[mesh.indices[i].x],
+            faces.add(VertexV4N3T2(
+                    Vector4f(mesh.pos[mesh.indices[i].x], mesh.bonesIndices[mesh.indices[i].x]) ,
                     mesh.norm[mesh.indices[i].y],
                     mesh.texCoord[mesh.indices[i].z]
             ))
 
             this.indices.add(i.toShort())
         }
+
     }
 
 
     private fun removeDuplicats() {
-        for (i in vertexVNTList.indices) {
-            for (j in vertexVNTList.indices) {
-                if (vertexVNTList[i] == vertexVNTList[j] && i != j) {//znajduje duplikaty
+        for (i in faces.indices) {
+            for (j in faces.indices) {
+                if (faces[i] == faces[j] && i != j) {//znajduje duplikaty
                     indices[j] = i.toShort()//do indexów pod miejsce z j zapisuje ten z i
                 }
             }
         }
 
         var i = 0
-        while (i < vertexVNTList.size) {
+        while (i < faces.size) {
             var deleteFlag = true
             for (j in indices.indices) {//szukam vertexów do których nie ma odwołań w liście indexów
                 if (indices[j] == i.toShort()) {
@@ -54,7 +59,7 @@ class ColladaOpenGlAdapter(mesh: Mesh) {
             }
 
             if (deleteFlag) {
-                vertexVNTList.removeAt(i)
+                faces.removeAt(i)
                 for (j in indices.indices) {
                     if (indices[j] > i) {
                         val tmp = indices[j] - 1
