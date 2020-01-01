@@ -151,7 +151,7 @@ class DrawAnimColladaModel(val mesh: Mesh) {
 
         var ii =0
         bonesMatricesArray.forEach {
-            Log.e("m", ""+ii+" "+it)
+            //Log.e("m", ""+ii+" "+it)
             ii++
 
         }

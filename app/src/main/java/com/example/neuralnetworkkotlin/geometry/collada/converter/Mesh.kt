@@ -49,7 +49,7 @@ class Mesh {
     fun setPosByFloat(floatArray: ArrayList<Float>) {
         var i = 0
         while (i < floatArray.size) {
-            pos.add(Vector3f(floatArray[i], floatArray[i + 1], floatArray[i + 2]))
+            pos.add(Vector3f(-floatArray[i], floatArray[i + 1], floatArray[i + 2]))
             i += 3
         }
     }

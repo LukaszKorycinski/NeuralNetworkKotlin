@@ -22,7 +22,7 @@
 
 
 
-            gl_Position = uMVPMatrix * position;
+            gl_Position = uMVPMatrix * vec4(position.xyz, 1.0);
 
 
 

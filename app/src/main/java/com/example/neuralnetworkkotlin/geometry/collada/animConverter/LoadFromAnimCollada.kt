@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.collada.animConverter
 
 import android.content.Context
+import android.opengl.Matrix
 import android.util.Log
 import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.geometry.collada.FileOperation
@@ -10,7 +11,6 @@ import com.example.neuralnetworkkotlin.geometry.collada.converter.Mesh
 import com.example.neuralnetworkkotlin.geometry.collada.pojos.ColladaModel
 import com.google.gson.Gson
 import java.util.ArrayList
-
 
 class LoadFromAnimCollada(private val ctx: Context) {
 
@@ -47,37 +47,49 @@ class LoadFromAnimCollada(private val ctx: Context) {
         }
 
 
-
         var bones_indices = colladaModel.collada!!.library_controllers!!.controller!!.skin!!.vertex_weights!!.v
+
+        val inverseBindMatrixesString = colladaModel.collada!!.library_controllers!!.controller!!.skin!!.source
+
+
+        val inverseBindMatrixes = getMatrixesListFromString(inverseBindMatrixesString!!.get(2).float_array!!.content!!)
 
         bones_indices = removeTrash(bones_indices)
 
         mesh.setBonesIndicesFromDataWithWeights(stringToFloatList(bones_indices!!))
 
-
-        for (animation in colladaModel.collada!!.library_animations!!.animation!!) {
+        var boneIndex = 0
+        colladaModel.collada!!.library_animations!!.animation!!.forEach {
             val bone = Bone()
 
-            for (s in animation.source!!) {
-                //mesh.setAnimByFloat(floatList);
-                if (s.float_array != null) {
-                    val matrixes = getMatrixesListFromString(s.float_array!!.content!!)
+            //mesh.setAnimByFloat(floatList);
 
-                    if (matrixes.size > 15) {//są tam macierze
-                        bone.posesMatrices = matrixes
-                    }
-                }
-            }
+            var matrixes = getMatrixesListFromString(it.source!![1].float_array!!.content!!)
+
+            matrixes = mullEvery(matrixes, inverseBindMatrixes.copyOfRange(boneIndex * 16, boneIndex * 16 + 16))
+            //każde klatka musi być pomnona przez INVMATRIX kości
+
+
+
+
+
+            bone.posesMatrices = matrixes
+
             mesh.addBone(bone)
+            boneIndex++
+        }
+
+
+        colladaModel.collada?.library_visual_scenes?.visual_scene?.node?.forEach {
+            //Log.e("Node", "n "+ it._name)
         }
 
 
 
 
-
-        if(colladaModel.collada!!.library_geometries!!.geometry!!.mesh!!.polylist != null){
+        if (colladaModel.collada!!.library_geometries!!.geometry!!.mesh!!.polylist != null) {
             mesh.setIndicesByFloat(colladaModel.collada!!.library_geometries!!.geometry!!.mesh!!.polylist!!.asInteger)
-        }else{
+        } else {
             mesh.setIndicesByFloat(colladaModel.collada!!.library_geometries!!.geometry!!.mesh!!.triangles!!.asInteger)
         }
 
@@ -88,6 +100,28 @@ class LoadFromAnimCollada(private val ctx: Context) {
         mesh.flipTextCoorsd()
 
         return mesh
+    }
+
+    private fun mullEvery(framesMatrices: FloatArray, inv_bind_matrix: FloatArray): FloatArray {//matrixes każdej klatki danej kościi z pliku     matrix current bone INV_BIND_MATRIX
+        val matricesQty = framesMatrices.size / 16
+        val matrixesOut = framesMatrices
+
+        for (i in 0..matricesQty - 1) {
+            val tmpMatrix = FloatArray(16)
+
+            for (j in 0..15) {
+                tmpMatrix[j] = framesMatrices[16 * i + j]//macieże zapisane pokolei
+            }
+
+            //Matrix.invertM(matrix, 0, matrix, 0)
+            Matrix.multiplyMM(tmpMatrix, 0, inv_bind_matrix , 0, tmpMatrix, 0)
+
+            for (j in 0..15) {
+                matrixesOut[16 * i +j] = tmpMatrix[j]
+            }
+        }
+
+        return matrixesOut
     }
 
     private fun removeTrash(string: String?): String? {
@@ -115,8 +149,8 @@ class LoadFromAnimCollada(private val ctx: Context) {
         val outList = ArrayList<Float>()
 
         val parts = inString.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        for (number in parts){
-            if(!number.equals("")){
+        for (number in parts) {
+            if (!number.equals("")) {
                 outList.add(java.lang.Float.parseFloat(number))
             }
         }

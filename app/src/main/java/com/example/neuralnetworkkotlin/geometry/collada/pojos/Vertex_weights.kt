@@ -6,4 +6,9 @@ class Vertex_weights {
 
     @SerializedName("v")
     var v: String? = null
+
+
+
+
+
 }
