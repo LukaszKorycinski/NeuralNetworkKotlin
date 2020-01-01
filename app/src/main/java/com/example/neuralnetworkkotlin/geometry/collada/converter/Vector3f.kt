@@ -47,7 +47,16 @@ class Vector3f {
     }
 
     companion object {
-
+        fun interpolate(
+            start: Vector3f,
+            end: Vector3f,
+            progression: Float
+        ): Vector3f {
+            val x = start.x + (end.x - start.x) * progression
+            val y = start.y + (end.y - start.y) * progression
+            val z = start.z + (end.z - start.z) * progression
+            return Vector3f(x, y, z)
+        }
 
         fun getDistance(p1: Vector3f, p2: Vector3f): Double {
             return Math.sqrt(Math.pow((p1.x - p2.x).toDouble(), 2.0) + Math.pow((p1.y - p2.y).toDouble(), 2.0) + Math.pow((p1.z - p2.z).toDouble(), 2.0))

@@ -22,7 +22,7 @@
 
 
 
-            gl_Position = uMVPMatrix * vec4(position.xyz, 1.0);
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
 
 
 
@@ -41,7 +41,9 @@
 
         vec4 color = texture2D(u_Texture, texCoord);
 
-
+        if(color.a<0.5){
+            discard;
+        }
 
 
         gl_FragColor = color;

@@ -2,13 +2,14 @@ package com.example.neuralnetworkkotlin.geometry.collada.animConverter
 
 import android.opengl.GLES20
 import android.opengl.Matrix
-import android.util.Log
-import com.example.neuralnetworkkotlin.geometry.collada.converter.ColladaOpenGlAdapter
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Mesh
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import javax.vecmath.Matrix4f
+import javax.vecmath.Quat4f
 
 class DrawAnimColladaModel(val mesh: Mesh) {
 
@@ -107,7 +108,9 @@ class DrawAnimColladaModel(val mesh: Mesh) {
 
     fun draw(mvpMatrix: FloatArray, shaderProgram: Int) {
         wave = wave + 0.01f
-
+        if(wave > 3.9999f){
+            wave = 0f
+        }
 
         val currentBonesPosesArray = interpolateSkeletons(wave)
 
@@ -141,58 +144,82 @@ class DrawAnimColladaModel(val mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
     }
 
-    var testFrame = 0
+
 
     private fun interpolateSkeletons(v: Float): FloatArray {
-        val pose:Int = v.toInt() % 2
+        val pose:Int = v.toInt() % 3
+        val poseFloat:Float = v % 1
 
-
-
-
-        var ii =0
-        bonesMatricesArray.forEach {
-            //Log.e("m", ""+ii+" "+it)
-            ii++
-
-        }
-
-        val currMatrix = FloatArray(16 * mesh.getBonesQty())
-
-
-
-        //        for(int i=0;i<16;i++) {
-        //            currMatrix[i] = bonesMatricesArray[i+testFrame*16];
-        //            Log.e("frame", ""+testFrame);
-        //        }
-
+        val currMatrixes = FloatArray(16 * mesh.getBonesQty())
 
         for (i in 0 until mesh.getBonesQty()) {
-            val tmpMatrix = FloatArray(16)
+            val tmpMatrixStart = FloatArray(16)
 
             for (j in 0..15) {
-                tmpMatrix[j] = bonesMatricesArray[i * 16 * mesh.getAnimQty() + j + 16*pose]
+                tmpMatrixStart[j] = bonesMatricesArray[i * 16 * mesh.getAnimQty() + j + 16*pose]
             }
 
-            //Matrix.scaleM(tmpMatrix, 0, 1.0f, 1.0f, 1.0f)
-
-            //Matrix.rotateM(tmpMatrix, 0, -90f, 1f, 0f, 0f)
+            val tmpMatrixEnd = FloatArray(16)
 
             for (j in 0..15) {
-                currMatrix[i * 16 + j] = tmpMatrix[j]
+                tmpMatrixEnd[j] = bonesMatricesArray[i * 16 * mesh.getAnimQty() + j + 16*pose + 16]
             }
 
+
+
+
+
+            val matStart = Matrix4f(tmpMatrixStart)
+            var posStart = Vector3f(  )
+            val quaterionStart = Quaternion.fromMatrix( matStart )
+
+            val matEnd = Matrix4f(tmpMatrixEnd)
+            var posEnd = Vector3f(  )
+            val quaterionEnd = Quaternion.fromMatrix( matEnd )
+
+
+            var posOut = Vector3f.interpolate(posStart, posEnd, poseFloat)
+            val quaterionOut = Quaternion.interpolate( quaterionStart, quaterionEnd, poseFloat )
+
+            val tmpMatrixOut = Matrix4f()
+            tmpMatrixOut.setIdentity()
+            tmpMatrixOut.setTranslation(javax.vecmath.Vector3f(posOut.x, posOut.y, posOut.z))
+            tmpMatrixOut.setRotation( Quat4f( quaterionOut.x, quaterionOut.y, quaterionOut.z, quaterionOut.w ) )
+
+
+            var iterator = 0
+            for (x in 0..3)
+                for (y in 0..3){
+                    currMatrixes[i * 16 + iterator] = tmpMatrixOut.getElement(x,y)
+                    iterator++
+            }
         }
 
-
-        //pose1bone1 pose2bone1 pose3bone1 pose1bone2 pose2bone2 pose3bone2    pose 3   bone 2
-
-
-        testFrame++
-        if (testFrame >= mesh.getAnimQty())
-            testFrame = 0
-
-        return currMatrix//TODO to nie jest skończone xd
+        return currMatrixes//TODO to nie jest skończone xd
     }
+
+
+
+//    private fun interpolateSkeletons(v: Float): FloatArray {non interpolation, but works
+//        val pose:Int = v.toInt() % 3
+//
+//        val currMatrix = FloatArray(16 * mesh.getBonesQty())
+//
+//        for (i in 0 until mesh.getBonesQty()) {
+//            val tmpMatrix = FloatArray(16)
+//
+//            for (j in 0..15) {
+//                tmpMatrix[j] = bonesMatricesArray[i * 16 * mesh.getAnimQty() + j + 16*pose]
+//            }
+//
+//            for (j in 0..15) {
+//                currMatrix[i * 16 + j] = tmpMatrix[j]
+//            }
+//        }
+//
+//        //pose1bone1 pose2bone1 pose3bone1 pose1bone2 pose2bone2 pose3bone2    pose 3   bone 2
+//        return currMatrix//TODO to nie jest skończone xd
+//    }
 
 
 }
