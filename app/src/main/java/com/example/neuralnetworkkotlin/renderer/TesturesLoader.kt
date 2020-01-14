@@ -9,7 +9,7 @@ import com.example.neuralnetworkkotlin.R
 class TexturesLoader(var context: Context) {
 
     companion object{
-        const val TEXTURES_QTY = 14
+        const val TEXTURES_QTY = 15
     }
 
 
@@ -33,6 +33,7 @@ class TexturesLoader(var context: Context) {
         textResIds[12] = R.drawable.fog_background
         textResIds[13] = R.drawable.sky
         textResIds[14] = R.drawable.champ
+        textResIds[15] = R.drawable.joint
 
         for (i in 0..TEXTURES_QTY) {
             val options = BitmapFactory.Options()

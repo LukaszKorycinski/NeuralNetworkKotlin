@@ -102,7 +102,7 @@ class BackGround(context: Context) {
         propertyHandler = GLES20.glGetUniformLocation(shader, "wave")
         GLES20.glUniform1f(propertyHandler, wave)
 
-        positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
+        GLES20.glGetAttribLocation(shader, "vPosition").also {
             val mTextureCoordinateHandle =
                 GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
 
