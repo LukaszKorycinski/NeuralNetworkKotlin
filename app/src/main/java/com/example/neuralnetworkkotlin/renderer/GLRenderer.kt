@@ -4,6 +4,8 @@ import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.gameLogic.Planets
+import com.example.neuralnetworkkotlin.gameLogic.Spaceships
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.collada.animConverter.DrawAnimColladaModel
 import com.example.neuralnetworkkotlin.geometry.collada.animConverter.LoadFromAnimCollada
@@ -16,14 +18,18 @@ import javax.microedition.khronos.opengles.GL10
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    lateinit var backGround: BackGround
+    lateinit var planets: Planets
+    lateinit var spaceships: Spaceships
+
+
+
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader;
 
-    lateinit var drawColladaModel : DrawColladaModel
-    lateinit var drawAnimColladaModel : DrawAnimColladaModel
+    //lateinit var drawColladaModel : DrawColladaModel
+    //lateinit var drawAnimColladaModel : DrawAnimColladaModel
 
 
 
@@ -52,17 +58,21 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
-        GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
-        backGround = BackGround(context)
+        //backGround = BackGround(context)
+
+        planets = Planets(context)
+        spaceships = Spaceships(context)
+
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
 //        val mesh = LoadFromCollada(context)
 //        drawColladaModel = DrawColladaModel(mesh.load())
 
-        val meshAnim = LoadFromAnimCollada(context)
-        drawAnimColladaModel = DrawAnimColladaModel(meshAnim.load())
+        //val meshAnim = LoadFromAnimCollada(context)
+        //drawAnimColladaModel = DrawAnimColladaModel(meshAnim.load())
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
@@ -75,21 +85,11 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glUniform1i(texHandler, 0)
 
 
-//        GLES20.glUseProgram(shaderLoader.shaderProgramBasic)
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
-//        drawColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasic)
+        spaceships.drawPlanet(camera.viewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
+        planets.drawPlanet(camera.viewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
 
 
-        GLES20.glUseProgram(shaderLoader.shaderProgramBasicAnim)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
-        drawAnimColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasicAnim)
-
-
-        backGround.drawBackground(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramBackground)
-        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
-        backGround.drawFog(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramFog)
+        //backGround.drawSky(camera.viewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
 
 

@@ -18,8 +18,8 @@ class TexturesLoader(var context: Context) {
     fun loadTexture() {
         GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
         val textResIds: IntArray = IntArray(TEXTURES_QTY+1)
-        textResIds[0] = R.drawable.b0
-        textResIds[1] = R.drawable.b1
+        textResIds[0] = R.drawable.planet
+        textResIds[1] = R.drawable.spaceship
         textResIds[2] = R.drawable.b2
         textResIds[3] = R.drawable.b3
         textResIds[4] = R.drawable.b4
