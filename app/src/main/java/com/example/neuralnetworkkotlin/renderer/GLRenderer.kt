@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.collada.animConverter.DrawAnimColladaModel
 import com.example.neuralnetworkkotlin.geometry.collada.animConverter.LoadFromAnimCollada
 import com.example.neuralnetworkkotlin.geometry.collada.converter.DrawColladaModel
@@ -16,7 +17,7 @@ import javax.microedition.khronos.opengles.GL10
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    lateinit var backGround: BackGround
+    lateinit var terrain: Terrain
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
@@ -54,15 +55,15 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
-        backGround = BackGround(context)
+        terrain = Terrain()
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
 //        val mesh = LoadFromCollada(context)
 //        drawColladaModel = DrawColladaModel(mesh.load())
 
-        val meshAnim = LoadFromAnimCollada(context)
-        drawAnimColladaModel = DrawAnimColladaModel(meshAnim.load())
+//        val meshAnim = LoadFromAnimCollada(context)
+//        drawAnimColladaModel = DrawAnimColladaModel(meshAnim.load())
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
@@ -81,15 +82,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //        drawColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasic)
 
 
-        GLES20.glUseProgram(shaderLoader.shaderProgramBasicAnim)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
-        drawAnimColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasicAnim)
+//        GLES20.glUseProgram(shaderLoader.shaderProgramBasicAnim)
+//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
+//        drawAnimColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasicAnim)
 
 
-        backGround.drawBackground(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramBackground)
-        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
-        backGround.drawFog(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramFog)
+        terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)
     }
 
 

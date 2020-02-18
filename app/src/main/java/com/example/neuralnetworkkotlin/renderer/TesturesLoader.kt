@@ -29,7 +29,7 @@ class TexturesLoader(var context: Context) {
         textResIds[8] = R.drawable.b8
         textResIds[9] = R.drawable.b9
         textResIds[10] = R.drawable.b10
-        textResIds[11] = R.drawable.b11
+        textResIds[11] = R.drawable.terrain
         textResIds[12] = R.drawable.fog_background
         textResIds[13] = R.drawable.sky
         textResIds[14] = R.drawable.champ
