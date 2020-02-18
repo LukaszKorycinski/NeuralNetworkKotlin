@@ -12,14 +12,14 @@ class Collada {
     @SerializedName("library_geometries")
     var library_geometries: Library_geometries? = null
 
-    @SerializedName("library_controllers")
-    var library_controllers: Library_controllers? = null
+//    @SerializedName("library_controllers")
+//    var library_controllers: Library_controllers? = null
 
-    @SerializedName("library_animations")
-    var library_animations: Library_animations? = null
+//    @SerializedName("library_animations")
+//    var library_animations: Library_animations? = null
 
-    @SerializedName("library_visual_scenes")
-    var library_visual_scenes: Library_visual_scenes? = null
+//    @SerializedName("library_visual_scenes")
+//    var library_visual_scenes: Library_visual_scenes? = null
 
 
 }

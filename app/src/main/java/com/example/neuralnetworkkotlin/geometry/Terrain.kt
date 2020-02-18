@@ -1,15 +1,29 @@
 package com.example.neuralnetworkkotlin.geometry
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20
+import android.support.v4.content.ContextCompat
+import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
+import org.jbox2d.common.Vec2
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
-class Terrain {
+class Terrain(context: Context) {
+
+    var bitmap:Bitmap
+
+    init {
+        bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
+    }
 
     val size = 1.0f
 
@@ -52,7 +66,6 @@ class Terrain {
                 position(0)
             }
         }
-
 
     private val vertexBufferTextCoords: FloatBuffer =
         // (# of coordinate values * 4 bytes per float)
@@ -119,6 +132,16 @@ class Terrain {
     }
 
 
+    fun collision(position: Vector2f):Boolean{
+
+        val posX = (position.x + 0.5)*512
+        val posY = (position.y + 0.5)*512
+
+        val color = bitmap.getPixel(posX.toInt(), posY.toInt())
+        val alpha = Color.alpha(color)
+
+        return alpha>0.5
+    }
 
 
 }

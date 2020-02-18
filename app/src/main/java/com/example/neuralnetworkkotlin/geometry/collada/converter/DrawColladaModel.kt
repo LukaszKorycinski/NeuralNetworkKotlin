@@ -1,9 +1,9 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
-import android.graphics.Shader
 import android.opengl.GLES20
 import android.opengl.Matrix
-import android.util.Log
+import com.example.neuralnetworkkotlin.geometry.PlantsData
+import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -90,15 +90,35 @@ class DrawColladaModel(mesh: Mesh) {
         drawListBuffer.position(0)
     }
 
+    var mPositionHandle : Int = 0
+    var mNormalHandle : Int = 0
+    var mTexCoordHandle : Int = 0
+    var mvpMatrixHandler : Int = 0
 
-    fun draw(mvpMatrix: FloatArray, shaderProgram: Int) {
+    fun setOGLData(textures: TexturesLoader, shader: Int) {
+        GLES20.glUseProgram(shader)
+        mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
 
-        val mMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix")
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0)
+        val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
+        GLES20.glUniform1i(texHandler, 0)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[10])
 
-        val mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
-        val mNormalHandle = GLES20.glGetAttribLocation(shaderProgram, "vNormal")
-        val mTexCoordHandle = GLES20.glGetAttribLocation(shaderProgram, "vTexCoord")
+        mPositionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
+        mNormalHandle = GLES20.glGetAttribLocation(shader, "vNormal")
+        mTexCoordHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
+    }
+
+    fun draw(mvpMatrix: FloatArray, positionScale: PlantsData) {
+
+        val mvptMatrix = FloatArray(16)
+        val transMatrix = FloatArray(16)
+        Matrix.setIdentityM(transMatrix, 0)
+        Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
+        Matrix.scaleM(transMatrix, 0, positionScale.size, positionScale.size, positionScale.size)
+        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
+
+        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
 
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
@@ -113,6 +133,8 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mNormalHandle)
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
     }
+
+
 
 }
 

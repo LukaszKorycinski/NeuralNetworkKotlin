@@ -4,28 +4,23 @@ import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
-import com.example.neuralnetworkkotlin.geometry.Camera
-import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.collada.animConverter.DrawAnimColladaModel
-import com.example.neuralnetworkkotlin.geometry.collada.animConverter.LoadFromAnimCollada
-import com.example.neuralnetworkkotlin.geometry.collada.converter.DrawColladaModel
-import com.example.neuralnetworkkotlin.geometry.collada.converter.LoadFromCollada
+import com.example.neuralnetworkkotlin.geometry.*
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
-import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
+    val plants = Plant()
+    lateinit var drawModel: DrawModel
+
+
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader;
-
-    lateinit var drawColladaModel : DrawColladaModel
-    lateinit var drawAnimColladaModel : DrawAnimColladaModel
-
 
 
     fun upKey(action: MotionEvent) {
@@ -53,9 +48,14 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
+
         GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
-        terrain = Terrain()
+        terrain = Terrain(context)
+        drawModel = DrawModel(context)
+
+        plants.plantsList.add( PlantsData(Vector2f(0.0f, 0.2f)) )
+
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
@@ -86,6 +86,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
 //        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
 //        drawAnimColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasicAnim)
+
+        plants.loop()
+        drawModel.drawColladaModelPlant.setOGLData(textures, shaderLoader.shaderProgramBasic)
+        plants.plantsList.forEach {
+            drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
+        }
+
 
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)

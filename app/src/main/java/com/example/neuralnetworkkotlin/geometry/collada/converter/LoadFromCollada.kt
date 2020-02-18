@@ -12,11 +12,11 @@ import com.example.neuralnetworkkotlin.geometry.collada.FileOperation
 import java.util.ArrayList
 
 
-class LoadFromCollada(private val ctx: Context) {
+class LoadFromCollada(private val ctx: Context, val modelResId: Int) {
 
 
     fun load(): Mesh {
-        val xmlFileInputStream = ctx.resources.openRawResource(R.raw.model)
+        val xmlFileInputStream = ctx.resources.openRawResource(modelResId)
         val xmlFileString = FileOperation.readTextFile(xmlFileInputStream)
 
         val jSonFile = Json.xmlToJson(xmlFileString)
