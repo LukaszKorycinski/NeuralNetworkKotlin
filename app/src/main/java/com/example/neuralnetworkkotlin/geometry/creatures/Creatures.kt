@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.creatures
 
 import com.example.neuralnetworkkotlin.Const
+import com.example.neuralnetworkkotlin.deepCopy
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.PlantsData
@@ -15,12 +16,12 @@ class Creatures(val collidor: Collidor) {
 
 
     fun loop(
-        onCreatureAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
+        onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
         seedList: ArrayList<SeedData>
     ) {
         creaturesList.forEach {
             ai(it, seedList)
-            energy(onCreatureAdded, it)
+            energy(onCreatureEggAdded, it)
             move(it)
         }
 
@@ -36,7 +37,7 @@ class Creatures(val collidor: Collidor) {
             it.size = 1.0f
             val nn = it.neuralNetwork.clone()
             nn.bread()
-            onCreatureEggAdded(CreaturesData(it.pos, nn, Vector2f().randomVelocity(), 0.8f))
+            onCreatureEggAdded( CreaturesData(it.pos, nn, Vector2f().randomVelocity(), 0.8f).deepCopy() )
         } else {
             it.size = it.size - 0.025f * Const.step
         }
@@ -57,7 +58,7 @@ private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
         }
     }
 
-    if (closestL < 0.05f) {
+    if (closestL < 0.075f) {
         it.size = it.size + 0.5f
         seedList.removeAt(creatureIndex)
     }

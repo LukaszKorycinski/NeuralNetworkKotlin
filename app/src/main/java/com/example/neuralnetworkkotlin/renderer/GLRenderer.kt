@@ -87,10 +87,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         backGround = BackGround(context)
 
         seeds.add(SeedData(Vector2f(0.0f, 0.4f), Vector2f(), 1.0f))
+
         seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
         seeds.add(SeedData(Vector2f(0.5f, 0.4f), Vector2f(), 0.6f))
         seeds.add(SeedData(Vector2f(0.75f, 0.4f), Vector2f(), 1.3f))
         seeds.add(SeedData(Vector2f(1.0f, 0.4f), Vector2f(), 1.5f))
+
         seeds.add(SeedData(Vector2f(-0.25f, 0.4f), Vector2f(), 0.4f))
         seeds.add(SeedData(Vector2f(-0.5f, 0.4f), Vector2f(), 1.2f))
         seeds.add(SeedData(Vector2f(-0.75f, 0.4f), Vector2f(), 1.4f))
@@ -121,7 +123,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
         }
 
-        creatures.loop(::onCreatureAdded, seeds.seedsList)
+        creatures.loop(::onCreatureEggAdded, seeds.seedsList)
         drawModel.drawColladaModelCreature.setOGLData(textures.textureHandle[14], shaderLoader.shaderProgramGrass)
         creatures.creaturesList.forEach {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
@@ -143,7 +145,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 0.0f) )
+        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 1.0f) )
     }
 
 
