@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 /**
  * Created by dell on 09.06.2017.
@@ -18,6 +19,9 @@ class Vector2f {
     fun equals(second: Vector2f): Boolean {
         return if (Math.abs(x - second.x) < 0.0001f && Math.abs(y - second.y) < 0.0001f) true else false
     }
+
+    fun randomVelocity() = Vector2f(Random.nextFloat()-0.5f, Random.nextFloat()*0.5f).normalized()
+
 
     fun normalized(): Vector2f {
         val length =  sqrt(x*x + y*y )

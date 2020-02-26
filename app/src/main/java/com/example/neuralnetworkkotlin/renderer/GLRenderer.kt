@@ -5,10 +5,13 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
+import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.*
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.creatures.Creatures
 import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
+import com.example.neuralnetworkkotlin.geometry.creatures.Egg
+import com.example.neuralnetworkkotlin.geometry.creatures.EggData
 import com.example.neuralnetworkkotlin.geometry.plants.Seed
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
@@ -21,6 +24,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     lateinit var terrain: Terrain
     lateinit var collidor: Collidor
     lateinit var seeds: Seed
+    lateinit var eggs: Egg
     lateinit var creatures: Creatures
     val plants = Plant()
     lateinit var drawModel: DrawModel
@@ -59,7 +63,11 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun creatureKey(action: MotionEvent) {
         controlHelper.creatureKey(action)
         when(action.action){
-            MotionEvent.ACTION_DOWN -> onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), Vector2f(0.3f, 0.0f), 1.0f))
+            MotionEvent.ACTION_DOWN -> {
+                val nn = NeuralNetwork()
+                nn.makeNewBrain()
+                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(0.3f, 0.0f), 1.0f))
+            }
         }
 
     }
@@ -72,16 +80,23 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         terrain = Terrain(context)
         collidor = Collidor(terrain)
         seeds = Seed(collidor)
+        eggs = Egg(collidor)
 
         drawModel = DrawModel(context)
 
         backGround = BackGround(context)
 
         seeds.add(SeedData(Vector2f(0.0f, 0.4f), Vector2f(), 1.0f))
+        seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
+        seeds.add(SeedData(Vector2f(0.5f, 0.4f), Vector2f(), 0.6f))
+        seeds.add(SeedData(Vector2f(0.75f, 0.4f), Vector2f(), 1.3f))
+        seeds.add(SeedData(Vector2f(1.0f, 0.4f), Vector2f(), 1.5f))
+        seeds.add(SeedData(Vector2f(-0.25f, 0.4f), Vector2f(), 0.4f))
+        seeds.add(SeedData(Vector2f(-0.5f, 0.4f), Vector2f(), 1.2f))
+        seeds.add(SeedData(Vector2f(-0.75f, 0.4f), Vector2f(), 1.4f))
+        seeds.add(SeedData(Vector2f(-1.0f, 0.4f), Vector2f(), 1.6f))
 
         creatures = Creatures(collidor)
-
-        creatures.add(CreaturesData(Vector2f(0.0f, 0.4f), Vector2f(0.3f, 0.0f), 1.0f))
 
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
@@ -115,6 +130,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         seeds.loop(::onPlantAdded)
         seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
 
+        eggs.loop(::onCreatureAdded)
+        eggs.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
+
 
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
@@ -122,6 +140,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
+
+
+    private fun onCreatureEggAdded(creature: CreaturesData) {
+        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 0.0f) )
+    }
+
 
     private fun onCreatureAdded(creature: CreaturesData) {
         creatures.add(creature)

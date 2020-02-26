@@ -17,17 +17,13 @@ class Plant {
             it.size = it.size + 0.05f * Const.step
 
             if(it.size>1.2f){
-                onSeedAdded(SeedData(Vector2f(it.pos.x+0.025f, it.pos.y+0.15f+Random.nextFloat()*0.1f), randomVelocity(), 0.0f))
-                onSeedAdded(SeedData(Vector2f(it.pos.x-0.025f, it.pos.y+0.15f+Random.nextFloat()*0.1f), randomVelocity(), 0.0f))
+                onSeedAdded(SeedData(Vector2f(it.pos.x+0.025f, it.pos.y+0.15f+Random.nextFloat()*0.1f), Vector2f().randomVelocity(), 0.0f))
+                onSeedAdded(SeedData(Vector2f(it.pos.x-0.025f, it.pos.y+0.15f+Random.nextFloat()*0.1f), Vector2f().randomVelocity(), 0.0f))
                 it.size = 0.8f
             }
         }
 
         //plantsList = plantsList.filter { it.size<=0.8f } as ArrayList<PlantsData>
-    }
-
-    private fun randomVelocity(): Vector2f {
-        return Vector2f(Random.nextFloat()-0.5f, Random.nextFloat()*0.5f).normalized()
     }
 
     fun add(plant: PlantsData) {
