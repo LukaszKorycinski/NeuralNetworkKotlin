@@ -44,6 +44,11 @@ class MainActivity : Activity() {
             glSurfaceView.eKey(motionEvent)
             true
         }
+
+        creatureKey.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.creatureKey(motionEvent)
+            true
+        }
     }
 
 

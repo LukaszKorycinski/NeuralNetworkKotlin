@@ -32,4 +32,7 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
     fun qKey(action: MotionEvent) { renderer.qKey(action) }
 
     fun eKey(action: MotionEvent) { renderer.eKey(action) }
+
+    fun creatureKey(action: MotionEvent) { renderer.creatureKey(action) }
+
 }

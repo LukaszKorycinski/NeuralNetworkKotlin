@@ -19,18 +19,18 @@ const val COORDS_PER_VERTEX = 3
 class BackGround(context: Context) {
 
     val layerCoords = floatArrayOf(
-        -10f, 10f, 0.0f,      // top left
+        -10f, 20f, 0.0f,      // top left
         -10f, -20f, 0.0f,      // bottom left
         10f, -20f, 0.0f,      // bottom right
-        10f, 10f, 0.0f       // top right
+        10f, 20f, 0.0f       // top right
     )
 
 
     val textureCoords = floatArrayOf(
-        1.0f, 0.0f,      // top left
-        1.0f, 1.5f,      // bottom left
-        0.0f, 1.5f,      // bottom right
-        0.0f, 0.0f       // top right
+        1.0f, -1.0f,      // top left
+        1.0f, 1.0f,      // bottom left
+        0.0f, 1.0f,      // bottom right
+        0.0f, -1.0f       // top right
     )
 
 
@@ -78,15 +78,13 @@ class BackGround(context: Context) {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
     var wave = 0f
-
     val LAYERS_QTY = 12
-
 
     fun drawSky(mvpMatrix: FloatArray, eyePosition: Vector3f, textures: TexturesLoader, shader: Int) {
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
         Matrix.setIdentityM(transMatrix, 0)
-        Matrix.translateM(transMatrix, 0, 0f, 9f, 12f)
+        Matrix.translateM(transMatrix, 0, 0f, 0f, 10f)
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")

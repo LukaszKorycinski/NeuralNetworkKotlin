@@ -8,11 +8,10 @@ import com.example.neuralnetworkkotlin.geometry.collada.converter.LoadFromCollad
 
 class DrawModel(val context: Context) {
 
-    val mesh = LoadFromCollada(context, R.raw.plant)
-    val drawColladaModelPlant = DrawColladaModel(mesh.load())
+    val plant = LoadFromCollada(context, R.raw.plant)
+    val drawColladaModelPlant = DrawColladaModel(plant.load())
 
-
-
-
+    val creature = LoadFromCollada(context, R.raw.creature1)
+    val drawColladaModelCreature = DrawColladaModel(creature.load())
 
 }

@@ -25,7 +25,7 @@ class Terrain(context: Context) {
         bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
     }
 
-    val size = 1.0f
+    val size = 2.0f
 
     val layerCoords = floatArrayOf(
         -size, size, 0.0f,      // top left
@@ -92,8 +92,23 @@ class Terrain(context: Context) {
 
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[11])
+
+        val texHandlerTerrain = GLES20.glGetUniformLocation(shader, "u_TextureTerrain")
+        GLES20.glUniform1i(texHandlerTerrain, 1)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[8])
+
+        val texHandlerTerrain2 = GLES20.glGetUniformLocation(shader, "u_TextureTerrain2")
+        GLES20.glUniform1i(texHandlerTerrain2, 2)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE2)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[7])
+
+        val texHandlerTerrain3 = GLES20.glGetUniformLocation(shader, "u_TextureTerrain3")
+        GLES20.glUniform1i(texHandlerTerrain3, 3)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[6])
 
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
@@ -134,13 +149,18 @@ class Terrain(context: Context) {
 
     fun collision(position: Vector2f):Boolean{
 
-        val posX = (position.x + 0.5)*512
-        val posY = (position.y + 0.5)*512
+        val posX = (-position.x + 0.5)*512
+        val posY = (-position.y + 0.5)*512
 
-        val color = bitmap.getPixel(posX.toInt(), posY.toInt())
-        val alpha = Color.alpha(color)
+        var alpha = 0
 
-        return alpha>0.5
+        if( posX.toInt()>=0 && posY.toInt()>=0 && posX.toInt()<bitmap.width && posY.toInt()<bitmap.height ) {
+            alpha = Color.alpha( bitmap.getPixel(posX.toInt(), posY.toInt()) )
+        }
+
+        //val alpha = Color.alpha(color)
+
+        return alpha>128
     }
 
 

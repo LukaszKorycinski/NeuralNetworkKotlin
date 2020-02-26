@@ -2,8 +2,11 @@ package com.example.neuralnetworkkotlin.geometry.collada.converter
 
 import android.opengl.GLES20
 import android.opengl.Matrix
+import android.util.Log
 import com.example.neuralnetworkkotlin.geometry.PlantsData
+import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
+import java.lang.Float
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -57,8 +60,6 @@ class DrawColladaModel(mesh: Mesh) {
             indicesShort[i] = colladaOpenGlAdapter.indices[i]
         }
 
-
-
         indicesCout = colladaOpenGlAdapter.indices.size
 
         var bb = ByteBuffer.allocateDirect(colladaOpenGlAdapter.faces.size * 3 * 4)
@@ -94,15 +95,24 @@ class DrawColladaModel(mesh: Mesh) {
     var mNormalHandle : Int = 0
     var mTexCoordHandle : Int = 0
     var mvpMatrixHandler : Int = 0
+    var wave = 0.0f
 
-    fun setOGLData(textures: TexturesLoader, shader: Int) {
+    fun setOGLData(textureHandle: Int, shader: Int) {
         GLES20.glUseProgram(shader)
         mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
+
+        val waveHandler = GLES20.glGetUniformLocation(shader, "wave")
+
+        wave=wave+0.04f
+        if(wave>1000.0f){
+            wave = 0.0f
+        }
+        GLES20.glUniform1f(waveHandler, wave)
 
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[10])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
 
         mPositionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
         mNormalHandle = GLES20.glGetAttribLocation(shader, "vNormal")
@@ -110,12 +120,35 @@ class DrawColladaModel(mesh: Mesh) {
     }
 
     fun draw(mvpMatrix: FloatArray, positionScale: PlantsData) {
-
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
         Matrix.setIdentityM(transMatrix, 0)
         Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
-        Matrix.scaleM(transMatrix, 0, positionScale.size, positionScale.size, positionScale.size)
+        Matrix.scaleM(transMatrix, 0, positionScale.drawSize(), positionScale.drawSize(), positionScale.drawSize())
+        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
+
+        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
+
+        GLES20.glEnableVertexAttribArray(mPositionHandle)
+        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
+        GLES20.glEnableVertexAttribArray(mNormalHandle)
+        GLES20.glVertexAttribPointer(mNormalHandle, 3, GLES20.GL_FLOAT, false, 0, normalBuffer)
+        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
+        GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texcoordBuffer)
+
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
+
+        GLES20.glDisableVertexAttribArray(mPositionHandle)
+        GLES20.glDisableVertexAttribArray(mNormalHandle)
+        GLES20.glDisableVertexAttribArray(mTexCoordHandle)
+    }
+
+    fun draw(mvpMatrix: FloatArray, positionScale: CreaturesData) {
+        val mvptMatrix = FloatArray(16)
+        val transMatrix = FloatArray(16)
+        Matrix.setIdentityM(transMatrix, 0)
+        Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
+        Matrix.scaleM(transMatrix, 0, positionScale.drawSize(), positionScale.drawSize(), positionScale.drawSize())
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)

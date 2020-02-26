@@ -4,18 +4,27 @@ import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.geometry.*
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.geometry.creatures.Creatures
+import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
+import com.example.neuralnetworkkotlin.geometry.plants.Seed
+import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
+import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
+    lateinit var collidor: Collidor
+    lateinit var seeds: Seed
+    lateinit var creatures: Creatures
     val plants = Plant()
     lateinit var drawModel: DrawModel
-
+    lateinit var backGround: BackGround
 
     private val camera = Camera()
     val controlHelper = ControlHelper()
@@ -47,14 +56,32 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         controlHelper.eKey(action)
     }
 
+    fun creatureKey(action: MotionEvent) {
+        controlHelper.creatureKey(action)
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), Vector2f(0.3f, 0.0f), 1.0f))
+        }
+
+    }
+
+
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
 
-        GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)//GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
         terrain = Terrain(context)
+        collidor = Collidor(terrain)
+        seeds = Seed(collidor)
+
         drawModel = DrawModel(context)
 
-        plants.plantsList.add( PlantsData(Vector2f(0.0f, 0.2f)) )
+        backGround = BackGround(context)
+
+        seeds.add(SeedData(Vector2f(0.0f, 0.4f), Vector2f(), 1.0f))
+
+        creatures = Creatures(collidor)
+
+        creatures.add(CreaturesData(Vector2f(0.0f, 0.4f), Vector2f(0.3f, 0.0f), 1.0f))
 
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
@@ -72,32 +99,43 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(unused: GL10) {
         setUpFrame()
 
-        val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
-        GLES20.glUniform1i(texHandler, 0)
 
-
-//        GLES20.glUseProgram(shaderLoader.shaderProgramBasic)
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
-//        drawColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasic)
-
-
-//        GLES20.glUseProgram(shaderLoader.shaderProgramBasicAnim)
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[14])
-//        drawAnimColladaModel.draw(camera.viewProjectionMatrix, shaderLoader.shaderProgramBasicAnim)
-
-        plants.loop()
-        drawModel.drawColladaModelPlant.setOGLData(textures, shaderLoader.shaderProgramBasic)
+        plants.loop(::onSeedAdded)
+        drawModel.drawColladaModelPlant.setOGLData(textures.textureHandle[10], shaderLoader.shaderProgramGrass)
         plants.plantsList.forEach {
             drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
         }
 
+        creatures.loop(::onCreatureAdded, seeds.seedsList)
+        drawModel.drawColladaModelCreature.setOGLData(textures.textureHandle[14], shaderLoader.shaderProgramGrass)
+        creatures.creaturesList.forEach {
+            drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
+        }
+
+        seeds.loop(::onPlantAdded)
+        seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
 
 
-        terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)
+
+        terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
+
+
+        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
 
+    private fun onCreatureAdded(creature: CreaturesData) {
+        creatures.add(creature)
+    }
+
+    private fun onSeedAdded(seed: SeedData) {
+        seeds.add(seed)
+    }
+
+    private fun onPlantAdded(plant: PlantsData) {
+        if (plants.closest(plant.pos) > 0.1f && !collidor.colision(plant.pos)) {
+            plants.add(plant)
+        }
+    }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)

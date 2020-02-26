@@ -24,10 +24,10 @@ class TexturesLoader(var context: Context) {
         textResIds[3] = R.drawable.b3
         textResIds[4] = R.drawable.b4
         textResIds[5] = R.drawable.b5
-        textResIds[6] = R.drawable.b6
-        textResIds[7] = R.drawable.b7
-        textResIds[8] = R.drawable.b8
-        textResIds[9] = R.drawable.b9
+        textResIds[6] = R.drawable.terraintexture3
+        textResIds[7] = R.drawable.terraintexture2
+        textResIds[8] = R.drawable.terraintexture
+        textResIds[9] = R.drawable.seed
         textResIds[10] = R.drawable.plant
         textResIds[11] = R.drawable.terrain
         textResIds[12] = R.drawable.fog_background
@@ -53,16 +53,30 @@ class TexturesLoader(var context: Context) {
                 GLES20.GL_NEAREST
             )
 
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_WRAP_S,
-                GLES20.GL_REPEAT
-            )
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_WRAP_T,
-                GLES20.GL_REPEAT
-            )
+            if(i==13){
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_S,
+                    GLES20.GL_MIRRORED_REPEAT
+                )
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_T,
+                    GLES20.GL_MIRRORED_REPEAT
+                )
+            }else{
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_S,
+                    GLES20.GL_REPEAT
+                )
+                GLES20.glTexParameteri(
+                    GLES20.GL_TEXTURE_2D,
+                    GLES20.GL_TEXTURE_WRAP_T,
+                    GLES20.GL_REPEAT
+                )
+            }
+
 
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)

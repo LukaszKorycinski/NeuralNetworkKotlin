@@ -55,6 +55,12 @@ class ControlHelper {
         }
     }
 
+    fun creatureKey(action: MotionEvent){
+        when(action.action){
+
+        }
+    }
+
     val position = Vector3f(0f, 0f, 15.0f)
 
     fun updatePosition(): Vector3f {
