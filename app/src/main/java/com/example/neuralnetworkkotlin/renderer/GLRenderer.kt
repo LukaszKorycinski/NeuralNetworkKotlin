@@ -69,7 +69,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             MotionEvent.ACTION_DOWN -> {
                 val nn = NeuralNetwork()
                 nn.makeNewBrain()
-                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(), 1.0f, Vector3f().random()))
+                onCreatureAdded(CreaturesData(
+                    pos = Vector2f(Random.nextFloat()-0.5f, 0.4f),
+                    neuralNetwork = nn,
+                    velocity = Vector2f(),
+                    size = 1.0f,
+                    color = Vector3f().random()))
             }
         }
     }
@@ -132,6 +137,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         backGround = BackGround(context)
 
         seeds.add(SeedData(Vector2f(0.0f, 2.0f), Vector2f(), 1.0f))
+        seeds.add(SeedData(Vector2f(0.25f, 2.2f), Vector2f(), 0.8f))
+        seeds.add(SeedData(Vector2f(-0.25f, 2.2f), Vector2f(), 1.3f))
 
         seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
         seeds.add(SeedData(Vector2f(0.5f, 0.8f), Vector2f(), 0.6f))

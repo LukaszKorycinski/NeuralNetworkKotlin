@@ -99,7 +99,7 @@
         void main() {
 
         vec4 color = texture2D(u_Texture, texCoord);
-        color.rgb = color.rgb * colorAccent;
+        color.rgb = colorAccent;
 
         if(color.a<0.5){
             discard;

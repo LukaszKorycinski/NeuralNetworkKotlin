@@ -1,5 +1,6 @@
 package com.example.neuralnetworkkotlin.gameLogic.nn
 
+import java.lang.Math.pow
 import java.util.concurrent.ThreadLocalRandom
 
 
@@ -27,6 +28,10 @@ class Neuron{
 
         var output:Float = sum
         return output
+    }
+
+    private fun sigmoid(x: Float): Float {
+        return (1f/( 1f + pow(Math.E,(-1*x.toDouble())))).toFloat()
     }
 
     fun muteWeight() {

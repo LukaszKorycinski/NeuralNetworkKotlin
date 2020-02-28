@@ -57,18 +57,18 @@ class Creatures(val collidor: Collidor) {
                 when (channel) {
                     0 -> {
                         color.x = it.color.x + 0.05f
-                        color.y = it.color.y - 0.025f
-                        color.z = it.color.z - 0.025f
+                        color.y = it.color.y - 0.02f
+                        color.z = it.color.z - 0.02f
                     }
                     1 -> {
-                        color.x = it.color.x + 0.025f
-                        color.y = it.color.y - 0.05f
+                        color.x = it.color.x - 0.02f
+                        color.y = it.color.y + 0.05f
                         color.z = it.color.z - 0.025f
                     }
                     2 -> {
-                        color.x = it.color.x + 0.025f
+                        color.x = it.color.x - 0.02f
                         color.y = it.color.y - 0.025f
-                        color.z = it.color.z - 0.05f
+                        color.z = it.color.z + 0.05f
                     }
                 }
             }else{
@@ -76,6 +76,8 @@ class Creatures(val collidor: Collidor) {
                 color.y = it.color.y
                 color.z = it.color.z
             }
+
+            color.clip(0.0f, 1.0f)
 
             onCreatureEggAdded(
                 CreaturesData(

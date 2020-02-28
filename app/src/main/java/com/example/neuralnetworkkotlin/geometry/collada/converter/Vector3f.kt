@@ -1,5 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
+import java.lang.Float.max
+import java.lang.Float.min
 import kotlin.random.Random
 
 /**
@@ -49,6 +51,11 @@ class Vector3f {
     }
 
     fun random() = Vector3f (Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
+    fun clip(min: Float, max: Float) {
+        x = max(min(x, 1.0f), 0.0f)
+        y = max(min(y, 1.0f), 0.0f)
+        z = max(min(z, 1.0f), 0.0f)
+    }
 
     companion object {
         fun interpolate(
