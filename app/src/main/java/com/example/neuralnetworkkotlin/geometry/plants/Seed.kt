@@ -8,6 +8,7 @@ import com.example.neuralnetworkkotlin.geometry.PlantsData
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
+import java.lang.Float.max
 import java.lang.Float.min
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -85,7 +86,7 @@ class Seed(val collidor: Collidor) {
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix, 0)
             Matrix.translateM(transMatrix, 0, it.pos.x, it.pos.y, 0f)
-            Matrix.scaleM(transMatrix, 0, min(it.age, 1.0f), min(it.age, 1.0f), 0f)
+            Matrix.scaleM(transMatrix, 0, max(min(it.age, 1.0f), 0.5f), max(min(it.age, 1.0f),0.5f), 0f)
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
