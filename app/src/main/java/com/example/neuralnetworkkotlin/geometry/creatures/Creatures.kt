@@ -13,6 +13,7 @@ import kotlin.reflect.KFunction1
 class Creatures(val collidor: Collidor) {
     var speed = 2.0f
     var creaturesList = ArrayList<CreaturesData>()
+    var creaturesListToAdd = ArrayList<CreaturesData>()
 
     var lifeEnergyCost = 0.05f
     var energyFromEat = 0.3f
@@ -30,6 +31,10 @@ class Creatures(val collidor: Collidor) {
 
         creaturesList =
             creaturesList.filter { it.size > 0.2f }.filter { it.pos.y > -5.0f } as ArrayList<CreaturesData>
+
+        if(creaturesListToAdd.isNotEmpty()){
+            creaturesList.addAll(creaturesListToAdd)
+        }
     }
 
     private fun energy(
@@ -80,7 +85,7 @@ private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
 
 
 fun add(creature: CreaturesData) {
-    creaturesList.add(creature)
+    creaturesListToAdd.add(creature)
 }
 
 
