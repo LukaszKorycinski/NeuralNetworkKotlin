@@ -22,47 +22,53 @@ class NeuralNetwork{
         }
     }
 
+    val neuronsPerLayer = 3
 
     fun inputToOutput (input :ArrayList<Float>):ArrayList<Float>{
         val midleInput = ArrayList<Float>()
-        for (i in 0..4){
+        for (i in 0..neuronsPerLayer-1){
             val outputTmp = neurons[i][0].inputToOutput(input)
             midleInput.add(outputTmp)
         }
 
-        val midleInput2 = ArrayList<Float>()
-        for (i in 0..4){
-            val outputTmp = neurons[i][1].inputToOutput(midleInput)
-            midleInput2.add(outputTmp)
-        }
+//        val midleInput2 = ArrayList<Float>()
+//        for (i in 0..4){
+//            val outputTmp = neurons[i][1].inputToOutput(midleInput)
+//            midleInput2.add(outputTmp)
+//        }
 
-        val midleInput3 = ArrayList<Float>()
-        for (i in 0..4){
-            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
-            midleInput3.add(outputTmp)
-        }
-
-        val midleInput4 = ArrayList<Float>()
-        for (i in 0..4){
-            val outputTmp = neurons[i][3].inputToOutput(midleInput3)
-            midleInput4.add(outputTmp)
-        }
+//        val midleInput3 = ArrayList<Float>()
+//        for (i in 0..4){
+//            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
+//            midleInput3.add(outputTmp)
+//        }
+//
+//        val midleInput4 = ArrayList<Float>()
+//        for (i in 0..4){
+//            val outputTmp = neurons[i][3].inputToOutput(midleInput3)
+//            midleInput4.add(outputTmp)
+//        }
+//
+//        val finalOutput = ArrayList<Float>()
+//        for (i in 0..1){
+//            val outputTmp = neurons[i][4].inputToOutput(midleInput4)
+//            finalOutput.add(outputTmp)
+//        }
 
         val finalOutput = ArrayList<Float>()
         for (i in 0..1){
-            val outputTmp = neurons[i][4].inputToOutput(midleInput4)
+            val outputTmp = neurons[i][1].inputToOutput(midleInput)
             finalOutput.add(outputTmp)
         }
-
 
         return finalOutput
     }
 
 
-    fun bread() {
-        for (i in 0..4)
-            for (j in 0..4) {
-                val mutantRandom = (0..20).random()
+    fun bread(mutantRatio: Int) {
+        for (i in 0..neuronsPerLayer)
+            for (j in 0..neuronsPerLayer) {
+                val mutantRandom = (0..mutantRatio).random()
 
                 if(mutantRandom==1){
                     neurons[i][j].muteWeight()

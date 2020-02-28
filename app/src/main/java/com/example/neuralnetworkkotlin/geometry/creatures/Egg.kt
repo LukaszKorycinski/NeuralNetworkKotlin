@@ -16,7 +16,7 @@ import java.nio.ShortBuffer
 import kotlin.reflect.KFunction1
 
 
-class Egg(val collidor : Collidor) {
+class Egg(val collidor: Collidor) {
     var eggsList = ArrayList<EggData>()
     var speed = 2.0f
 
@@ -27,22 +27,24 @@ class Egg(val collidor : Collidor) {
     fun loop(onCreatureAdded: KFunction1<@ParameterName(name = "plant") CreaturesData, Unit>) {
         eggsList.forEach {
 
-            if(it.age < 1.0f){
+            if (it.age < 1.0f) {
                 it.age = it.age + 0.05f * Const.step * speed
-            }else
+            } else {
                 if (it.velocity.length() < 0.1f) {
                     it.age = it.age + 0.4f * Const.step * speed
                 }
+            }
 
-            if( it.age>1.0f ){
+            if (it.age > 1.0f) {
                 move(it)
-                if( it.age>2.0f ) {
-                    onCreatureAdded(CreaturesData( it.pos, it.dna, it.velocity, 1.0f))
+                if (it.age > 2.0f) {
+                    onCreatureAdded(CreaturesData(it.pos, it.dna, Vector2f(), 1.0f))
                 }
             }
         }
 
-        eggsList = eggsList.filter { it.age<=2.0f }.filter { it.pos.y>-5.0f } as ArrayList<EggData>
+        eggsList =
+            eggsList.filter { it.age <= 2.0f }.filter { it.pos.y > -5.0f } as ArrayList<EggData>
     }
 
     private fun move(it: EggData) {
@@ -71,7 +73,6 @@ class Egg(val collidor : Collidor) {
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
         GLES20.glUseProgram(shader)
         val mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
-        val ageHandler = GLES20.glGetUniformLocation(shader, "age")
 
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
@@ -84,15 +85,14 @@ class Egg(val collidor : Collidor) {
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix, 0)
             Matrix.translateM(transMatrix, 0, it.pos.x, it.pos.y, 0f)
-            Matrix.scaleM(transMatrix, 0,
+            Matrix.scaleM(
+                transMatrix, 0,
                 java.lang.Float.min(it.age, 1.0f),
-                java.lang.Float.min(it.age, 1.0f), 0f)
+                java.lang.Float.min(it.age, 1.0f), 0f
+            )
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
-
-
-            GLES20.glUniform1f(ageHandler, java.lang.Float.min(it.age, 1.0f))
 
             positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
                 val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
@@ -130,14 +130,7 @@ class Egg(val collidor : Collidor) {
         }
 
 
-
-
     }
-
-
-
-
-
 
 
     val size = 0.05f
@@ -199,12 +192,12 @@ class Egg(val collidor : Collidor) {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 }
 
-class EggData (
+class EggData(
     var dna: NeuralNetwork,
     var pos: Vector2f,
     var velocity: Vector2f,
     var age: Float
-){
+) {
 
 
 }

@@ -10,8 +10,6 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
-    var forward = false
-    var backward = false
 
     fun upKey(action: MotionEvent){
         when(action.action){
@@ -41,30 +39,24 @@ class ControlHelper {
         }
     }
 
-    fun qKey(action: MotionEvent){
-        when(action.action){
-            MotionEvent.ACTION_DOWN -> forward = true
-            MotionEvent.ACTION_UP -> forward = false
-        }
+    fun onZoom(zoom: Float){
+        zoomTmp = zoom - 1.0f
     }
 
-    fun eKey(action: MotionEvent){
-        when(action.action){
-            MotionEvent.ACTION_DOWN -> backward = true
-            MotionEvent.ACTION_UP -> backward = false
-        }
+    fun onZoomEnd(zoom: Float){
+        position.z = position.z - (zoom - 1.0f)
+        zoomTmp = 0.0f
     }
 
-    fun creatureKey(action: MotionEvent){
-        when(action.action){
 
-        }
-    }
+
 
     val position = Vector3f(0f, 0f, 15.0f)
+    var zoomTmp = 0.0f
 
     fun updatePosition(): Vector3f {
-        //Log.e("position", ""+position.toString())
+
+        val positionOut = Vector3f()
 
         if(up){
             position.y = position.y - 0.1f
@@ -78,12 +70,13 @@ class ControlHelper {
         if(left){
             position.x = position.x + 0.1f
         }
-        if(forward){
-            position.z = position.z - 0.1f
-        }
-        if(backward){
-            position.z = position.z + 0.1f
-        }
-        return position
+
+        positionOut.x = position.x
+        positionOut.y = position.y
+        positionOut.z = position.z - zoomTmp
+
+        return positionOut
     }
+
+
 }

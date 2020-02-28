@@ -20,7 +20,9 @@ class Vector2f {
         return if (Math.abs(x - second.x) < 0.0001f && Math.abs(y - second.y) < 0.0001f) true else false
     }
 
-    fun randomVelocity() = Vector2f(Random.nextFloat()-0.5f, Random.nextFloat()*0.5f).normalized()
+    fun randomVelocity(size: Float) = Vector2f(Random.nextFloat()-0.5f, Random.nextFloat()*0.5f).normalized().mull(size)
+
+    private fun mull(size: Float)= Vector2f (x*size, y*size)
 
 
     fun normalized(): Vector2f {

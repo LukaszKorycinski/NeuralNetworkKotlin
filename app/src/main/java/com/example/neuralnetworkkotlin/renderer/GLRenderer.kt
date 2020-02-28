@@ -3,6 +3,7 @@ package com.example.neuralnetworkkotlin.renderer
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import android.util.Log
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
@@ -16,6 +17,7 @@ import com.example.neuralnetworkkotlin.geometry.plants.Seed
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
+import timber.log.Timber
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -52,26 +54,67 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         controlHelper.rightKey(action)
     }
 
-    fun qKey(action: MotionEvent) {
-        controlHelper.qKey(action)
+    fun onZoom(zoom: Float) {
+        controlHelper.onZoom(zoom)
     }
 
-    fun eKey(action: MotionEvent) {
-        controlHelper.eKey(action)
+    fun onZoomEnd(zoom: Float) {
+        controlHelper.onZoomEnd(zoom)
     }
 
     fun creatureKey(action: MotionEvent) {
-        controlHelper.creatureKey(action)
-        when(action.action){
+        when (action.action) {
             MotionEvent.ACTION_DOWN -> {
                 val nn = NeuralNetwork()
                 nn.makeNewBrain()
-                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(0.3f, 0.0f), 1.0f))
+                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(), 1.0f))
             }
         }
-
     }
 
+    fun saveButton(action: MotionEvent) {
+        when (action.action) {
+            MotionEvent.ACTION_DOWN -> {
+                creatures.saveNN()
+            }
+        }
+    }
+
+    fun loadButton(action: MotionEvent) {
+        when (action.action) {
+            MotionEvent.ACTION_DOWN -> {
+                creatures.loadNN()
+            }
+        }
+    }
+
+
+
+
+    fun seekbar1Update(value: Int) {
+        creatures.lifeEnergyCost = 0.05f + value.toFloat() * 0.002f
+        Log.e("tag","creatures.lifeEnergyCost "+creatures.lifeEnergyCost )
+    }
+
+    fun seekbar2Update(value: Int) {
+        creatures.energyFromEat = 0.3f + value.toFloat() * 0.02f
+        Log.e("tag","creatures.energyFromEat"+creatures.energyFromEat )
+    }
+
+    fun seekbar3Update(value: Int) {
+        plants.chanceTodie =value
+        Log.e("tag","plants.chanceTodie "+plants.chanceTodie )
+    }
+
+    fun seekbar4Update(value: Int) {
+        creatures.mutantRatio = value
+        Log.e("tag","creatures.mutantRatio "+creatures.mutantRatio )
+    }
+
+    fun seekbar5Update(value: Int) {
+        plants.density = 0.25f + value.toFloat()*0.005f
+        Log.e("tag","plants.density "+plants.density )
+    }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
 
@@ -86,12 +129,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         backGround = BackGround(context)
 
-        seeds.add(SeedData(Vector2f(0.0f, 0.4f), Vector2f(), 1.0f))
+        seeds.add(SeedData(Vector2f(0.0f, 2.0f), Vector2f(), 1.0f))
 
         seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
-        seeds.add(SeedData(Vector2f(0.5f, 0.4f), Vector2f(), 0.6f))
-        seeds.add(SeedData(Vector2f(0.75f, 0.4f), Vector2f(), 1.3f))
-        seeds.add(SeedData(Vector2f(1.0f, 0.4f), Vector2f(), 1.5f))
+        seeds.add(SeedData(Vector2f(0.5f, 0.8f), Vector2f(), 0.6f))
+        seeds.add(SeedData(Vector2f(0.75f, 1.2f), Vector2f(), 1.3f))
+        seeds.add(SeedData(Vector2f(1.0f, 1.6f), Vector2f(), 1.5f))
 
         seeds.add(SeedData(Vector2f(-0.25f, 0.4f), Vector2f(), 0.4f))
         seeds.add(SeedData(Vector2f(-0.5f, 0.4f), Vector2f(), 1.2f))
@@ -133,7 +176,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
 
         eggs.loop(::onCreatureAdded)
-        eggs.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
+        eggs.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)
 
 
 
@@ -145,7 +188,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 1.0f) )
+        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 1.01f) )
     }
 
 
@@ -158,7 +201,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     private fun onPlantAdded(plant: PlantsData) {
-        if (plants.closest(plant.pos) > 0.1f && !collidor.colision(plant.pos)) {
+        if (plants.closest(plant.pos) > plants.density && !collidor.colision(plant.pos)) {
             plants.add(plant)
         }
     }
@@ -186,4 +229,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glUniform1i(texturesUniformHandle, 0)
     }
+
+
 }

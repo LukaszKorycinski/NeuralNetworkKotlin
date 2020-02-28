@@ -15,7 +15,7 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import kotlin.reflect.KFunction1
 
-class Seed(val collidor : Collidor) {
+class Seed(val collidor: Collidor) {
     var seedsList = ArrayList<SeedData>()
     var speed = 2.0f
 
@@ -26,22 +26,24 @@ class Seed(val collidor : Collidor) {
     fun loop(onPlantAdded: KFunction1<@ParameterName(name = "plant") PlantsData, Unit>) {
         seedsList.forEach {
 
-            if(it.age < 1.0f){
+            if (it.age < 1.0f) {
                 it.age = it.age + 0.05f * Const.step * speed
-            }else
-            if (it.velocity.length() < 0.1f) {
-                it.age = it.age + 0.4f * Const.step * speed
+            } else {
+                if (it.velocity.length() < 0.1f) {
+                    it.age = it.age + 0.4f * Const.step * speed
+                }
             }
 
-            if( it.age>1.0f ){
+            if (it.age > 1.0f) {
                 move(it)
-                if( it.age>2.0f ) {
+                if (it.age > 2.0f) {
                     onPlantAdded(PlantsData(it.pos, 0.1f))
                 }
             }
         }
 
-        seedsList = seedsList.filter { it.age<=2.0f }.filter { it.pos.y>-5.0f } as ArrayList<SeedData>
+        seedsList =
+            seedsList.filter { it.age <= 2.0f }.filter { it.pos.y > -5.0f } as ArrayList<SeedData>
     }
 
     private fun move(it: SeedData) {
@@ -83,7 +85,7 @@ class Seed(val collidor : Collidor) {
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix, 0)
             Matrix.translateM(transMatrix, 0, it.pos.x, it.pos.y, 0f)
-            Matrix.scaleM(transMatrix, 0, min(it.age, 1.0f), min(it.age,1.0f), 0f)
+            Matrix.scaleM(transMatrix, 0, min(it.age, 1.0f), min(it.age, 1.0f), 0f)
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
@@ -127,14 +129,7 @@ class Seed(val collidor : Collidor) {
         }
 
 
-
-
     }
-
-
-
-
-
 
 
     val size = 0.025f
@@ -196,11 +191,11 @@ class Seed(val collidor : Collidor) {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 }
 
-class SeedData (
+class SeedData(
     var pos: Vector2f,
     var velocity: Vector2f,
     var age: Float
-){
+) {
 
 
 }

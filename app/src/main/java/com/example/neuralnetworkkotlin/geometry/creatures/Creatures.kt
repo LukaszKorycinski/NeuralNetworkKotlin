@@ -1,19 +1,22 @@
 package com.example.neuralnetworkkotlin.geometry.creatures
 
 import com.example.neuralnetworkkotlin.Const
-import com.example.neuralnetworkkotlin.deepCopy
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.PlantsData
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import org.jbox2d.common.Vec2
+import java.io.Serializable
 import kotlin.reflect.KFunction1
 
 class Creatures(val collidor: Collidor) {
     var speed = 2.0f
     var creaturesList = ArrayList<CreaturesData>()
 
+    var lifeEnergyCost = 0.05f
+    var energyFromEat = 0.3f
+    var mutantRatio = 20
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
@@ -26,7 +29,7 @@ class Creatures(val collidor: Collidor) {
         }
 
         creaturesList =
-            creaturesList.filter { it.size > 0.1f }.filter { it.pos.y > -5.0f } as ArrayList<CreaturesData>
+            creaturesList.filter { it.size > 0.2f }.filter { it.pos.y > -5.0f } as ArrayList<CreaturesData>
     }
 
     private fun energy(
@@ -34,12 +37,12 @@ class Creatures(val collidor: Collidor) {
         it: CreaturesData
     ) {
         if (it.size > 1.4f) {
-            it.size = 1.0f
+            it.size = it.size - 0.4f
             val nn = it.neuralNetwork.clone()
-            nn.bread()
-            onCreatureEggAdded( CreaturesData(it.pos, nn, Vector2f().randomVelocity(), 0.8f).deepCopy() )
+            nn.bread(mutantRatio)
+            onCreatureEggAdded(  CreaturesData(Vector2f(it.pos.x, it.pos.y), nn, Vector2f().randomVelocity(1.0f), 0.8f)  )
         } else {
-            it.size = it.size - 0.025f * Const.step
+            it.size = it.size - lifeEnergyCost * Const.step
         }
     }
 
@@ -59,7 +62,7 @@ private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
     }
 
     if (closestL < 0.075f) {
-        it.size = it.size + 0.5f
+        it.size = it.size + energyFromEat
         seedList.removeAt(creatureIndex)
     }
 
@@ -69,8 +72,9 @@ private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
 
     val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 
-    it.velocity.x = neuralOutput.get(0)
+
     if (isOnGround(it)) {
+        it.velocity.x = neuralOutput.get(0)
         it.velocity.y = neuralOutput.get(1)
     }
 }
@@ -82,6 +86,8 @@ fun add(creature: CreaturesData) {
 
 
 private fun move(it: CreaturesData) {
+
+    limitVelocity(it, 0.5f, 0.75f)
 
     val newPosition = Vector2f(
         it.pos.x + it.velocity.x * Const.step * speed,
@@ -102,29 +108,34 @@ private fun move(it: CreaturesData) {
         it.velocity.y = -it.velocity.y * 0.2f
     }
     it.velocity.y = it.velocity.y + Const.gravity//gravity
-
-
-    limitVelocity(it, 1.0f)
 }
 
 fun isOnGround(it: CreaturesData): Boolean {
     return collidor.colision(Vector2f(it.pos.x, it.pos.y - 0.05f))
 }
 
-private fun limitVelocity(it: CreaturesData, limit: Float) {
-    if (it.velocity.x > limit) {
-        it.velocity.x = limit
+private fun limitVelocity(it: CreaturesData, limitX: Float, limitY: Float) {
+    if (it.velocity.x > limitX) {
+        it.velocity.x = limitX
     }
-    if (it.velocity.x < -limit) {
-        it.velocity.x = -limit
+    if (it.velocity.x < -limitX) {
+        it.velocity.x = -limitX
     }
-    if (it.velocity.y > limit) {
-        it.velocity.y = limit
+    if (it.velocity.y > limitY) {
+        it.velocity.y = limitY
     }
-    if (it.velocity.y < -limit) {
-        it.velocity.y = -limit
+    if (it.velocity.y < -limitY) {
+        it.velocity.y = -limitY
     }
 }
+
+    fun saveNN() {
+
+    }
+
+    fun loadNN() {
+
+    }
 
 }
 
@@ -134,7 +145,7 @@ class CreaturesData(
     val neuralNetwork: NeuralNetwork,
     var velocity: Vector2f,
     var size: Float = 1.0f
-) {
+):Serializable {
     fun drawSize(): Float = size
 
 }

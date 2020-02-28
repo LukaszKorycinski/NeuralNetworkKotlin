@@ -57,37 +57,185 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"/>
 
-    <ImageView
-            android:id="@+id/eKey"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:alpha="0.5"
-            android:src="@drawable/ic_up"
-            app:layout_constraintBottom_toTopOf="@+id/down"
-            app:layout_constraintStart_toStartOf="@+id/right"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"/>
 
-    <ImageView
-            android:id="@+id/qKey"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:alpha="0.5"
-            android:src="@drawable/ic_down"
-            app:layout_constraintBottom_toTopOf="@+id/down"
-            app:layout_constraintStart_toStartOf="@+id/left"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"/>
+
+
+
+
+
+    <SeekBar
+            android:id="@+id/seekbar1"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="200"
+            android:min="-50"
+            android:progress="0"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="lifeEnergyCost"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar1"
+            app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+            android:id="@+id/seekbar1TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar1"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar1" />
+
+    <SeekBar
+            android:id="@+id/seekbar2"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:min="-50"
+            android:progress="0"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar1"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="energyFromEat"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar2"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/seekbar2TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar2"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar2" />
+
+    <SeekBar
+            android:id="@+id/seekbar3"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="0"
+            android:progress="10"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar2"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Plants.chanceTodie"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar3"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/seekbar3TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar3"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar3" />
+
+
+    <SeekBar
+            android:id="@+id/seekbar4"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="0"
+            android:progress="20"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar3"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Creatures.mutantRatio (less - more)"
+            app:layout_constraintTop_toTopOf="@+id/seekbar4"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/seekbar4TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar4"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar4" />
+
+    <SeekBar
+            android:id="@+id/seekbar5"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:min="-50"
+            android:progress="0"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar4"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="PlantsDensity (less - more)"
+            app:layout_constraintTop_toTopOf="@+id/seekbar5"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/seekbar5TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar5"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar5" />
+
+    <TextView
+            android:id="@+id/saveButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="saveNN"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar5"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+            android:id="@+id/loadButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="loadNN"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar5"
+            app:layout_constraintStart_toEndOf="@+id/saveButton"/>
 
     <ImageView
             android:id="@+id/creatureKey"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:alpha="0.5"
+            android:alpha="0.7"
+            android:background="@color/colorAccent"
             android:src="@drawable/champ"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loadButton"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"/>
+
 
 </android.support.constraint.ConstraintLayout>
