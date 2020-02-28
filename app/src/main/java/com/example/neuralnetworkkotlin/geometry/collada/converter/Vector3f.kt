@@ -1,5 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
+import kotlin.random.Random
+
 /**
  * Created by dell on 09.06.2017.
  */
@@ -45,6 +47,8 @@ class Vector3f {
     fun equals(second: Vector3f, accuracy: Float): Boolean {
         return if (Math.abs(x - second.x) < accuracy && Math.abs(y - second.y) < accuracy && Math.abs(z - second.z) < accuracy) true else false
     }
+
+    fun random() = Vector3f (Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
 
     companion object {
         fun interpolate(

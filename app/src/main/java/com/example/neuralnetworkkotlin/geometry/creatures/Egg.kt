@@ -7,6 +7,7 @@ import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.PlantsData
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
 import java.nio.ByteBuffer
@@ -38,7 +39,7 @@ class Egg(val collidor: Collidor) {
             if (it.age > 1.0f) {
                 move(it)
                 if (it.age > 2.0f) {
-                    onCreatureAdded(CreaturesData(it.pos, it.dna, Vector2f(), 1.0f))
+                    onCreatureAdded(CreaturesData(it.pos, it.dna, Vector2f(), 1.0f, it.color))
                 }
             }
         }
@@ -194,6 +195,7 @@ class Egg(val collidor: Collidor) {
 
 class EggData(
     var dna: NeuralNetwork,
+    var color: Vector3f,
     var pos: Vector2f,
     var velocity: Vector2f,
     var age: Float

@@ -95,9 +95,10 @@ class DrawColladaModel(mesh: Mesh) {
     var mNormalHandle : Int = 0
     var mTexCoordHandle : Int = 0
     var mvpMatrixHandler : Int = 0
+    var mColorAccentHandle : Int = 0
     var wave = 0.0f
 
-    fun setOGLData(textureHandle: Int, shader: Int) {
+    fun setOGLDataGrass(textureHandle: Int, shader: Int) {
         GLES20.glUseProgram(shader)
         mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
 
@@ -117,6 +118,22 @@ class DrawColladaModel(mesh: Mesh) {
         mPositionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
         mNormalHandle = GLES20.glGetAttribLocation(shader, "vNormal")
         mTexCoordHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
+    }
+
+    fun setOGLDataCreatures(textureHandle: Int, shader: Int) {
+        GLES20.glUseProgram(shader)
+        mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
+
+        val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
+        GLES20.glUniform1i(texHandler, 0)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
+
+        mPositionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
+        mNormalHandle = GLES20.glGetAttribLocation(shader, "vNormal")
+        mTexCoordHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
+
+        mColorAccentHandle = GLES20.glGetUniformLocation(shader, "colorAccent")
     }
 
     fun draw(mvpMatrix: FloatArray, positionScale: PlantsData) {
@@ -152,6 +169,10 @@ class DrawColladaModel(mesh: Mesh) {
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
+
+        Log.e("color",""+positionScale.color.toString())
+
+        GLES20.glUniform3f(mColorAccentHandle, positionScale.color.x, positionScale.color.y, positionScale.color.z)
 
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)

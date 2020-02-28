@@ -9,6 +9,7 @@ import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.*
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.geometry.creatures.Creatures
 import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
 import com.example.neuralnetworkkotlin.geometry.creatures.Egg
@@ -20,6 +21,7 @@ import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import timber.log.Timber
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.random.Random
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
@@ -35,7 +37,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
-    lateinit var shaderLoader: ShaderLoader;
+    lateinit var shaderLoader: ShaderLoader
 
 
     fun upKey(action: MotionEvent) {
@@ -67,7 +69,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             MotionEvent.ACTION_DOWN -> {
                 val nn = NeuralNetwork()
                 nn.makeNewBrain()
-                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(), 1.0f))
+                onCreatureAdded(CreaturesData(Vector2f(0.0f, 0.4f), nn, Vector2f(), 1.0f, Vector3f().random()))
             }
         }
     }
@@ -161,13 +163,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
         plants.loop(::onSeedAdded)
-        drawModel.drawColladaModelPlant.setOGLData(textures.textureHandle[10], shaderLoader.shaderProgramGrass)
+        drawModel.drawColladaModelPlant.setOGLDataGrass(textures.textureHandle[10], shaderLoader.shaderProgramGrass)
         plants.plantsList.forEach {
             drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
         }
 
         creatures.loop(::onCreatureEggAdded, seeds.seedsList)
-        drawModel.drawColladaModelCreature.setOGLData(textures.textureHandle[14], shaderLoader.shaderProgramGrass)
+        drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
         creatures.creaturesList.forEach {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
         }
@@ -188,7 +190,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.neuralNetwork, creature.pos, creature.velocity, 1.01f) )
+        eggs.add( EggData(creature.neuralNetwork, creature.color, creature.pos, creature.velocity, 1.01f) )
     }
 
 

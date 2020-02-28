@@ -89,6 +89,28 @@
     ]]></string>
 
 
+    <string name="ps_creatures"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform vec3 colorAccent;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec4 color = texture2D(u_Texture, texCoord);
+        color.rgb = color.rgb * colorAccent;
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
+
 
     <string name="ps_seed"><![CDATA[
 
