@@ -19,8 +19,11 @@ class Seed(val collidor: Collidor) {
     var seedsList = ArrayList<SeedData>()
     var speed = 2.0f
 
+    var seedsListToAdd = ArrayList<SeedData>()
+
+
     fun add(seed: SeedData) {
-        seedsList.add(seed)
+        seedsListToAdd.add(seed)
     }
 
     fun loop(onPlantAdded: KFunction1<@ParameterName(name = "plant") PlantsData, Unit>) {
@@ -44,6 +47,11 @@ class Seed(val collidor: Collidor) {
 
         seedsList =
             seedsList.filter { it.age <= 2.0f }.filter { it.pos.y > -5.0f } as ArrayList<SeedData>
+
+        if(seedsListToAdd.isNotEmpty()) {
+            seedsList.addAll(seedsListToAdd)
+            seedsListToAdd.clear()
+        }
     }
 
     private fun move(it: SeedData) {

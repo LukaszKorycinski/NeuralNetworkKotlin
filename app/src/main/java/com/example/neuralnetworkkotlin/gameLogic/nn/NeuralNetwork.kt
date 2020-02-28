@@ -31,33 +31,33 @@ class NeuralNetwork{
             midleInput.add(outputTmp)
         }
 
-//        val midleInput2 = ArrayList<Float>()
-//        for (i in 0..4){
-//            val outputTmp = neurons[i][1].inputToOutput(midleInput)
-//            midleInput2.add(outputTmp)
-//        }
+        val midleInput2 = ArrayList<Float>()
+        for (i in 0..neuronsPerLayer-1){
+            val outputTmp = neurons[i][1].inputToOutput(midleInput)
+            midleInput2.add(outputTmp)
+        }
 
 //        val midleInput3 = ArrayList<Float>()
-//        for (i in 0..4){
+//        for (i in 0..neuronsPerLayer-1){
 //            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
 //            midleInput3.add(outputTmp)
 //        }
 //
 //        val midleInput4 = ArrayList<Float>()
-//        for (i in 0..4){
+//        for (i in 0..neuronsPerLayer-1){
 //            val outputTmp = neurons[i][3].inputToOutput(midleInput3)
 //            midleInput4.add(outputTmp)
 //        }
 //
 //        val finalOutput = ArrayList<Float>()
-//        for (i in 0..1){
+//        for (i in 0..neuronsPerLayer-1){
 //            val outputTmp = neurons[i][4].inputToOutput(midleInput4)
 //            finalOutput.add(outputTmp)
 //        }
 
         val finalOutput = ArrayList<Float>()
         for (i in 0..1){
-            val outputTmp = neurons[i][1].inputToOutput(midleInput)
+            val outputTmp = neurons[i][1].inputToOutput(midleInput2)
             finalOutput.add(outputTmp)
         }
 

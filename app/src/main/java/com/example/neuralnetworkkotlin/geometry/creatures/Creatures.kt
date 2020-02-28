@@ -40,7 +40,7 @@ class Creatures(val collidor: Collidor) {
             it.size = it.size - 0.4f
             val nn = it.neuralNetwork.clone()
             nn.bread(mutantRatio)
-            onCreatureEggAdded(  CreaturesData(Vector2f(it.pos.x, it.pos.y), nn, Vector2f().randomVelocity(1.0f), 0.8f)  )
+            onCreatureEggAdded(  CreaturesData(Vector2f(it.pos.x, it.pos.y), nn, Vector2f().randomVelocity(1.0f), 0.8f) )
         } else {
             it.size = it.size - lifeEnergyCost * Const.step
         }
@@ -71,7 +71,6 @@ private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
     neuralInput.add(it.pos.y - closestPosition.y)//closest pos y
 
     val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
-
 
     if (isOnGround(it)) {
         it.velocity.x = neuralOutput.get(0)
