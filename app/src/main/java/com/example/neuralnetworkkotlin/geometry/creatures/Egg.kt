@@ -68,7 +68,7 @@ class Egg(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity.y = it.velocity.y + Const.gravity//gravity
+        it.velocity.y = it.velocity.y + Const.gravity
     }
 
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
@@ -77,7 +77,7 @@ class Egg(val collidor: Collidor) {
 
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[5])
 
 

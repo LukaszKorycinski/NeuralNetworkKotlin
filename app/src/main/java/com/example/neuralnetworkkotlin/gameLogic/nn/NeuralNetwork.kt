@@ -65,14 +65,20 @@ class NeuralNetwork{
     }
 
 
-    fun bread(mutantRatio: Int): Boolean {
-        var isMutant = false
+    fun bread(mutantRatio: Int): Int {
+        var isMutant = 0
         for (i in 0..neuronsPerLayer)
             for (j in 0..neuronsPerLayer) {
                 val mutantRandom = (0..mutantRatio).random()
                 if(mutantRandom==1){
                     neurons[i][j].muteWeight()
-                    isMutant = true
+                    isMutant ++
+                }
+
+                val mutantRandomBias = (0..mutantRatio*2).random()
+                if(mutantRandomBias==1){
+                    neurons[i][j].muteBias()
+                    isMutant ++
                 }
             }
         return isMutant

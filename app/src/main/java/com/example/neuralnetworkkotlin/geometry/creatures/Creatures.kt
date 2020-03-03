@@ -52,30 +52,11 @@ class Creatures(val collidor: Collidor) {
             val isMutant = nn.bread(mutantRatio)
 
             val color = Vector3f()
-            val channel = Random.nextInt() % 3
-            if (isMutant) {
-                when (channel) {
-                    0 -> {
-                        color.x = it.color.x + 0.05f
-                        color.y = it.color.y - 0.02f
-                        color.z = it.color.z - 0.02f
-                    }
-                    1 -> {
-                        color.x = it.color.x - 0.02f
-                        color.y = it.color.y + 0.05f
-                        color.z = it.color.z - 0.025f
-                    }
-                    2 -> {
-                        color.x = it.color.x - 0.02f
-                        color.y = it.color.y - 0.025f
-                        color.z = it.color.z + 0.05f
-                    }
-                }
-            }else{
-                color.x = it.color.x
-                color.y = it.color.y
-                color.z = it.color.z
-            }
+
+            color.x = it.color.x + 0.04f * isMutant
+            color.y = it.color.y - 0.01f * isMutant
+            color.z = it.color.z - 0.01f * isMutant
+
 
             color.clip(0.0f, 1.0f)
 

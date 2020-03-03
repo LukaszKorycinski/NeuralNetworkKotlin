@@ -51,6 +51,7 @@ class Vector3f {
     }
 
     fun random() = Vector3f (Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
+
     fun clip(min: Float, max: Float) {
         x = max(min(x, 1.0f), 0.0f)
         y = max(min(y, 1.0f), 0.0f)
