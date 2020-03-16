@@ -57,7 +57,7 @@ class NeuralNetwork{
 
         val finalOutput = ArrayList<Float>()
         for (i in 0..1){
-            val outputTmp = neurons[i][1].inputToOutput(midleInput2)
+            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
             finalOutput.add(outputTmp)
         }
 
@@ -75,11 +75,11 @@ class NeuralNetwork{
                     isMutant ++
                 }
 
-                val mutantRandomBias = (0..mutantRatio*2).random()
-                if(mutantRandomBias==1){
-                    neurons[i][j].muteBias()
-                    isMutant ++
-                }
+//                val mutantRandomBias = (0..mutantRatio*2).random()
+//                if(mutantRandomBias==1){
+//                    neurons[i][j].muteBias()
+//                    isMutant ++
+//                }
             }
         return isMutant
     }

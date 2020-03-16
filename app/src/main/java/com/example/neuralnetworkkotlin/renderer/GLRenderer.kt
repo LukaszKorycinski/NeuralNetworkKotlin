@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.*
@@ -70,7 +71,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 val nn = NeuralNetwork()
                 nn.makeNewBrain()
                 onCreatureAdded(CreaturesData(
-                    pos = Vector2f(Random.nextFloat()-0.5f, 0.4f),
+                    pos = Vector2f((Random.nextFloat()-0.5f)*2.0f, 0.4f+Random.nextFloat()),
                     neuralNetwork = nn,
                     velocity = Vector2f(),
                     size = 1.0f,
@@ -121,6 +122,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun seekbar5Update(value: Int) {
         plants.density = 0.25f + value.toFloat()*0.005f
         Log.e("tag","plants.density "+plants.density )
+    }
+
+    fun seekbar6Update(value: Int) {
+        Const.step = value * Const.stepBase
     }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
@@ -174,6 +179,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         plants.plantsList.forEach {
             drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
         }
+        seeds.loop(::onPlantAdded)
+        seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramGrass)
+
 
         creatures.loop(::onCreatureEggAdded, seeds.seedsList)
         drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
@@ -181,8 +189,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
         }
 
-        seeds.loop(::onPlantAdded)
-        seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramSeed)
+
 
         eggs.loop(::onCreatureAdded)
         eggs.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)

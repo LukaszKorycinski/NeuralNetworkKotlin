@@ -144,7 +144,16 @@ class MainActivity : Activity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             }
         )
-
+        seekbar6.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                    glSurfaceView.seekbar6Update(i)
+                    seekbar6TV.text = i.toString()
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            }
+        )
 
 
 

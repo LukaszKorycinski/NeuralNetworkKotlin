@@ -204,6 +204,37 @@
             app:layout_constraintTop_toTopOf="@+id/seekbar5"
             app:layout_constraintEnd_toEndOf="@+id/seekbar5" />
 
+
+    <SeekBar
+            android:id="@+id/seekbar6"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:max="16"
+            android:min="0"
+            android:progress="1"
+            android:backgroundTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar5"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Speed"
+            app:layout_constraintTop_toTopOf="@+id/seekbar6"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/seekbar6TV"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@+id/seekbar6"
+            app:layout_constraintEnd_toEndOf="@+id/seekbar6" />
+
+
+
     <TextView
             android:id="@+id/saveButton"
             android:layout_height="wrap_content"
@@ -211,7 +242,7 @@
             android:text="saveNN"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar5"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
             app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
@@ -222,7 +253,7 @@
             android:background="@color/colorAccent"
             android:padding="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar5"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
             app:layout_constraintStart_toEndOf="@+id/saveButton"/>
 
     <ImageView

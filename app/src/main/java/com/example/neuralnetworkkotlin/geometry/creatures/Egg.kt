@@ -68,7 +68,7 @@ class Egg(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity.y = it.velocity.y + Const.gravity
+        it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f
     }
 
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {

@@ -1,5 +1,6 @@
 package com.example.neuralnetworkkotlin.geometry.creatures
 
+import android.util.Log
 import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
@@ -63,7 +64,7 @@ class Creatures(val collidor: Collidor) {
             onCreatureEggAdded(
                 CreaturesData(
                     Vector2f(it.pos.x, it.pos.y),
-                    nn,
+                    nn.clone(),
                     Vector2f().randomVelocity(1.0f),
                     0.8f,
                     color
@@ -77,30 +78,31 @@ class Creatures(val collidor: Collidor) {
 
     private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
         var closestPosition = Vector2f()
-        var closestL = 100.0f
-        var creatureIndex = 0
+        var closestL = 1000.0f
+        var closestSeedIndex = 0
 
         seedList.forEachIndexed { index, seed ->
             val distance = it.pos.distance(seed.pos)
             if (distance < closestL) {
                 closestL = distance
                 closestPosition = seed.pos
-                creatureIndex = index
+                closestSeedIndex = index
             }
         }
 
         if (closestL < 0.075f) {
             it.size = it.size + energyFromEat
-            seedList.removeAt(creatureIndex)
+            seedList.removeAt(closestSeedIndex)
         }
 
         val neuralInput = ArrayList<Float>()
-        neuralInput.add(it.pos.x - closestPosition.x)//closest pos x
-        neuralInput.add(it.pos.y - closestPosition.y)//closest pos y
+        neuralInput.add(closestPosition.x - it.pos.x)//closest pos x
+        neuralInput.add(closestPosition.y - it.pos.y)//closest pos y
 
         val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 
         if (isOnGround(it)) {
+            Log.e("velocity", "x "+ +neuralOutput.get(0)+" y "+neuralOutput.get(1))
             it.velocity.x = neuralOutput.get(0)
             it.velocity.y = neuralOutput.get(1)
         }
@@ -134,7 +136,7 @@ class Creatures(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity.y = it.velocity.y + Const.gravity//gravity
+        it.velocity.y = it.velocity.y + Const.gravity * Const.step*100.0f//gravity
     }
 
     fun isOnGround(it: CreaturesData): Boolean {
