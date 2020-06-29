@@ -101,11 +101,11 @@ class Creatures(val collidor: Collidor) {
 
         val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 
-        if (isOnGround(it)) {
-            Log.e("velocity", "x "+ +neuralOutput.get(0)+" y "+neuralOutput.get(1))
+//        if (isOnGround(it)) {
+//            Log.e("velocity", "x "+ +neuralOutput.get(0)+" y "+neuralOutput.get(1))
             it.velocity.x = neuralOutput.get(0)
             it.velocity.y = neuralOutput.get(1)
-        }
+//        }
     }
 
 
@@ -116,7 +116,7 @@ class Creatures(val collidor: Collidor) {
 
     private fun move(it: CreaturesData) {
 
-        limitVelocity(it, 0.5f, 0.75f)
+        limitVelocity(it, 0.15f, 0.15f)
 
         val newPosition = Vector2f(
             it.pos.x + it.velocity.x * Const.step * speed,
@@ -144,18 +144,19 @@ class Creatures(val collidor: Collidor) {
     }
 
     private fun limitVelocity(it: CreaturesData, limitX: Float, limitY: Float) {
-        if (it.velocity.x > limitX) {
-            it.velocity.x = limitX
-        }
-        if (it.velocity.x < -limitX) {
-            it.velocity.x = -limitX
-        }
-        if (it.velocity.y > limitY) {
-            it.velocity.y = limitY
-        }
-        if (it.velocity.y < -limitY) {
-            it.velocity.y = -limitY
-        }
+        it.velocity = it.velocity.normalized(limitX)
+//        if (it.velocity.x > limitX) {
+//            it.velocity.x = limitX
+//        }
+//        if (it.velocity.x < -limitX) {
+//            it.velocity.x = -limitX
+//        }
+//        if (it.velocity.y > limitY) {
+//            it.velocity.y = limitY
+//        }
+//        if (it.velocity.y < -limitY) {
+//            it.velocity.y = -limitY
+//        }
     }
 
     fun saveNN() {

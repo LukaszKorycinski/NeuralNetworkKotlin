@@ -40,11 +40,11 @@ class ControlHelper {
     }
 
     fun onZoom(zoom: Float){
-        zoomTmp = zoom*5.0f - 1.0f
+        zoomTmp = zoom - 1.0f
     }
 
     fun onZoomEnd(zoom: Float){
-        position.z = position.z - (zoom*5.0f - 1.0f)
+        position.z = position.z - (zoom - 1.0f)
         zoomTmp = 0.0f
     }
 

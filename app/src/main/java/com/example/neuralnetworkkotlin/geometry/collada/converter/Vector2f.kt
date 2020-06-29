@@ -30,6 +30,11 @@ class Vector2f {
         return Vector2f(x/length, y/length)
     }
 
+    fun normalized(size:Float): Vector2f {
+        val length =  sqrt(x*x + y*y )
+        return Vector2f((x/length)*size, (y/length)*size)
+    }
+
     fun length(): Float {
         return sqrt(x*x + y*y )
     }

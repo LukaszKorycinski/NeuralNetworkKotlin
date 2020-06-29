@@ -32,6 +32,7 @@ class Plant {
     }
 
     fun add(plant: PlantsData) {
+        if(abs(plant.pos.x)<5.0f && abs(plant.pos.y)<5.0f)
         plantsList.add(plant)
     }
 

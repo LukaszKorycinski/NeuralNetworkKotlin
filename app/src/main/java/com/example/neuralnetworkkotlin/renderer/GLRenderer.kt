@@ -141,9 +141,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         backGround = BackGround(context)
 
-        seeds.add(SeedData(Vector2f(0.0f, 2.2f), Vector2f(), 1.0f))
-        seeds.add(SeedData(Vector2f(0.25f, 2.4f), Vector2f(), 0.8f))
-        seeds.add(SeedData(Vector2f(-0.25f, 2.2f), Vector2f(), 1.3f))
+        seeds.add(SeedData(Vector2f(0.0f, 0.8f), Vector2f(), 1.0f))
+        seeds.add(SeedData(Vector2f(0.25f, 0.8f), Vector2f(), 0.8f))
+        seeds.add(SeedData(Vector2f(-0.25f, 0.8f), Vector2f(), 1.3f))
 
         seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
         seeds.add(SeedData(Vector2f(0.5f, 0.8f), Vector2f(), 0.6f))
