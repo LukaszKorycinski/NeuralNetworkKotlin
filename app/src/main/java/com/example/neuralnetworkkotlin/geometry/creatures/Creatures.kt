@@ -116,7 +116,7 @@ class Creatures(val collidor: Collidor) {
 
     private fun move(it: CreaturesData) {
 
-        limitVelocity(it, 0.15f, 0.15f)
+        limitVelocity(it, 0.05f, 0.05f)
 
         val newPosition = Vector2f(
             it.pos.x + it.velocity.x * Const.step * speed,
