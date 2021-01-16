@@ -17,7 +17,8 @@ class Creatures(val collidor: Collidor) {
     var lifeEnergyCost = 0.05f
     var energyFromEat = 0.3f
     var mutantRatio = 20
-
+    var drag = 0.95f
+    var angularDrag = 0.9f
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
@@ -77,11 +78,11 @@ class Creatures(val collidor: Collidor) {
         var closestSeedIndex = 0
 
 
-        plantsList.forEachIndexed { index, seed ->
-            val distance = it.pos.distance(seed.pos)
+        plantsList.forEachIndexed { index, plant ->
+            val distance = it.pos.distance(plant.pos)
             if (distance < closestL) {
                 closestL = distance
-                closestPosition = seed.pos
+                closestPosition = plant.pos
                 closestSeedIndex = index
             }
         }
@@ -97,12 +98,17 @@ class Creatures(val collidor: Collidor) {
 
         val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 
+        it.accelerate(neuralOutput.get(0))
+        it.turn(neuralOutput.get(1))
 //        if (isOnGround(it)) {
 //            Log.e("velocity", "x "+ +neuralOutput.get(0)+" y "+neuralOutput.get(1))
-            it.velocity.x = neuralOutput.get(0)
-            it.velocity.y = neuralOutput.get(1)
+//            it.velocity.x = neuralOutput.get(0)
+//            it.velocity.y = neuralOutput.get(1)
 //        }
     }
+
+
+
 
 
     fun add(creature: CreaturesData) {
@@ -110,29 +116,39 @@ class Creatures(val collidor: Collidor) {
     }
 
 
-    private fun move(it: CreaturesData) {
+    private fun move(creatureData: CreaturesData) {
 
-        limitVelocity(it, 0.05f, 0.05f)
 
-        val newPosition = Vector2f(
-            it.pos.x + it.velocity.x * Const.step * speed,
-            it.pos.y + it.velocity.y * Const.step * speed
-        )
 
-        if (!collidor.pointColision(Vector2f(newPosition.x, it.pos.y))) {
-            it.pos.x = newPosition.x
-        } else {
-            it.velocity.x = -it.velocity.x * 0.2f
-            it.velocity.y = it.velocity.y * 0.75f
-        }
+        creatureData.pos.x += creatureData.velocity.x
+        creatureData.pos.y += creatureData.velocity.y
+        creatureData.velocity.x *= drag
+        creatureData.velocity.y *= drag
+        creatureData.angle += creatureData.angularVelocity
+        creatureData.angularVelocity *= angularDrag
 
-        if (!collidor.pointColision(Vector2f(it.pos.x, newPosition.y))) {
-            it.pos.y = newPosition.y
-        } else {
-            it.velocity.x = it.velocity.x * 0.75f
-            it.velocity.y = -it.velocity.y * 0.2f
-        }
-        it.velocity.y = it.velocity.y + Const.gravity * Const.step*100.0f//gravity
+//
+//        limitVelocity(it, 0.05f, 0.05f)
+//
+//        val newPosition = Vector2f(
+//            it.pos.x + it.velocity.x * Const.step * speed,
+//            it.pos.y + it.velocity.y * Const.step * speed
+//        )
+//
+//        if (!collidor.pointColision(Vector2f(newPosition.x, it.pos.y))) {
+//            it.pos.x = newPosition.x
+//        } else {
+//            it.velocity.x = -it.velocity.x * 0.2f
+//            it.velocity.y = it.velocity.y * 0.75f
+//        }
+//
+//        if (!collidor.pointColision(Vector2f(it.pos.x, newPosition.y))) {
+//            it.pos.y = newPosition.y
+//        } else {
+//            it.velocity.x = it.velocity.x * 0.75f
+//            it.velocity.y = -it.velocity.y * 0.2f
+//        }
+//        it.velocity.y = it.velocity.y + Const.gravity * Const.step*100.0f//gravity
     }
 
     fun isOnGround(it: CreaturesData): Boolean {
@@ -171,8 +187,25 @@ class CreaturesData(
     val neuralNetwork: NeuralNetwork,
     var velocity: Vector2f,
     var size: Float = 1.0f,
-    var color: Vector3f
+    var color: Vector3f,
+    var angle: Float = 0.5f,
+    var angularVelocity: Float = 0.0f
 ) : Serializable {
     fun drawSize(): Float = size
+
+    fun accelerate(power:Float){
+        var powerReal = Math.min(power, 0.005f)
+        powerReal = Math.max(powerReal, -0.00025f)
+
+        velocity.x += Math.sin(angle.toDouble()).toFloat() * powerReal
+        velocity.y += Math.cos(angle.toDouble()).toFloat() * powerReal
+    }
+
+    fun turn(turnSpeed:Float){
+        var turnSpeedReal = Math.min(turnSpeed, 0.02f)
+        turnSpeedReal = Math.max(turnSpeedReal, -0.02f)
+
+        angularVelocity += turnSpeedReal;
+    }
 
 }

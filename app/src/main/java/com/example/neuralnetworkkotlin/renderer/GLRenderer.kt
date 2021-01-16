@@ -143,6 +143,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         creatures.loop(::onCreatureEggAdded, plants.plantsList)
         drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
+
         creatures.creaturesList.forEach {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
         }
