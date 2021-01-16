@@ -7,7 +7,7 @@ import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 class Collidor(val terrain: Terrain) {
 
 
-    fun colision(position: Vector2f): Boolean {
+    fun pointColision(position: Vector2f): Boolean {
         return terrain.collision(Vector2f(position.x/4, position.y/4))
     }
 

@@ -33,7 +33,7 @@ class MainActivity : Activity() {
                 Log.e("TAG", "scaleFactor "+detector?.scaleFactor)
 
                 detector?.scaleFactor?.let{
-                    glSurfaceView.onZoom(it)
+                    glSurfaceView.renderer.controlHelper.onZoom(it*2)
                 }
 
                 return super.onScale(detector)
@@ -42,7 +42,7 @@ class MainActivity : Activity() {
             override fun onScaleEnd(detector: ScaleGestureDetector?) {
 
                 detector?.scaleFactor?.let{
-                    glSurfaceView.onZoomEnd(it)
+                    glSurfaceView.renderer.controlHelper.onZoomEnd(it*2)
                 }
 
                 Log.e("TAG", "onScaleEnd "+detector?.scaleFactor)
@@ -58,34 +58,34 @@ class MainActivity : Activity() {
 
 
         up.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.upKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.upKey(motionEvent)
             true
         }
         down.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.downKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.downKey(motionEvent)
             true
         }
         left.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.leftKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.leftKey(motionEvent)
             true
         }
         right.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rightKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.rightKey(motionEvent)
             true
         }
 
         creatureKey.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.creatureKey(motionEvent)
+            glSurfaceView.renderer.creatureKey(motionEvent)
             true
         }
 
         saveButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.saveButton(motionEvent)
+            glSurfaceView.renderer.saveButton(motionEvent)
             true
         }
 
         loadButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.loadButton(motionEvent)
+            glSurfaceView.renderer.loadButton(motionEvent)
             true
         }
 
@@ -93,7 +93,7 @@ class MainActivity : Activity() {
         seekbar1.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar1Update(i)
+                    glSurfaceView.renderer.seekbar1Update(i)
                     seekbar1TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -104,7 +104,7 @@ class MainActivity : Activity() {
         seekbar2.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar2Update(i)
+                    glSurfaceView.renderer.seekbar2Update(i)
                     seekbar2TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -115,7 +115,7 @@ class MainActivity : Activity() {
         seekbar3.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar3Update(i)
+                    glSurfaceView.renderer.seekbar3Update(i)
                     seekbar3TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -126,7 +126,7 @@ class MainActivity : Activity() {
         seekbar4.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar4Update(i)
+                    glSurfaceView.renderer.seekbar4Update(i)
                     seekbar4TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -137,7 +137,7 @@ class MainActivity : Activity() {
         seekbar5.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar5Update(i)
+                    glSurfaceView.renderer.seekbar5Update(i)
                     seekbar5TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -147,7 +147,7 @@ class MainActivity : Activity() {
         seekbar6.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar6Update(i)
+                    glSurfaceView.renderer.seekbar6Update(i)
                     seekbar6TV.text = i.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}

@@ -24,26 +24,7 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         setRenderer(renderer)
     }
 
-    fun upKey(action: MotionEvent) { renderer.upKey(action) }
-
-    fun downKey(action: MotionEvent) { renderer.downKey(action) }
-
-    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
-
-    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
-
-    fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
 
 
-    fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
-    fun creatureKey(action: MotionEvent) { renderer.creatureKey(action) }
-    fun saveButton(action: MotionEvent) { renderer.saveButton(action) }
-    fun loadButton(action: MotionEvent) { renderer.loadButton(action) }
 
-    fun seekbar1Update(value: Int) { renderer.seekbar1Update(value) }
-    fun seekbar2Update(value: Int) { renderer.seekbar2Update(value) }
-    fun seekbar3Update(value: Int) { renderer.seekbar3Update(value) }
-    fun seekbar4Update(value: Int) { renderer.seekbar4Update(value) }
-    fun seekbar5Update(value: Int) { renderer.seekbar5Update(value) }
-    fun seekbar6Update(value: Int) { renderer.seekbar6Update(value) }
 }

@@ -134,7 +134,7 @@
     <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Plants.chanceTodie"
+            android:text="Food qty"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintTop_toTopOf="@+id/seekbar3"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -192,7 +192,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="@color/colorPrimaryDark"
-            android:text="PlantsDensity (less - more)"
+            android:text="empty"
             app:layout_constraintTop_toTopOf="@+id/seekbar5"
             app:layout_constraintStart_toStartOf="parent"/>
     <TextView
@@ -242,8 +242,9 @@
             android:text="saveNN"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/seekbar1"/>
 
     <TextView
             android:id="@+id/loadButton"
@@ -252,9 +253,9 @@
             android:text="loadNN"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
-            app:layout_constraintStart_toEndOf="@+id/saveButton"/>
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/saveButton"
+            app:layout_constraintStart_toStartOf="@+id/saveButton"/>
 
     <ImageView
             android:id="@+id/creatureKey"
@@ -264,9 +265,7 @@
             android:background="@color/colorAccent"
             android:src="@drawable/champ"
             app:layout_constraintTop_toBottomOf="@+id/loadButton"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/saveButton"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"/>
-
-
 </android.support.constraint.ConstraintLayout>

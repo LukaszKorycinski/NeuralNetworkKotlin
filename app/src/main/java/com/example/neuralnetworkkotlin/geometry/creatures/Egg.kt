@@ -5,7 +5,6 @@ import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
-import com.example.neuralnetworkkotlin.geometry.PlantsData
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
@@ -55,14 +54,14 @@ class Egg(val collidor: Collidor) {
             it.pos.y + it.velocity.y * Const.step * speed
         )
 
-        if (!collidor.colision(Vector2f(newPosition.x, it.pos.y))) {
+        if (!collidor.pointColision(Vector2f(newPosition.x, it.pos.y))) {
             it.pos.x = newPosition.x
         } else {
             it.velocity.x = -it.velocity.x * 0.2f
             it.velocity.y = it.velocity.y * 0.75f
         }
 
-        if (!collidor.colision(Vector2f(it.pos.x, newPosition.y))) {
+        if (!collidor.pointColision(Vector2f(it.pos.x, newPosition.y))) {
             it.pos.y = newPosition.y
         } else {
             it.velocity.x = it.velocity.x * 0.75f

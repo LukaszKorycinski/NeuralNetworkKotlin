@@ -1,17 +1,12 @@
 package com.example.neuralnetworkkotlin.geometry.creatures
 
-import android.util.Log
 import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.PlantsData
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
-import com.example.neuralnetworkkotlin.geometry.plants.SeedData
-import org.jbox2d.common.Vec2
 import java.io.Serializable
-import java.lang.Math.random
-import kotlin.random.Random
 import kotlin.reflect.KFunction1
 
 class Creatures(val collidor: Collidor) {
@@ -26,10 +21,10 @@ class Creatures(val collidor: Collidor) {
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
-        seedList: ArrayList<SeedData>
+        plantsList: ArrayList<PlantsData>
     ) {
         creaturesList.forEach {
-            ai(it, seedList)
+            ai(it, plantsList)
             energy(onCreatureEggAdded, it)
             move(it)
         }
@@ -76,12 +71,13 @@ class Creatures(val collidor: Collidor) {
     }
 
 
-    private fun ai(it: CreaturesData, seedList: ArrayList<SeedData>) {
+    private fun ai(it: CreaturesData, plantsList: ArrayList<PlantsData>) {
         var closestPosition = Vector2f()
         var closestL = 1000.0f
         var closestSeedIndex = 0
 
-        seedList.forEachIndexed { index, seed ->
+
+        plantsList.forEachIndexed { index, seed ->
             val distance = it.pos.distance(seed.pos)
             if (distance < closestL) {
                 closestL = distance
@@ -92,7 +88,7 @@ class Creatures(val collidor: Collidor) {
 
         if (closestL < 0.075f) {
             it.size = it.size + energyFromEat
-            seedList.removeAt(closestSeedIndex)
+            plantsList.removeAt(closestSeedIndex)
         }
 
         val neuralInput = ArrayList<Float>()
@@ -123,14 +119,14 @@ class Creatures(val collidor: Collidor) {
             it.pos.y + it.velocity.y * Const.step * speed
         )
 
-        if (!collidor.colision(Vector2f(newPosition.x, it.pos.y))) {
+        if (!collidor.pointColision(Vector2f(newPosition.x, it.pos.y))) {
             it.pos.x = newPosition.x
         } else {
             it.velocity.x = -it.velocity.x * 0.2f
             it.velocity.y = it.velocity.y * 0.75f
         }
 
-        if (!collidor.colision(Vector2f(it.pos.x, newPosition.y))) {
+        if (!collidor.pointColision(Vector2f(it.pos.x, newPosition.y))) {
             it.pos.y = newPosition.y
         } else {
             it.velocity.x = it.velocity.x * 0.75f
@@ -140,7 +136,7 @@ class Creatures(val collidor: Collidor) {
     }
 
     fun isOnGround(it: CreaturesData): Boolean {
-        return collidor.colision(Vector2f(it.pos.x, it.pos.y - 0.05f))
+        return collidor.pointColision(Vector2f(it.pos.x, it.pos.y - 0.05f))
     }
 
     private fun limitVelocity(it: CreaturesData, limitX: Float, limitY: Float) {
