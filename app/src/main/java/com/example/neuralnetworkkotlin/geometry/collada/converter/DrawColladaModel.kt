@@ -161,9 +161,13 @@ class DrawColladaModel(mesh: Mesh) {
     }
 
     fun draw(mvpMatrix: FloatArray, positionScale: CreaturesData) {
+
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
+        val rotMatrix = FloatArray(16)
+
         Matrix.setIdentityM(transMatrix, 0)
+        Matrix.setRotateM(rotMatrix, 0, -positionScale.angle*ToDegrees, 0f, 0f, 1.0f)
         Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
         Matrix.scaleM(transMatrix, 0, positionScale.drawSize(), positionScale.drawSize(), positionScale.drawSize())
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
