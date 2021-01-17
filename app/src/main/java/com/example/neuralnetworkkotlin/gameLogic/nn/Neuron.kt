@@ -16,8 +16,6 @@ class Neuron{
     fun inputToOutput (input :ArrayList<Float>):Float{
         var sum = 0.0f
 
-
-
         for(i in 0..input.size-1){
 //            when(i){
 //                0 -> {sum = sum +  input.get(i) * weights.get(i)}

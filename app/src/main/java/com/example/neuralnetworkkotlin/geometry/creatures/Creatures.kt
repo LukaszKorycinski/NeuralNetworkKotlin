@@ -79,23 +79,29 @@ class Creatures(val collidor: Collidor) {
         var closestSeedIndex = 0
 
 
-        plantsList.forEachIndexed { index, plant ->
-            val distance = it.pos.distance(plant.pos)
-            if (distance < closestL) {
-                closestL = distance
-                closestPosition = plant.pos
-                closestSeedIndex = index
-            }
-        }
+//        plantsList.forEachIndexed { index, plant ->
+//            val distance = it.pos.distance(plant.pos)
+//            if (distance < closestL) {
+//                closestL = distance
+//                closestPosition = plant.pos
+//                closestSeedIndex = index
+//            }
+//        }
+//
+//        if (closestL < 0.075f) {
+//            it.size = it.size + energyFromEat
+//            plantsList.removeAt(closestSeedIndex)
+//        }
 
-        if (closestL < 0.075f) {
-            it.size = it.size + energyFromEat
-            plantsList.removeAt(closestSeedIndex)
-        }
+
+
+
 
         val neuralInput = ArrayList<Float>()
-        neuralInput.add(closestPosition.x - it.pos.x)//closest pos x
-        neuralInput.add(closestPosition.y - it.pos.y)//closest pos y
+        neuralInput.add()
+        neuralInput.add()
+        neuralInput.add()
+        neuralInput.add()
 
         val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 
