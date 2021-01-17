@@ -141,7 +141,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
 
 
-        creatures.loop(::onCreatureEggAdded, plants.plantsList, collidor)
+        creatures.loop(::onCreatureEggAdded, plants.plantsList, collidor, textures)
         drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
 
         creatures.creaturesList.forEach {

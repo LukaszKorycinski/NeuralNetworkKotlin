@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.opengl.GLES20
 import android.opengl.GLUtils
+import com.example.neuralnetworkkotlin.R
 
 
 class TexturesLoader(var context: Context) {
@@ -13,99 +14,6 @@ class TexturesLoader(var context: Context) {
     companion object {
         const val TEXTURES_QTY = 14
     }
-
-    lateinit var trackBitmap: Bitmap
-    lateinit var trackBitmapBackup: Bitmap
-
-
-    fun getTrackPixel(x: Float, y: Float): Int {
-        var xF = (-x + 8.333333f) / 16.666666f
-        var yF = (-y + 16.666666f) / 33.333333f
-        xF = xF * trackBitmap.getWidth()
-        yF = yF * trackBitmap.getHeight()
-        val pixel: Int = trackBitmap.getPixel(xF.toInt(), yF.toInt())
-
-        //int redValue = Color.red(pixel);
-        //int blueValue = Color.blue(pixel);
-
-        //drawLane(xF.intValue(), yF.intValue(), 0.0f);
-        return Color.alpha(pixel) //0-255
-    }
-
-
-    fun clearTrack() {
-        trackBitmap = trackBitmapBackup.copy(trackBitmapBackup.getConfig(), true)
-    }
-
-    fun drawLane(x: Float, y: Float, angle: Float?): ArrayList<Float?>? {
-        var xF: Float = (-x + 8.333333f) / 16.666666f
-        var yF: Float = (-y + 16.666666f) / 33.333333f
-        xF = xF * trackBitmap.width
-        yF = yF * trackBitmap.height
-        return drawLaneInt(xF.toInt(), yF.toInt(), angle)
-    }
-
-
-    fun drawLaneInt(xStart: Int, yStart: Int, angle: Float): ArrayList<Float>? {
-        var xEnd = xStart
-        var yEnd = yStart
-        val outputList: ArrayList<Float> = ArrayList()
-        val color = context.getColor(R.color.rayColor)
-        trackBitmap.setPixel(xEnd, yEnd, color)
-        var angles: Float
-        for (i in 0..4) {
-            angles = angle - 50 * ToRadians + i * 25 * ToRadians
-            var xEndF = java.lang.Double.valueOf(xStart.toDouble())
-            var yEndF = java.lang.Double.valueOf(yStart.toDouble())
-            var pixel = trackBitmap.getPixel(xStart, yStart)
-            var greenValue = Color.green(pixel)
-            while (greenValue > 128) {
-                xEndF -= Math.sin(angles.toDouble())
-                yEndF -= Math.cos(angles.toDouble())
-                xEnd = xEndF.toInt()
-                yEnd = yEndF.toInt()
-                if (xEnd > trackBitmap.width - 1 || xEnd < 0 || yEnd > trackBitmap.height - 1 || yEnd < 0) {
-                    outputList.add(length(xStart, yStart, xEnd, yEnd))
-                    break
-                }
-                pixel = trackBitmap.getPixel(xEnd, yEnd)
-                greenValue = Color.green(pixel)
-                if (greenValue >= 128) {
-                    trackBitmap.setPixel(xEnd, yEnd, color)
-                } else {
-                    outputList.add(length(xStart, yStart, xEnd, yEnd))
-                }
-            }
-        }
-        redrawTrack()
-        return outputList
-    }
-
-    private fun redrawTrack() {
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[1])
-        GLES20.glTexParameteri(
-            GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MIN_FILTER,
-            GLES20.GL_NEAREST
-        )
-        GLES20.glTexParameteri(
-            GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MAG_FILTER,
-            GLES20.GL_NEAREST
-        )
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, trackBitmap, 0)
-    }
-
-    fun length(xStart: Int, yStart: Int, xEnd: Int, yEnd: Int): Float {
-        return Math.sqrt(((xEnd - xStart) * (xEnd - xStart) + (yEnd - yStart) * (yEnd - yStart)).toDouble())
-            .toFloat()
-    }
-
-    fun length(xStart: Float, yStart: Float, xEnd: Float, yEnd: Float): Float {
-        return Math.sqrt(((xEnd - xStart) * (xEnd - xStart) + (yEnd - yStart) * (yEnd - yStart)).toDouble())
-            .toFloat()
-    }
-
 
 
 
@@ -131,7 +39,11 @@ class TexturesLoader(var context: Context) {
         textResIds[13] = R.drawable.sky
         textResIds[14] = R.drawable.champ
 
-        for (i in 0..TEXTURES_QTY) {
+
+
+
+
+        for (i in 0..TEXTURES_QTY){
             val options = BitmapFactory.Options()
             options.inScaled = true // No pre-scaling
 
@@ -173,8 +85,6 @@ class TexturesLoader(var context: Context) {
                     GLES20.GL_REPEAT
                 )
             }
-
-
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
 

@@ -215,17 +215,11 @@
 
         vec4 alpha = texture2D(u_Texture, texCoord);
 
-        vec2 texCoordColor = texCoord * 5.0;
-
-        vec4 color = texture2D(u_TextureTerrain, texCoordColor);
-        vec4 color2 = texture2D(u_TextureTerrain2, texCoordColor);
-        vec4 color3 = texture2D(u_TextureTerrain3, texCoordColor);
-
         if(alpha.a<0.5){
             discard;
         }
 
-        gl_FragColor = (color*alpha.r + color2*alpha.g + color3*alpha.b);
+        gl_FragColor = alpha;
         }
 
     ]]></string>
