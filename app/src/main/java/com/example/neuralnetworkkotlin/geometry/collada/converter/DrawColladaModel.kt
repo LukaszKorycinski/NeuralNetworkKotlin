@@ -20,6 +20,7 @@ class DrawColladaModel(mesh: Mesh) {
     private val normalBuffer: FloatBuffer
     private val texcoordBuffer: FloatBuffer
     private val drawListBuffer: ShortBuffer
+    val ToDegrees = 57.2957795f
 
     private val indicesCout: Int
 

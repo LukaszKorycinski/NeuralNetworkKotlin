@@ -22,12 +22,13 @@ class Creatures(val collidor: Collidor) {
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
-        plantsList: ArrayList<PlantsData>
+        plantsList: ArrayList<PlantsData>,
+        collidor: Collidor
     ) {
         creaturesList.forEach {
             ai(it, plantsList)
             energy(onCreatureEggAdded, it)
-            move(it)
+            move(it, collidor)
         }
 
         creaturesList =
@@ -116,12 +117,27 @@ class Creatures(val collidor: Collidor) {
     }
 
 
-    private fun move(creatureData: CreaturesData) {
+    private fun move(creatureData: CreaturesData, collidor: Collidor) {
 
 
+        val newPosition = Vector2f(
+            creatureData.pos.x + creatureData.velocity.x,
+            creatureData.pos.y + creatureData.velocity.y
+        )
 
-        creatureData.pos.x += creatureData.velocity.x
-        creatureData.pos.y += creatureData.velocity.y
+        if (!collidor.pointColision(Vector2f(newPosition.x, creatureData.pos.y))) {
+            creatureData.pos.x = newPosition.x
+        } else {
+            creatureData.velocity.x = -creatureData.velocity.x * 0.7f
+        }
+
+        if (!collidor.pointColision(Vector2f(creatureData.pos.x, newPosition.y))) {
+            creatureData.pos.y = newPosition.y
+        } else {
+            creatureData.velocity.y = -creatureData.velocity.y * 0.7f
+        }
+
+
         creatureData.velocity.x *= drag
         creatureData.velocity.y *= drag
         creatureData.angle += creatureData.angularVelocity
