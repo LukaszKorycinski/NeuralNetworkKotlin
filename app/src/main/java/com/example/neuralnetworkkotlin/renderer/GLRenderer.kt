@@ -68,8 +68,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun creatureKey(action: MotionEvent) {
         when (action.action) {
             MotionEvent.ACTION_DOWN -> {
-                val nn = NeuralNetwork()
-                nn.makeNewBrain()
+                val nn = NeuralNetwork().also {
+                    it.makeNewBrain()
+                }
+
                 onCreatureAdded(CreaturesData(
                     pos = Vector2f((Random.nextFloat()-0.5f)*2.0f, 0.4f+Random.nextFloat()),
                     neuralNetwork = nn,

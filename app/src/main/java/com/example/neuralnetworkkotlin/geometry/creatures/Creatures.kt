@@ -54,9 +54,10 @@ class Creatures(val collidor: Collidor) {
 
             val color = Vector3f()
 
-            color.x = it.color.x + 0.04f * isMutant
-            color.y = it.color.y - 0.01f * isMutant
-            color.z = it.color.z - 0.01f * isMutant
+
+            color.x = it.color.x + 0.02f * isMutant * (Random.nextFloat()-0.5f)
+            color.y = it.color.y + 0.02f * isMutant * (Random.nextFloat()-0.5f)
+            color.z = it.color.z + 0.02f * isMutant * (Random.nextFloat()-0.5f)
 
 
             color.clip(0.0f, 1.0f)
@@ -96,8 +97,9 @@ class Creatures(val collidor: Collidor) {
         }
 
         val neuralInput = ArrayList<Float>()
-        neuralInput.add(closestPosition.x - it.pos.x)//closest pos x
-        neuralInput.add(closestPosition.y - it.pos.y)//closest pos y
+        neuralInput.add(it.pos.x - closestPosition.x )//closest pos x
+        neuralInput.add(it.pos.x - closestPosition.y )//closest pos y
+        neuralInput.add(if(isOnGround(it))1.0f else 0.0f)
 
         val neuralOutput = it.neuralNetwork.inputToOutput(neuralInput)
 

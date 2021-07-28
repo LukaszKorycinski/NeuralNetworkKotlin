@@ -56,8 +56,6 @@ class Neuron{
     }
 
     fun generateRandomDouble(min: Float, max: Float): Float {
-        return Random.nextFloat()*(max*2)-min
+        return Random.nextFloat()*(max*2)+min
     }
-
-
 }

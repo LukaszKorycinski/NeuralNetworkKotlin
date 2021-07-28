@@ -16,6 +16,10 @@ class Vector2f {
         y = 0.0f
     }
 
+    operator fun minus(b:Vector2f): Vector2f {
+        return Vector2f( x-b.x, y-b.y )
+    }
+
     fun equals(second: Vector2f): Boolean {
         return if (Math.abs(x - second.x) < 0.0001f && Math.abs(y - second.y) < 0.0001f) true else false
     }
@@ -48,4 +52,5 @@ class Vector2f {
         this.y = y
     }
 }
+
 
