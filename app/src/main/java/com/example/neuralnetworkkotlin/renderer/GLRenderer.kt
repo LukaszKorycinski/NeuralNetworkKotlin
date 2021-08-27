@@ -9,6 +9,7 @@ import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.*
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.geometry.creatures.Creatures
@@ -17,6 +18,7 @@ import com.example.neuralnetworkkotlin.geometry.creatures.Egg
 import com.example.neuralnetworkkotlin.geometry.creatures.EggData
 import com.example.neuralnetworkkotlin.geometry.plants.Seed
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
+import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import timber.log.Timber

@@ -5,9 +5,11 @@ import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
 import com.example.neuralnetworkkotlin.geometry.PlantsData
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
+import com.example.neuralnetworkkotlin.helpers.Collision
 import org.jbox2d.common.Vec2
 import java.io.Serializable
 import java.lang.Math.random
@@ -55,9 +57,9 @@ class Creatures(val collidor: Collidor) {
             val color = Vector3f()
 
 
-            color.x = it.color.x + 0.02f * isMutant * (Random.nextFloat()-0.5f)
-            color.y = it.color.y + 0.02f * isMutant * (Random.nextFloat()-0.5f)
-            color.z = it.color.z + 0.02f * isMutant * (Random.nextFloat()-0.5f)
+            color.x = 0.2f//it.color.x + 0.02f * isMutant * (Random.nextFloat()-0.5f)
+            color.y = 0.2f//it.color.y + 0.02f * isMutant * (Random.nextFloat()-0.5f)
+            color.z = 0.2f//it.color.z + 0.02f * isMutant * (Random.nextFloat()-0.5f)
 
 
             color.clip(0.0f, 1.0f)
@@ -82,6 +84,11 @@ class Creatures(val collidor: Collidor) {
         var closestL = 1000.0f
         var closestSeedIndex = 0
 
+        val triangle = Triangle(it.pos, Vector2f(it.pos.x+0.5f, it.pos.y+0.5f), Vector2f(it.pos.x-0.5f, it.pos.y+0.5f))
+        val coli = Collision()
+
+
+        it.glowing = false
         seedList.forEachIndexed { index, seed ->
             val distance = it.pos.distance(seed.pos)
             if (distance < closestL) {
@@ -89,12 +96,16 @@ class Creatures(val collidor: Collidor) {
                 closestPosition = seed.pos
                 closestSeedIndex = index
             }
+
+            if(coli.pointTriangleColision(seed.pos, triangle)) it.glowing = true
         }
 
         if (closestL < 0.075f) {
             it.size = it.size + energyFromEat
             seedList.removeAt(closestSeedIndex)
         }
+
+
 
         val neuralInput = ArrayList<Float>()
         neuralInput.add(it.pos.x - closestPosition.x )//closest pos x
@@ -176,7 +187,8 @@ class CreaturesData(
     val neuralNetwork: NeuralNetwork,
     var velocity: Vector2f,
     var size: Float = 1.0f,
-    var color: Vector3f
+    var color: Vector3f,
+    var glowing: Boolean = false
 ) : Serializable {
     fun drawSize(): Float = size
 

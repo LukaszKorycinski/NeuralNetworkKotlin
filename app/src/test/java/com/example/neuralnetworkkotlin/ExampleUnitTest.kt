@@ -1,5 +1,8 @@
 package com.example.neuralnetworkkotlin
 
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.helpers.Collision
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -11,7 +14,17 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun pointTriangleCollision() {
+        val start = Vector2f(1.0f, 1.0f)
+        val triangle = Triangle(start, Vector2f(start.x+0.5f, start.y+0.5f), Vector2f(start.x-0.5f, start.y+0.5f))
+
+
+        var point = Vector2f(1.0f, 1.1f)
+        var out = Collision().pointTriangleColision(point, triangle)
+        assertTrue(out)
+
+        point = Vector2f(1.0f, 0.1f)
+        out = Collision().pointTriangleColision(point, triangle)
+        assertFalse(out)
     }
 }

@@ -170,7 +170,10 @@ class DrawColladaModel(mesh: Mesh) {
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
 
-        GLES20.glUniform3f(mColorAccentHandle, positionScale.color.x, positionScale.color.y, positionScale.color.z)
+        if(positionScale.glowing)
+            GLES20.glUniform3f(mColorAccentHandle, 1.0f, 0.0f, 0.0f)
+        else
+            GLES20.glUniform3f(mColorAccentHandle, 0.25f, 0.25f, 0.25f)
 
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
@@ -185,9 +188,6 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mNormalHandle)
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
     }
-
-
-
 }
 
 
