@@ -28,7 +28,7 @@ class Neuron{
             sum = sum +  input.get(i) * weights.get(i)
         }
 
-        return sum//sigmoid( sum )
+        return sigmoid( sum )
     }
 
     private fun sigmoid(x: Float): Float {
@@ -44,7 +44,7 @@ class Neuron{
 //        weights.set(mutantRandom, generateRandomDouble(-1.5f, 1.5f))
         val mutantRandom = (0..weights.size-1).random()
         val currentWeight = weights.get(mutantRandom)
-        weights.set(mutantRandom, currentWeight+generateRandomDouble(-0.1f, 0.1f))
+        weights.set(mutantRandom, currentWeight+generateRandomDouble(-0.5f, 0.5f))
     }
 
     fun makeRandomWeights(qty:Int){

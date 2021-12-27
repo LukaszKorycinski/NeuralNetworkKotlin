@@ -33,7 +33,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     lateinit var seeds: Seed
     lateinit var eggs: Egg
     lateinit var creatures: Creatures
-    val plants = Plant()
+    //val plants = Plant()
     lateinit var drawModel: DrawModel
     lateinit var backGround: BackGround
 
@@ -77,7 +77,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 onCreatureAdded(CreaturesData(
                     pos = Vector2f((Random.nextFloat()-0.5f)*2.0f, 0.4f+Random.nextFloat()),
                     neuralNetwork = nn,
-                    velocity = Vector2f(),
+                    velocity = Vector2f(1.0f, 0.0f),
                     size = 1.0f,
                     color = Vector3f().random()))
             }
@@ -114,8 +114,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun seekbar3Update(value: Int) {
-        plants.chanceTodie =value
-        Log.e("tag","plants.chanceTodie "+plants.chanceTodie )
+        creatures.cornerSpeedMultificaier = value.toFloat() * 0.5f
+        //plants.chanceTodie =value
+        //Log.e("tag","plants.chanceTodie "+plants.chanceTodie )
     }
 
     fun seekbar4Update(value: Int) {
@@ -124,8 +125,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun seekbar5Update(value: Int) {
-        plants.density = 0.25f + value.toFloat()*0.005f
-        Log.e("tag","plants.density "+plants.density )
+        //plants.density = 0.25f + value.toFloat()*0.005f
+        //Log.e("tag","plants.density "+plants.density )
     }
 
     fun seekbar6Update(value: Int) {
@@ -145,19 +146,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         backGround = BackGround(context)
 
-        seeds.add(SeedData(Vector2f(0.0f, 2.2f), Vector2f(), 1.0f))
-        seeds.add(SeedData(Vector2f(0.25f, 2.4f), Vector2f(), 0.8f))
-        seeds.add(SeedData(Vector2f(-0.25f, 2.2f), Vector2f(), 1.3f))
-
-        seeds.add(SeedData(Vector2f(0.25f, 0.4f), Vector2f(), 0.8f))
-        seeds.add(SeedData(Vector2f(0.5f, 0.8f), Vector2f(), 0.6f))
-        seeds.add(SeedData(Vector2f(0.75f, 1.2f), Vector2f(), 1.3f))
-        seeds.add(SeedData(Vector2f(1.0f, 1.6f), Vector2f(), 1.5f))
-
-        seeds.add(SeedData(Vector2f(-0.25f, 0.4f), Vector2f(), 0.4f))
-        seeds.add(SeedData(Vector2f(-0.5f, 0.4f), Vector2f(), 1.2f))
-        seeds.add(SeedData(Vector2f(-0.75f, 0.4f), Vector2f(), 1.4f))
-        seeds.add(SeedData(Vector2f(-1.0f, 0.4f), Vector2f(), 1.6f))
 
         creatures = Creatures(collidor)
 
@@ -172,27 +160,28 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
-    }
 
+
+    }
+    val coli = Collision()
     override fun onDrawFrame(unused: GL10) {
         setUpFrame()
 
+//        plants.loop(::onSeedAdded)
+//        drawModel.drawColladaModelPlant.setOGLDataGrass(textures.textureHandle[10], shaderLoader.shaderProgramGrass)
+//        plants.plantsList.forEach {
+//            drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
+//        }
 
-        plants.loop(::onSeedAdded)
-        drawModel.drawColladaModelPlant.setOGLDataGrass(textures.textureHandle[10], shaderLoader.shaderProgramGrass)
-        plants.plantsList.forEach {
-            drawModel.drawColladaModelPlant.draw(camera.viewProjectionMatrix, it)
-        }
-        seeds.loop(::onPlantAdded)
+        seeds.loop(::onSeedAdded)
         seeds.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramGrass)
 
 
-        creatures.loop(::onCreatureEggAdded, seeds.seedsList)
+        creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
         drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
         creatures.creaturesList.forEach {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
         }
-
 
 
         eggs.loop(::onCreatureAdded)
@@ -216,15 +205,15 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         creatures.add(creature)
     }
 
-    private fun onSeedAdded(seed: SeedData) {
-        seeds.add(seed)
+    private fun onSeedAdded(newSeeds: List<SeedData>) {
+        seeds.add(newSeeds)
     }
 
-    private fun onPlantAdded(plant: PlantsData) {
-        if (plants.closest(plant.pos) > plants.density && !collidor.colision(plant.pos)) {
-            plants.add(plant)
-        }
-    }
+//    private fun onPlantAdded(plant: PlantsData) {
+//        if (plants.closest(plant.pos) > plants.density && !collidor.colision(plant.pos)) {
+//            plants.add(plant)
+//        }
+//    }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)

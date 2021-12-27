@@ -5,3 +5,8 @@ class Triangle (
     val b:Vector2f,
     val c:Vector2f
         )
+
+class Line (
+    val v:Vector2f,
+    val w:Vector2f
+)

@@ -14,37 +14,51 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import kotlin.random.Random
 import kotlin.reflect.KFunction1
 
 class Seed(val collidor: Collidor) {
     var seedsList = ArrayList<SeedData>()
-    var speed = 2.0f
+    var speed = 1.0f
+    val MAX_QTY = 100
 
-    fun add(seed: SeedData) {
-        seedsList.add(seed)
+    fun add(seed: List<SeedData>) {
+        if(seedsList.size < MAX_QTY)
+            seedsList.addAll(seed)
     }
 
-    fun loop(onPlantAdded: KFunction1<@ParameterName(name = "plant") PlantsData, Unit>) {
+    fun add(seed: SeedData) {
+        if(seedsList.size < MAX_QTY)
+            seedsList.add(seed)
+    }
+
+    fun loop(onSeedAdded: KFunction1<@ParameterName(name = "seed") List<SeedData>, Unit>) {
+        val seedsToAdd: ArrayList<SeedData> = ArrayList()
         seedsList.forEach {
 
-            if (it.age < 1.0f) {
-                it.age = it.age + 0.05f * Const.step * speed
-            } else {
-                if (it.velocity.length() < 0.1f) {
-                    it.age = it.age + 0.4f * Const.step * speed
-                }
+
+            it.age = it.age + 0.25f * Const.step * speed
+
+            move(it)
+            if (it.age > 2.0f) {
+                seedsToAdd.add(SeedData(Vector2f(it.pos.x+0.1f, it.pos.y), Vector2f().randomVelocity(0.5f), 0.3f))
+                seedsToAdd.add(SeedData(it.pos, Vector2f().randomVelocity( 0.7f ), 0.2f))
             }
 
-            if (it.age > 1.0f) {
-                move(it)
-                if (it.age > 2.0f) {
-                    onPlantAdded(PlantsData(it.pos, 0.1f))
-                }
-            }
         }
 
-        seedsList =
-            seedsList.filter { it.age <= 2.0f }.filter { it.pos.y > -5.0f } as ArrayList<SeedData>
+
+        onSeedAdded(seedsToAdd)
+
+        if(seedsList.size < 15){
+            onSeedAdded(listOf(
+                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+            ))
+        }
+
+        seedsList = seedsList.filter { it.age <= 2.0f }.filter { !collidor.colision(it.pos) } as ArrayList<SeedData>
     }
 
     private fun move(it: SeedData) {
@@ -53,6 +67,8 @@ class Seed(val collidor: Collidor) {
             it.pos.x + it.velocity.x * Const.step * speed,
             it.pos.y + it.velocity.y * Const.step * speed
         )
+
+
 
         if (!collidor.colision(Vector2f(newPosition.x, it.pos.y))) {
             it.pos.x = newPosition.x
@@ -67,7 +83,8 @@ class Seed(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f//gravity
+        it.velocity = it.velocity.mull(0.99f)
+        //it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f//gravity
     }
 
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
@@ -86,7 +103,7 @@ class Seed(val collidor: Collidor) {
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix, 0)
             Matrix.translateM(transMatrix, 0, it.pos.x, it.pos.y, 0f)
-            Matrix.scaleM(transMatrix, 0, max(min(it.age, 1.0f), 0.5f), max(min(it.age, 1.0f),0.5f), 0f)
+            Matrix.scaleM(transMatrix, 0, it.age, it.age, 0f)
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)

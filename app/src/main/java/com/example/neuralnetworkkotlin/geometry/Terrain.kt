@@ -152,7 +152,7 @@ class Terrain(context: Context) {
         val posX = (-position.x + 0.5)*512
         val posY = (-position.y + 0.5)*512
 
-        var alpha = 0
+        var alpha = 255
 
         if( posX.toInt()>=0 && posY.toInt()>=0 && posX.toInt()<bitmap.width && posY.toInt()<bitmap.height ) {
             alpha = Color.alpha( bitmap.getPixel(posX.toInt(), posY.toInt()) )

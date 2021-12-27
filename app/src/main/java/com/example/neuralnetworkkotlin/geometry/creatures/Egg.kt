@@ -39,7 +39,7 @@ class Egg(val collidor: Collidor) {
             if (it.age > 1.0f) {
                 move(it)
                 if (it.age > 2.0f) {
-                    onCreatureAdded(CreaturesData(it.pos, it.dna, Vector2f(), 1.0f, it.color))
+                    onCreatureAdded(CreaturesData(it.pos, it.dna, Vector2f(1.0f, 0.0f), 1.0f, it.color))
                 }
             }
         }
@@ -55,6 +55,8 @@ class Egg(val collidor: Collidor) {
             it.pos.y + it.velocity.y * Const.step * speed
         )
 
+
+
         if (!collidor.colision(Vector2f(newPosition.x, it.pos.y))) {
             it.pos.x = newPosition.x
         } else {
@@ -68,7 +70,8 @@ class Egg(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f
+        it.velocity = it.velocity.mull(0.99f)
+        //it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f
     }
 
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {

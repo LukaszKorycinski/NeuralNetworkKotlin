@@ -22,14 +22,14 @@ class NeuralNetwork{
         }
     }
 
-    val neuronsPerLayer = 3
+    val neuronsPerLayer = 4
 
     fun inputToOutput (input :ArrayList<Float>):ArrayList<Float>{
         val midleInput = ArrayList<Float>()
         for (i in 0..neuronsPerLayer-1){
             val outputTmp = neurons[i][0].inputToOutput(input)
             midleInput.add(outputTmp)
-        }
+        }// 0 1 0
 
         val midleInput2 = ArrayList<Float>()
         for (i in 0..neuronsPerLayer-1){
@@ -57,7 +57,7 @@ class NeuralNetwork{
 
         val finalOutput = ArrayList<Float>()
         for (i in 0..1){
-            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
+            val outputTmp = neurons[i][3].inputToOutput(midleInput2)
             finalOutput.add(outputTmp)
         }
 
