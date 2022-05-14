@@ -50,7 +50,7 @@ class Seed(val collidor: Collidor) {
 
         onSeedAdded(seedsToAdd)
 
-        if(seedsList.size < 15){
+        if(seedsList.size < 20){
             onSeedAdded(listOf(
                 SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
                 SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
@@ -103,7 +103,7 @@ class Seed(val collidor: Collidor) {
             val transMatrix = FloatArray(16)
             Matrix.setIdentityM(transMatrix, 0)
             Matrix.translateM(transMatrix, 0, it.pos.x, it.pos.y, 0f)
-            Matrix.scaleM(transMatrix, 0, it.age, it.age, 0f)
+            Matrix.scaleM(transMatrix, 0, it.age + if(it.glow)2.2f else 0.0f, it.age, 0f)
             Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
             GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
@@ -212,7 +212,8 @@ class Seed(val collidor: Collidor) {
 class SeedData(
     var pos: Vector2f,
     var velocity: Vector2f,
-    var age: Float
+    var age: Float,
+    var glow: Boolean = false
 ) {
 
 

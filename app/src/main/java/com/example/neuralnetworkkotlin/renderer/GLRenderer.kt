@@ -1,10 +1,12 @@
 package com.example.neuralnetworkkotlin.renderer
 
+import android.app.Activity
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
+import androidx.lifecycle.MutableLiveData
 import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
@@ -12,18 +14,17 @@ import com.example.neuralnetworkkotlin.geometry.*
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
-import com.example.neuralnetworkkotlin.geometry.creatures.Creatures
-import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
-import com.example.neuralnetworkkotlin.geometry.creatures.Egg
-import com.example.neuralnetworkkotlin.geometry.creatures.EggData
+import com.example.neuralnetworkkotlin.geometry.creatures.*
 import com.example.neuralnetworkkotlin.geometry.plants.Seed
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import timber.log.Timber
+import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
@@ -37,26 +38,27 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     lateinit var drawModel: DrawModel
     lateinit var backGround: BackGround
 
+
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader
 
 
-    fun upKey(action: MotionEvent) {
-        controlHelper.upKey(action)
+    fun upKey(action: MotionEvent, mode: Boolean) {
+        controlHelper.upKey(action, mode)
     }
 
-    fun downKey(action: MotionEvent) {
-        controlHelper.downKey(action)
+    fun downKey(action: MotionEvent, mode: Boolean) {
+        controlHelper.downKey(action, mode)
     }
 
-    fun leftKey(action: MotionEvent) {
-        controlHelper.leftKey(action)
+    fun leftKey(action: MotionEvent, mode: Boolean) {
+        controlHelper.leftKey(action, mode)
     }
 
-    fun rightKey(action: MotionEvent) {
-        controlHelper.rightKey(action)
+    fun rightKey(action: MotionEvent, mode: Boolean) {
+        controlHelper.rightKey(action, mode)
     }
 
     fun onZoom(zoom: Float) {
@@ -75,27 +77,28 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 }
 
                 onCreatureAdded(CreaturesData(
-                    pos = Vector2f((Random.nextFloat()-0.5f)*2.0f, 0.4f+Random.nextFloat()),
-                    neuralNetwork = nn,
+                    pos = Vector2f((Random.nextFloat()-0.5f)*4.0f, (Random.nextFloat()-0.5f)*4.0f),
+                    genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/),
                     velocity = Vector2f(1.0f, 0.0f),
                     size = 1.0f,
-                    color = Vector3f().random()))
+                    eye = Vector3f()
+                ))
             }
         }
     }
 
-    fun saveButton(action: MotionEvent) {
+    fun saveButton(action: MotionEvent, activity: Activity) {
         when (action.action) {
             MotionEvent.ACTION_DOWN -> {
-                creatures.saveNN()
+                creatures.saveNN(activity)
             }
         }
     }
 
-    fun loadButton(action: MotionEvent) {
+    fun loadButton(action: MotionEvent, activity: Activity) {
         when (action.action) {
             MotionEvent.ACTION_DOWN -> {
-                creatures.loadNN()
+                creatures.loadNN(activity)
             }
         }
     }
@@ -125,8 +128,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun seekbar5Update(value: Int) {
-        //plants.density = 0.25f + value.toFloat()*0.005f
-        //Log.e("tag","plants.density "+plants.density )
+        creatures.speedCost = 0.05f + value.toFloat() * 0.002f
+        Log.e("tag","creatures.speedCost "+creatures.speedCost )
     }
 
     fun seekbar6Update(value: Int) {
@@ -163,8 +166,26 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     }
+
     val coli = Collision()
+
+    var time = System.currentTimeMillis()
+    var fps = MutableLiveData<Int>()
+
+    var fpsCounter = 0
+
     override fun onDrawFrame(unused: GL10) {
+
+
+        fpsCounter++
+        if(System.currentTimeMillis() - time > 1000){
+            fps.postValue(fpsCounter)
+            fpsCounter = 0
+            time = System.currentTimeMillis()
+        }
+
+
+
         setUpFrame()
 
 //        plants.loop(::onSeedAdded)
@@ -178,11 +199,20 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
         creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
-        drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures)
+        drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures, textures.textureHandle[0])
         creatures.creaturesList.forEach {
             drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
         }
 
+        if(controlHelper.mode) {
+            drawModel.drawColladaModelCreature.setOGLDataCreatures(
+                textures.textureHandle[10],
+                shaderLoader.shaderProgramEyes
+            )
+            creatures.creaturesList.forEach {
+                drawModel.drawColladaModelCreature.drawEye(camera.viewProjectionMatrix, it)
+            }
+        }
 
         eggs.loop(::onCreatureAdded)
         eggs.draw(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramBasic)
@@ -197,7 +227,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.neuralNetwork, creature.color, creature.pos, creature.velocity, 1.01f) )
+        eggs.add( EggData(creature.genome, creature.pos, creature.velocity, 1.01f) )
     }
 
 
@@ -227,8 +257,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT)
 
-
-        camera.setUpFrame(controlHelper.updatePosition())
+        //if(controlHelper.mode) {
+            camera.setUpFrame(controlHelper.updatePosition())
+            creatures.controlMode = false
+//        }else{
+//            creatures.controllCreature(controlHelper.updateControls().xy)
+//        }
 
 
         val texturesUniformHandle = GLES20.glGetUniformLocation(

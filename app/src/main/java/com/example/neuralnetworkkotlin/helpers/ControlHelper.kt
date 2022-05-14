@@ -10,29 +10,34 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
+    var mode = false
 
-    fun upKey(action: MotionEvent){
+    fun upKey(action: MotionEvent, mode: Boolean){
+        this.mode = mode
         when(action.action){
             MotionEvent.ACTION_DOWN -> up = true
             MotionEvent.ACTION_UP -> up = false
         }
     }
 
-    fun downKey(action: MotionEvent){
+    fun downKey(action: MotionEvent, mode: Boolean){
+        this.mode = mode
         when(action.action){
             MotionEvent.ACTION_DOWN -> down = true
             MotionEvent.ACTION_UP -> down = false
         }
     }
 
-    fun leftKey(action: MotionEvent){
+    fun leftKey(action: MotionEvent, mode: Boolean){
+        this.mode = mode
         when(action.action){
             MotionEvent.ACTION_DOWN -> right = true
             MotionEvent.ACTION_UP -> right = false
         }
     }
 
-    fun rightKey(action: MotionEvent){
+    fun rightKey(action: MotionEvent, mode: Boolean){
+        this.mode = mode
         when(action.action){
             MotionEvent.ACTION_DOWN -> left = true
             MotionEvent.ACTION_UP -> left = false
@@ -40,12 +45,12 @@ class ControlHelper {
     }
 
     fun onZoom(zoom: Float){
-        zoomTmp = zoom*5.0f - 1.0f
+        zoomTmp = zoom
     }
 
     fun onZoomEnd(zoom: Float){
-        position.z = position.z - (zoom*5.0f - 1.0f)
-        zoomTmp = 0.0f
+        position.z = position.z*zoomTmp
+        zoomTmp = 1.0f
     }
 
 
@@ -73,10 +78,30 @@ class ControlHelper {
 
         positionOut.x = position.x
         positionOut.y = position.y
-        positionOut.z = position.z - zoomTmp
+        positionOut.z = position.z*zoomTmp
 
         return positionOut
     }
 
+    fun updateControls(): Vector3f {
 
+        val positionOut = Vector3f()
+
+        if(up){
+            positionOut.y = 0.1f
+        }
+        if(down){
+            positionOut.y = -0.1f
+        }
+        if(right){
+            positionOut.x = 0.1f
+        }
+        if(left){
+            positionOut.x = -0.1f
+        }
+
+
+
+        return positionOut
+    }
 }

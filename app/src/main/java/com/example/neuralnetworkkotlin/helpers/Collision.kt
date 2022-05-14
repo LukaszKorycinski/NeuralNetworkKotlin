@@ -26,7 +26,7 @@ class Collision {
     }
 
 
-    fun pointLineColision(p: Vector2f, line: Line, position: Vector2f):Float{
+    fun pointLineColision(p: Vector2f, line: Line):Float{
 
 
         val l2 = dist2(line.v, line.w)
@@ -40,7 +40,9 @@ class Collision {
             line.v.x + t * (line.w.x - line.v.x),
             line.v.y + t * (line.w.y - line.v.y) ))
 
-        return p.distance(position) //if(distanceToPoint<0.025f) return 1.0f else 0.0f
+        //return if(p.distance(line.w)<0.05) return 0.0f else 1.0f
+
+        return if(distanceToPoint<0.002f) return 0.0f else 1.0f
     }
 
     private fun dist2(v: Vector2f, w: Vector2f): Float {

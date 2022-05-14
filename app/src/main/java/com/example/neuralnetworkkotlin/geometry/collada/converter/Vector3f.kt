@@ -9,6 +9,9 @@ import kotlin.random.Random
  */
 
 class Vector3f {
+    val xy: Vector2f
+        get() = Vector2f(x,y)
+
     var x: Float = 0.toFloat()
     var y: Float = 0.toFloat()
     var z: Float = 0.toFloat()
@@ -53,6 +56,22 @@ class Vector3f {
     fun random() = Vector3f (Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
 
     fun clip(min: Float, max: Float) {
+        x = max(min(x, 1.0f), 0.0f)
+        y = max(min(y, 1.0f), 0.0f)
+        z = max(min(z, 1.0f), 0.0f)
+    }
+
+    fun colorClip(min: Float, max: Float) {
+        if(x+y+z > 2.8){
+            x = x * Random.nextFloat()
+            y = y * (1.0f-x)
+        }
+
+        if(x+y+z < 0.2){
+            y = y * Random.nextFloat()
+            z = z * (1.0f-y)
+        }
+
         x = max(min(x, 1.0f), 0.0f)
         y = max(min(y, 1.0f), 0.0f)
         z = max(min(z, 1.0f), 0.0f)

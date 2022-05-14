@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -56,8 +56,6 @@
             app:layout_constraintEnd_toStartOf="@+id/right"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"/>
-
-
 
 
 
@@ -180,7 +178,7 @@
             android:id="@+id/seekbar5"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:max="50"
+            android:max="200"
             android:min="-50"
             android:progress="0"
             android:backgroundTint="@color/colorAccent"
@@ -192,7 +190,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="@color/colorPrimaryDark"
-            android:text="PlantsDensity (less - more)"
+            android:text="SpeedCost"
             app:layout_constraintTop_toTopOf="@+id/seekbar5"
             app:layout_constraintStart_toStartOf="parent"/>
     <TextView
@@ -233,6 +231,13 @@
             app:layout_constraintTop_toTopOf="@+id/seekbar6"
             app:layout_constraintEnd_toEndOf="@+id/seekbar6" />
 
+    <Switch
+            android:id="@+id/switchMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
+            app:layout_constraintStart_toStartOf="parent"/>
 
 
     <TextView
@@ -242,7 +247,7 @@
             android:text="saveNN"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode"
             app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
@@ -253,7 +258,7 @@
             android:background="@color/colorAccent"
             android:padding="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar6"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode"
             app:layout_constraintStart_toEndOf="@+id/saveButton"/>
 
     <ImageView
@@ -268,5 +273,15 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"/>
 
+    <TextView
+            android:id="@+id/fps"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="FPS: "
+            android:textSize="22dp"
+            android:textColor="#FF0000"
+            app:layout_constraintTop_toBottomOf="@+id/creatureKey"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

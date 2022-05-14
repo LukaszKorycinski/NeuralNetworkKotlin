@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.widget.SeekBar
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.ext.observeNonNull
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -54,23 +55,23 @@ class MainActivity : Activity() {
 
 
 
-
+        switchMode.isChecked=true
 
 
         up.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.upKey(motionEvent)
+            glSurfaceView.upKey(motionEvent, switchMode.isChecked)
             true
         }
         down.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.downKey(motionEvent)
+            glSurfaceView.downKey(motionEvent, switchMode.isChecked)
             true
         }
         left.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.leftKey(motionEvent)
+            glSurfaceView.leftKey(motionEvent, switchMode.isChecked)
             true
         }
         right.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rightKey(motionEvent)
+            glSurfaceView.rightKey(motionEvent, switchMode.isChecked)
             true
         }
 
@@ -80,12 +81,12 @@ class MainActivity : Activity() {
         }
 
         saveButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.saveButton(motionEvent)
+            glSurfaceView.saveButton(motionEvent, this)
             true
         }
 
         loadButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.loadButton(motionEvent)
+            glSurfaceView.loadButton(motionEvent, this)
             true
         }
 
@@ -154,6 +155,11 @@ class MainActivity : Activity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             }
         )
+
+       glSurfaceView.fps.observeForever {
+           fps.text = "FPS: "+it
+       }
+
 
 
 

@@ -28,7 +28,7 @@ class Neuron{
             sum = sum +  input.get(i) * weights.get(i)
         }
 
-        return sigmoid( sum )
+        return sum//sigmoid( sum )
     }
 
     private fun sigmoid(x: Float): Float {
@@ -44,15 +44,22 @@ class Neuron{
 //        weights.set(mutantRandom, generateRandomDouble(-1.5f, 1.5f))
         val mutantRandom = (0..weights.size-1).random()
         val currentWeight = weights.get(mutantRandom)
-        weights.set(mutantRandom, currentWeight+generateRandomDouble(-0.5f, 0.5f))
+
+
+        weights.set(mutantRandom, generateRandomDouble(-1.0f, 1.0f))
     }
 
     fun makeRandomWeights(qty:Int){
         weights.clear()
         for(i in 0..qty-1){
-            weights.add( generateRandomDouble(-1.5f, 1.5f) )
+            //weights.add( generateRandomDouble(-1.5f, 1.5f) )
+            weights.add( generateRandomBool() )
         }
         ////////bias = Random.nextFloat() * 2.0f - 1.0f
+    }
+
+    fun generateRandomBool(): Float {
+        return if(Random.nextBoolean()) 1.0f else if(Random.nextBoolean()) 0.0f else -1.0f
     }
 
     fun generateRandomDouble(min: Float, max: Float): Float {

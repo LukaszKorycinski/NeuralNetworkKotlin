@@ -16,6 +16,7 @@ class ShaderLoader(context : Context){
     var shaderProgramSeed: Int
     var shaderProgramGrass: Int
     var shaderProgramCreatures: Int
+    var shaderProgramEyes: Int
 
     init {
 
@@ -57,6 +58,13 @@ class ShaderLoader(context : Context){
             GLES20.glLinkProgram(it)
         }
 
+        val eyesFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.eye_creatures, context)
+
+        shaderProgramEyes = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, basicVertexShader)
+            GLES20.glAttachShader(it, eyesFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
 
 
         val seedfragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_seed, context)

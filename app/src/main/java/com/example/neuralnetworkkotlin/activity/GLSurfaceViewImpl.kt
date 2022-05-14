@@ -1,5 +1,9 @@
 package com.example.neuralnetworkkotlin.activity
 
+import android.app.Activity
+import androidx.lifecycle.MutableLiveData
+
+
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
@@ -12,6 +16,7 @@ import com.example.neuralnetworkkotlin.renderer.GLRenderer
 class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(context, attrs) {
 
     val renderer: GLRenderer
+    var fps = MutableLiveData<Int>()
 
     init {
 
@@ -19,26 +24,26 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         setEGLContextClientVersion(2)
 
         renderer = GLRenderer(context)
-
+        fps=renderer.fps
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
     }
 
-    fun upKey(action: MotionEvent) { renderer.upKey(action) }
+    fun upKey(action: MotionEvent, mode: Boolean) { renderer.upKey(action, mode) }
 
-    fun downKey(action: MotionEvent) { renderer.downKey(action) }
+    fun downKey(action: MotionEvent, mode: Boolean) { renderer.downKey(action, mode) }
 
-    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
+    fun leftKey(action: MotionEvent, mode: Boolean) { renderer.leftKey(action, mode) }
 
-    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
+    fun rightKey(action: MotionEvent, mode: Boolean) { renderer.rightKey(action, mode) }
 
     fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
 
 
     fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
     fun creatureKey(action: MotionEvent) { renderer.creatureKey(action) }
-    fun saveButton(action: MotionEvent) { renderer.saveButton(action) }
-    fun loadButton(action: MotionEvent) { renderer.loadButton(action) }
+    fun saveButton(action: MotionEvent, activity: Activity) { renderer.saveButton(action, activity) }
+    fun loadButton(action: MotionEvent, activity: Activity) { renderer.loadButton(action, activity) }
 
     fun seekbar1Update(value: Int) { renderer.seekbar1Update(value) }
     fun seekbar2Update(value: Int) { renderer.seekbar2Update(value) }

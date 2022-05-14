@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
@@ -25,7 +25,7 @@ class Terrain(context: Context) {
         bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
     }
 
-    val size = 2.0f
+    val size = 4.0f
 
     val layerCoords = floatArrayOf(
         -size, size, 0.0f,      // top left
@@ -149,8 +149,8 @@ class Terrain(context: Context) {
 
     fun collision(position: Vector2f):Boolean{
 
-        val posX = (-position.x + 0.5)*512
-        val posY = (-position.y + 0.5)*512
+        val posX = (-position.x + 1.0)*256
+        val posY = (-position.y + 1.0)*256
 
         var alpha = 255
 

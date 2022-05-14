@@ -88,8 +88,7 @@
 
     ]]></string>
 
-
-    <string name="ps_creatures"><![CDATA[
+    <string name="eye_creatures"><![CDATA[
 
         precision mediump float;
         uniform sampler2D u_Texture;
@@ -99,7 +98,33 @@
         void main() {
 
         vec4 color = texture2D(u_Texture, texCoord);
-        color.rgb = colorAccent;
+        color.rgb = vec3(1.0-colorAccent.x, colorAccent.y, 0.1);
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
+    <string name="ps_creatures"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D u_Texture2;
+
+        uniform vec3 colorAccent;
+        uniform float wave;
+        varying vec2 texCoord;
+
+        void main() {
+
+
+        vec4 gradient = texture2D(u_Texture2, texCoord);
+
+        vec2 texCoordWave = vec2(texCoord.x + sin((gradient.r+wave)*4.0)*0.05, texCoord.y);
+
+        vec4 color = texture2D(u_Texture, texCoordWave);
+
+        color.rgb = colorAccent*color.rgb;
 
         if(color.a<0.5){
             discard;
