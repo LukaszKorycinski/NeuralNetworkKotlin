@@ -26,15 +26,15 @@ class NeuralNetwork{
         }
 
 
-        neurons[0][0].weights[0]=1.0f; neurons[0][0].weights[1]=0.0f; neurons[0][0].weights[2]=0.0f; neurons[0][0].weights[3]=0.0f;
-        neurons[1][0].weights[0]=0.0f; neurons[1][0].weights[1]=1.0f; neurons[1][0].weights[2]=0.0f; neurons[1][0].weights[3]=0.0f;
-        neurons[2][0].weights[0]=0.0f; neurons[2][0].weights[1]=0.0f; neurons[2][0].weights[2]=1.0f; neurons[2][0].weights[3]=0.0f;
-        neurons[3][0].weights[0]=0.0f; neurons[3][0].weights[1]=0.0f; neurons[3][0].weights[2]=0.0f; neurons[3][0].weights[3]=1.0f;
-
-        neurons[0][1].weights[0]=1.0f; neurons[0][1].weights[1]=0.0f; neurons[0][1].weights[2]=0.0f; neurons[0][1].weights[3]=0.0f;
-        neurons[1][1].weights[0]=0.0f; neurons[1][1].weights[1]=1.0f; neurons[1][1].weights[2]=0.0f; neurons[1][1].weights[3]=0.0f;
-        neurons[2][1].weights[0]=0.5f; neurons[2][1].weights[1]=1.0f; neurons[2][1].weights[2]=0.5f; neurons[2][1].weights[3]=0.5f;
-        neurons[3][1].weights[0]=0.0f; neurons[3][1].weights[1]=0.0f; neurons[3][1].weights[2]=0.0f; neurons[3][1].weights[3]=1.0f;
+//        neurons[0][0].weights[0]=1.0f; neurons[0][0].weights[1]=0.0f; neurons[0][0].weights[2]=0.0f; neurons[0][0].weights[3]=0.0f;
+//        neurons[1][0].weights[0]=0.0f; neurons[1][0].weights[1]=1.0f; neurons[1][0].weights[2]=0.0f; neurons[1][0].weights[3]=0.0f;
+//        neurons[2][0].weights[0]=0.0f; neurons[2][0].weights[1]=0.0f; neurons[2][0].weights[2]=1.0f; neurons[2][0].weights[3]=0.0f;
+//        neurons[3][0].weights[0]=0.0f; neurons[3][0].weights[1]=0.0f; neurons[3][0].weights[2]=0.0f; neurons[3][0].weights[3]=1.0f;
+//
+//        neurons[0][1].weights[0]=1.0f; neurons[0][1].weights[1]=0.0f; neurons[0][1].weights[2]=0.0f; neurons[0][1].weights[3]=0.0f;
+//        neurons[1][1].weights[0]=0.0f; neurons[1][1].weights[1]=1.0f; neurons[1][1].weights[2]=0.0f; neurons[1][1].weights[3]=0.0f;
+//        neurons[2][1].weights[0]=0.5f; neurons[2][1].weights[1]=1.0f; neurons[2][1].weights[2]=0.5f; neurons[2][1].weights[3]=0.5f;
+//        neurons[3][1].weights[0]=0.0f; neurons[3][1].weights[1]=0.0f; neurons[3][1].weights[2]=0.0f; neurons[3][1].weights[3]=1.0f;
 
     }
 

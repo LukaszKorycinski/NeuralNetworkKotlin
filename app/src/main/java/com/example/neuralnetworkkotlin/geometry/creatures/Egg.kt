@@ -39,7 +39,7 @@ class Egg(val collidor: Collidor) {
             if (it.age > 1.0f) {
                 move(it)
                 if (it.age > 2.0f) {
-                    onCreatureAdded(CreaturesData(pos = it.pos, genome = it.genome, velocity = Vector2f(1.0f, 0.0f), size = 1.0f, eye = Vector3f()))
+                    onCreatureAdded(CreaturesData(pos = it.pos, genome = it.genome, velocity = Vector2f(1.0f, 0.0f), size = 1.0f, eye = Vector3f(), generation = it.generation))
                 }
             }
         }
@@ -200,7 +200,8 @@ class EggData(
     var genome: Genome,
     var pos: Vector2f,
     var velocity: Vector2f,
-    var age: Float
+    var age: Float,
+    var generation: Int
 ) {
 
 

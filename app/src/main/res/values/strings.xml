@@ -105,6 +105,22 @@
 
     ]]></string>
 
+    <string name="font_f_shader"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform vec3 colorAccent;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec4 color = texture2D(u_Texture, texCoord+colorAccent.xy);
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
     <string name="ps_creatures"><![CDATA[
 
         precision mediump float;

@@ -81,7 +81,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/),
                     velocity = Vector2f(1.0f, 0.0f),
                     size = 1.0f,
-                    eye = Vector3f()
+                    eye = Vector3f(),
+                    generation = 1
                 ))
             }
         }
@@ -212,6 +213,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             creatures.creaturesList.forEach {
                 drawModel.drawColladaModelCreature.drawEye(camera.viewProjectionMatrix, it)
             }
+            drawModel.drawColladaModelCreature.setOGLDataCreatures(
+                textures.textureHandle[4],
+                shaderLoader.shaderProgramFont
+            )
+            creatures.creaturesList.forEach {
+                drawModel.drawColladaModelCreature.drawGeneration(camera.viewProjectionMatrix, it)
+            }
         }
 
         eggs.loop(::onCreatureAdded)
@@ -227,7 +235,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.genome, creature.pos, creature.velocity, 1.01f) )
+        eggs.add( EggData(creature.genome, creature.pos, creature.velocity, 1.01f, creature.generation) )
     }
 
 

@@ -272,6 +272,40 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
 
     }
+
+
+
+
+    val textSize = 0.9f
+    fun drawGeneration(mvpMatrix: FloatArray, creature: CreaturesData) {
+        val mvptMatrix = FloatArray(16)
+        val transMatrix = FloatArray(16)
+        Matrix.setIdentityM(transMatrix, 0)
+
+        Matrix.translateM(transMatrix, 0, creature.pos.x, creature.pos.y, 0f)
+
+        Matrix.scaleM(transMatrix, 0, textSize, textSize, textSize)
+        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
+
+        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
+
+        GLES20.glUniform3f(mColorAccentHandle, creature.eye.x, creature.eye.x, creature.eye.x)
+
+        GLES20.glEnableVertexAttribArray(mPositionHandle)
+        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
+        GLES20.glEnableVertexAttribArray(mNormalHandle)
+        GLES20.glVertexAttribPointer(mNormalHandle, 3, GLES20.GL_FLOAT, false, 0, normalBuffer)
+        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
+        GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texcoordBuffer)
+
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
+
+
+        GLES20.glDisableVertexAttribArray(mPositionHandle)
+        GLES20.glDisableVertexAttribArray(mNormalHandle)
+        GLES20.glDisableVertexAttribArray(mTexCoordHandle)
+
+    }
 }
 
 

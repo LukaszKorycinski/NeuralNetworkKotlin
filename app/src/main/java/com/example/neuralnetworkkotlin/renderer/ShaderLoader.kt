@@ -17,6 +17,7 @@ class ShaderLoader(context : Context){
     var shaderProgramGrass: Int
     var shaderProgramCreatures: Int
     var shaderProgramEyes: Int
+    var shaderProgramFont: Int
 
     init {
 
@@ -63,6 +64,13 @@ class ShaderLoader(context : Context){
         shaderProgramEyes = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, basicVertexShader)
             GLES20.glAttachShader(it, eyesFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
+
+        val fontFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.font_f_shader, context)
+        shaderProgramFont= GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, basicVertexShader)
+            GLES20.glAttachShader(it, fontFragmentShader)
             GLES20.glLinkProgram(it)
         }
 

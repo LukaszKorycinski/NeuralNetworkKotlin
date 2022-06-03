@@ -15,6 +15,8 @@ import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.google.gson.Gson
 import java.io.Serializable
+import java.lang.Integer.max
+import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.reflect.KFunction1
 
@@ -51,6 +53,21 @@ class Creatures(val collidor: Collidor) {
             creaturesList.addAll(creaturesListToAdd)
             creaturesListToAdd.clear()
         }
+
+        if(creaturesList.size < 1){
+            val nn = NeuralNetwork().also {
+                it.makeNewBrain()
+            }
+
+            onCreatureEggAdded(CreaturesData(
+                pos = Vector2f((Random.nextFloat()-0.5f)*4.0f, (Random.nextFloat()-0.5f)*4.0f),
+                genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/),
+                velocity = Vector2f(1.0f, 0.0f),
+                size = 1.0f,
+                eye = Vector3f(),
+                generation = 0
+            ))
+        }
     }
 
 
@@ -83,11 +100,12 @@ class Creatures(val collidor: Collidor) {
                     pos = Vector2f(parent.pos.x, parent.pos.y),
                     genome = Genome(color, nn.clone(), eyeAngle),
                     velocity = Vector2f().randomVelocity(1.0f),
-                    eye = Vector3f()
+                    eye = Vector3f(),
+                    generation = parent.generation + 1
                 )
             )
         } else {
-            parent.size = parent.size - lifeEnergyCost * Const.step //* maxOf(parent.speed, 0.5f)
+            parent.size = parent.size - lifeEnergyCost * Const.step * maxOf(parent.speed*2.0f, 1.0f)
         }
     }
 
@@ -99,8 +117,7 @@ class Creatures(val collidor: Collidor) {
         var closestSeedL = 100000.0f
         var closestSeedIndex = 0
 
-        var closestMateL = 100000.0f
-        var closestMateIndex = 0
+
 
 
 //        val triangle1 = Triangle(it.pos, Vector2f(it.pos.x+0.2f, it.pos.y+0.2f), Vector2f(it.pos.x-0.2f, it.pos.y+0.2f))
@@ -124,67 +141,59 @@ class Creatures(val collidor: Collidor) {
         //val eyes: ArrayList<Float> = arrayListOf(0.0f, 0.0f, 0.0f)
 
 
-        val startTime = System.currentTimeMillis()
+        //val startTime = System.currentTimeMillis()
 
         currentCreature.eye.x = 1.0f
         seedList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line1)
             if (distance < closestSeedL) {
                 closestSeedL = distance
-                currentCreature.eye.x = distance//coli.pointLineColision(seed.pos, line1)
+
             }
         }
+        currentCreature.eye.x = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
         closestSeedL = 100000.0f
         currentCreature.eye.y = 1.0f
         seedList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line2)
-            if (distance < closestSeedL) {
+            if (distance < 0.5f) {
                 closestSeedL = distance
-                currentCreature.eye.y = distance//coli.pointLineColision(seed.pos, line1)
             }
         }
+        currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
         closestSeedL = 100000.0f
         currentCreature.eye.z = 1.0f
         seedList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line3)
-            if (distance < closestSeedL) {
+            if (distance < 0.5f) {
                 closestSeedL = distance
-                currentCreature.eye.z = distance//coli.pointLineColision(seed.pos, line1)
-            }
-        }
-
-
-
-        closestPosition = Vector2f()
-        closestSeedL = 100000.0f
-        closestSeedIndex = 0
-        seedList.forEachIndexed { index, seed ->
-            val distanceEat = currentCreature.pos.distance(seed.pos)//każde oko sprawdza kolizję i jeśli gdzieś jest to 1
-
-            if (distanceEat < closestSeedL) {
-                closestSeedL = distanceEat
                 closestPosition = seed.pos
                 closestSeedIndex = index
+
             }
         }
-        creaturesList.forEachIndexed { index, mate ->
-            val distanceSex = currentCreature.pos.distance(mate.pos)//każde oko sprawdza kolizję i jeśli gdzieś jest to 1
+        currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
-            if (distanceSex < closestSeedL) {
-                closestSeedL = distanceSex
-                closestPosition = mate.pos
-                closestMateIndex = index
-            }
-        }
-
-        val endTime = System.currentTimeMillis()
+//        var closestMateL = 100000.0f
+//        var closestMateIndex = 0
+//        creaturesList.forEachIndexed { index, mate ->
+//            val distanceSex = currentCreature.pos.distance(mate.pos)//każde oko sprawdza kolizję i jeśli gdzieś jest to 1
+//
+//            if (distanceSex < closestMateL) {
+//                closestMateL = distanceSex
+//                closestPosition = mate.pos
+//                closestMateIndex = index
+//            }
+//        }
+//        closestMateL=0.5f - minOf(closestMateL, 0.5f)
+        //val endTime = System.currentTimeMillis()
 
         //Log.e("opt", "lag = " + (endTime - startTime))
 
 
-        if (closestSeedL < 0.075f) {//jedzenie
+        if (closestPosition.distance(eyePos) < 0.04f) {//jedzenie
             currentCreature.size = currentCreature.size + energyFromEat
             seedList.removeAt(closestSeedIndex)
         }
@@ -195,16 +204,18 @@ class Creatures(val collidor: Collidor) {
         neuralInput.add( 1.0f-currentCreature.eye.y )
         neuralInput.add( 1.0f-currentCreature.eye.x )
         neuralInput.add( 1.0f-currentCreature.eye.z )
-        neuralInput.add( 1.0f/*currentCreature.size*/ )
+        neuralInput.add( currentCreature.size )
+        //neuralInput.add( closestMateL )
         //neuralInput.add(it.pos.x - closestPosition.y )//closest pos y
         //neuralInput.add(if(isOnGround(it))1.0f else 0.0f)
 
         val neuralOutput = currentCreature.genome.neuralNetwork.inputToOutput(neuralInput)
         Log.e("eyeAngle",currentCreature.genome.eyeAngle.toString())
 
-        currentCreature.speed = minOf(neuralOutput.get(2), 1.0f)
+        currentCreature.speed = maxOf(minOf(neuralOutput.get(2), 1.0f), 0.0f)
 
-        val degree = (neuralOutput.get(0) - neuralOutput.get(1)) * Const.step * 150.0f*cornerSpeedMultificaier
+        val nnOutputRotate = if((abs(neuralOutput.get(0) - neuralOutput.get(1)))<0.001f) 0.0f else neuralOutput.get(0) - neuralOutput.get(1)
+        val degree = (nnOutputRotate) * Const.step * 10.0f*cornerSpeedMultificaier * currentCreature.speed
 
 
 
@@ -309,7 +320,8 @@ class CreaturesData(
     var eye: Vector3f,
     var glowing: Boolean = false,
     var speed: Float = 1.0f,
-    var wave: Float = 0.0f
+    var wave: Float = 0.0f,
+    val generation: Int,
 ) : Serializable {
     fun drawSize(): Float = size
 
