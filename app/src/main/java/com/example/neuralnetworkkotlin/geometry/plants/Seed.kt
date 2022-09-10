@@ -19,7 +19,6 @@ import kotlin.reflect.KFunction1
 
 class Seed(val collidor: Collidor) {
     var seedsList = ArrayList<SeedData>()
-    var speed = 1.0f
     val MAX_QTY = 100
 
     fun add(seed: List<SeedData>) {
@@ -37,7 +36,7 @@ class Seed(val collidor: Collidor) {
         seedsList.forEach {
 
 
-            it.age = it.age + 0.25f * Const.step * speed
+            it.age = it.age + 0.25f * Const.step
 
             move(it)
             if (it.age > 2.0f) {
@@ -64,8 +63,8 @@ class Seed(val collidor: Collidor) {
     private fun move(it: SeedData) {
 
         val newPosition = Vector2f(
-            it.pos.x + it.velocity.x * Const.step * speed,
-            it.pos.y + it.velocity.y * Const.step * speed
+            it.pos.x + it.velocity.x * Const.step,
+            it.pos.y + it.velocity.y * Const.step
         )
 
 
@@ -83,7 +82,7 @@ class Seed(val collidor: Collidor) {
             it.velocity.x = it.velocity.x * 0.75f
             it.velocity.y = -it.velocity.y * 0.2f
         }
-        it.velocity = it.velocity.mull(0.99f)
+        it.velocity = it.velocity.mull(0.995f)
         //it.velocity.y = it.velocity.y + Const.gravity * Const.step * 100.0f//gravity
     }
 

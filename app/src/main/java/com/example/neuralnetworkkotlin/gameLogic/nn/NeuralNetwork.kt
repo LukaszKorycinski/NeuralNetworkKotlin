@@ -2,8 +2,9 @@ package com.example.neuralnetworkkotlin.gameLogic.nn
 
 import android.util.Log
 import com.google.gson.Gson
+import java.io.Serializable
 
-class NeuralNetwork{
+class NeuralNetwork : Serializable {
     fun clone(): NeuralNetwork {
         val stringProject = Gson().toJson(this, NeuralNetwork::class.java)
         return Gson().fromJson<NeuralNetwork>(stringProject, NeuralNetwork::class.java)

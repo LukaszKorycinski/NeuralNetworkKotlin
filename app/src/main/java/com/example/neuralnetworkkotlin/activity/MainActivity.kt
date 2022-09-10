@@ -57,21 +57,25 @@ class MainActivity : Activity() {
 
         switchMode.isChecked=true
 
+        switchMode.setOnCheckedChangeListener { buttonView, isChecked ->
+            glSurfaceView.switchMode(switchMode.isChecked)
+        }
+
 
         up.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.upKey(motionEvent, switchMode.isChecked)
+            glSurfaceView.upKey(motionEvent)
             true
         }
         down.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.downKey(motionEvent, switchMode.isChecked)
+            glSurfaceView.downKey(motionEvent)
             true
         }
         left.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.leftKey(motionEvent, switchMode.isChecked)
+            glSurfaceView.leftKey(motionEvent)
             true
         }
         right.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rightKey(motionEvent, switchMode.isChecked)
+            glSurfaceView.rightKey(motionEvent)
             true
         }
 
@@ -80,14 +84,12 @@ class MainActivity : Activity() {
             true
         }
 
-        saveButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.saveButton(motionEvent, this)
-            true
+        saveButton.setOnClickListener {
+            glSurfaceView.saveButton(this)
         }
 
-        loadButton.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.loadButton(motionEvent, this)
-            true
+        loadButton.setOnClickListener {
+            glSurfaceView.loadButton(this)
         }
 
 
@@ -159,6 +161,11 @@ class MainActivity : Activity() {
        glSurfaceView.fps.observeForever {
            fps.text = "FPS: "+it
        }
+
+        glSurfaceView.renderer.log.observeForever {
+            log.text = it
+        }
+
 
 
 

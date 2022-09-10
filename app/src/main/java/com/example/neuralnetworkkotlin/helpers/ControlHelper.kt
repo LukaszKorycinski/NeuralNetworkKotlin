@@ -10,34 +10,35 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
-    var mode = false
+    var mode = true
+    var stepsPerFrame = 1
 
-    fun upKey(action: MotionEvent, mode: Boolean){
-        this.mode = mode
+    fun switchMode(isChecked: Boolean) {
+        this.mode = isChecked
+    }
+
+    fun upKey(action: MotionEvent){
         when(action.action){
             MotionEvent.ACTION_DOWN -> up = true
             MotionEvent.ACTION_UP -> up = false
         }
     }
 
-    fun downKey(action: MotionEvent, mode: Boolean){
-        this.mode = mode
+    fun downKey(action: MotionEvent){
         when(action.action){
             MotionEvent.ACTION_DOWN -> down = true
             MotionEvent.ACTION_UP -> down = false
         }
     }
 
-    fun leftKey(action: MotionEvent, mode: Boolean){
-        this.mode = mode
+    fun leftKey(action: MotionEvent){
         when(action.action){
             MotionEvent.ACTION_DOWN -> right = true
             MotionEvent.ACTION_UP -> right = false
         }
     }
 
-    fun rightKey(action: MotionEvent, mode: Boolean){
-        this.mode = mode
+    fun rightKey(action: MotionEvent){
         when(action.action){
             MotionEvent.ACTION_DOWN -> left = true
             MotionEvent.ACTION_UP -> left = false

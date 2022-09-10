@@ -1,5 +1,6 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
+import java.io.Serializable
 import java.lang.Float.max
 import java.lang.Float.min
 import kotlin.random.Random
@@ -8,7 +9,7 @@ import kotlin.random.Random
  * Created by dell on 09.06.2017.
  */
 
-class Vector3f {
+class Vector3f  : Serializable {
     val xy: Vector2f
         get() = Vector2f(x,y)
 

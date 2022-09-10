@@ -28,22 +28,23 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
     }
+    fun switchMode(isChecked: Boolean) {renderer.switchMode(isChecked)}
 
-    fun upKey(action: MotionEvent, mode: Boolean) { renderer.upKey(action, mode) }
+    fun upKey(action: MotionEvent) { renderer.upKey(action) }
 
-    fun downKey(action: MotionEvent, mode: Boolean) { renderer.downKey(action, mode) }
+    fun downKey(action: MotionEvent) { renderer.downKey(action) }
 
-    fun leftKey(action: MotionEvent, mode: Boolean) { renderer.leftKey(action, mode) }
+    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
 
-    fun rightKey(action: MotionEvent, mode: Boolean) { renderer.rightKey(action, mode) }
+    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
 
     fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
 
 
     fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
     fun creatureKey(action: MotionEvent) { renderer.creatureKey(action) }
-    fun saveButton(action: MotionEvent, activity: Activity) { renderer.saveButton(action, activity) }
-    fun loadButton(action: MotionEvent, activity: Activity) { renderer.loadButton(action, activity) }
+    fun saveButton(activity: Activity) { renderer.saveButton(activity) }
+    fun loadButton(activity: Activity) { renderer.loadButton(activity) }
 
     fun seekbar1Update(value: Int) { renderer.seekbar1Update(value) }
     fun seekbar2Update(value: Int) { renderer.seekbar2Update(value) }

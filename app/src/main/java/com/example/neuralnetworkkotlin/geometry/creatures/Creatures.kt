@@ -14,8 +14,11 @@ import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
 import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import timber.log.Timber
 import java.io.Serializable
 import java.lang.Integer.max
+import java.lang.reflect.Type
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.reflect.KFunction1
@@ -30,7 +33,7 @@ class Creatures(val collidor: Collidor) {
     var speedCost = 0.025f
     var energyFromEat = 0.3f
     var mutantRatio = 20
-    var cornerSpeedMultificaier = 1.0f
+    var cornerSpeedMultificaier = 200.0f
 
 
     fun loop(
@@ -52,21 +55,6 @@ class Creatures(val collidor: Collidor) {
         if (creaturesListToAdd.isNotEmpty()) {
             creaturesList.addAll(creaturesListToAdd)
             creaturesListToAdd.clear()
-        }
-
-        if(creaturesList.size < 1){
-            val nn = NeuralNetwork().also {
-                it.makeNewBrain()
-            }
-
-            onCreatureEggAdded(CreaturesData(
-                pos = Vector2f((Random.nextFloat()-0.5f)*4.0f, (Random.nextFloat()-0.5f)*4.0f),
-                genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/),
-                velocity = Vector2f(1.0f, 0.0f),
-                size = 1.0f,
-                eye = Vector3f(),
-                generation = 0
-            ))
         }
     }
 
@@ -105,7 +93,8 @@ class Creatures(val collidor: Collidor) {
                 )
             )
         } else {
-            parent.size = parent.size - lifeEnergyCost * Const.step * maxOf(parent.speed*2.0f, 1.0f)
+            parent.size = parent.size - lifeEnergyCost * Const.step //* maxOf(parent.speed*2.0f, 1.0f)
+            //Log.e("parent.size",""+parent.size+" "+lifeEnergyCost * Const.step * maxOf(parent.speed*2.0f, 1.0f)+" l "+lifeEnergyCost + " s "+Const.step + " sp "+maxOf(parent.speed*2.0f, 1.0f))
         }
     }
 
@@ -114,8 +103,8 @@ class Creatures(val collidor: Collidor) {
     private fun ai(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, coli: Collision) {
         var closestPosition = Vector2f()
 
-        var closestSeedL = 100000.0f
-        var closestSeedIndex = 0
+        var closestSeedL = 1.0f
+        var closestSeedIndex = -1
 
 
 
@@ -153,7 +142,7 @@ class Creatures(val collidor: Collidor) {
         }
         currentCreature.eye.x = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
-        closestSeedL = 100000.0f
+        closestSeedL = 1.0f
         currentCreature.eye.y = 1.0f
         seedList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line2)
@@ -163,7 +152,7 @@ class Creatures(val collidor: Collidor) {
         }
         currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
-        closestSeedL = 100000.0f
+        closestSeedL = 1.0f
         currentCreature.eye.z = 1.0f
         seedList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line3)
@@ -171,7 +160,6 @@ class Creatures(val collidor: Collidor) {
                 closestSeedL = distance
                 closestPosition = seed.pos
                 closestSeedIndex = index
-
             }
         }
         currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
@@ -193,9 +181,11 @@ class Creatures(val collidor: Collidor) {
         //Log.e("opt", "lag = " + (endTime - startTime))
 
 
-        if (closestPosition.distance(eyePos) < 0.04f) {//jedzenie
-            currentCreature.size = currentCreature.size + energyFromEat
-            seedList.removeAt(closestSeedIndex)
+        if (closestPosition.distance(eyePos) < 0.04f && closestSeedIndex > -1) {//jedzenie
+            if(seedList.size>closestSeedIndex){
+                currentCreature.size = currentCreature.size + energyFromEat
+                seedList.removeAt(closestSeedIndex)
+            }
         }
 
 
@@ -210,16 +200,15 @@ class Creatures(val collidor: Collidor) {
         //neuralInput.add(if(isOnGround(it))1.0f else 0.0f)
 
         val neuralOutput = currentCreature.genome.neuralNetwork.inputToOutput(neuralInput)
-        Log.e("eyeAngle",currentCreature.genome.eyeAngle.toString())
+        //Log.e("eyeAngle",currentCreature.genome.eyeAngle.toString())
 
         currentCreature.speed = maxOf(minOf(neuralOutput.get(2), 1.0f), 0.0f)
 
         val nnOutputRotate = if((abs(neuralOutput.get(0) - neuralOutput.get(1)))<0.001f) 0.0f else neuralOutput.get(0) - neuralOutput.get(1)
-        val degree = (nnOutputRotate) * Const.step * 10.0f*cornerSpeedMultificaier * currentCreature.speed
+        val degree = (nnOutputRotate) * Const.step * cornerSpeedMultificaier * currentCreature.speed
 
 
-
-        if(!controlMode)
+//        if(!controlMode)
         currentCreature.velocity = currentCreature.velocity.rotate(Math.toRadians(degree.toDouble())).normalized()
 
         //currentCreature.size = currentCreature.size - neuralOutput.get(2) * speedCost * Const.step
@@ -247,7 +236,7 @@ class Creatures(val collidor: Collidor) {
     private fun move(curentCreature: CreaturesData) {
 
         //limitVelocity(it, 0.5f, 0.5f)
-        val moveVector = curentCreature.velocity.mull(maxOf(curentCreature.speed, 0.1f))
+        val moveVector = curentCreature.velocity.mull(maxOf(curentCreature.speed, 0.0f))
 
         val newPosition = Vector2f(
             curentCreature.pos.x + moveVector.x * Const.step * speed,
@@ -293,18 +282,24 @@ class Creatures(val collidor: Collidor) {
         val myEdit = sharedPreferences.edit()
         val gson = Gson()
 
-        creaturesList.sortedByDescending { it.size }.firstOrNull()?.let{
-            val json = gson.toJson(  it  )
+        //creaturesList.sortedByDescending { it.size }.firstOrNull()?.let{
+            val json = gson.toJson(  creaturesList  )
+        Log.e("json nn save", json)
             myEdit.putString("savedNN", json)
             myEdit.apply()
-        }
+        //}
     }
 
     fun loadNN(activity: Activity) {
         val sharedPreferences: SharedPreferences = activity.getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val gson = Gson()
+        val type: Type = object : TypeToken<ArrayList<CreaturesData>>(){}.type
         val json: String? = sharedPreferences.getString("savedNN", null)
-        creaturesList.add(gson.fromJson(json, CreaturesData::class.java))
+        Log.e("json nn load", json?:"")
+        Log.e("json nn load2", gson.fromJson<ArrayList<CreaturesData>>(json, type).toString())
+        Log.e("json nn load3", creaturesListToAdd.toString())
+        creaturesListToAdd.addAll( gson.fromJson<ArrayList<CreaturesData>>(json, type) )
+        Log.e("json nn load3", creaturesListToAdd.toString())
     }
 
 }
@@ -342,4 +337,4 @@ class Genome (
     var color: Vector3f,
     var neuralNetwork: NeuralNetwork,
     var eyeAngle: Double
-)
+) : Serializable
