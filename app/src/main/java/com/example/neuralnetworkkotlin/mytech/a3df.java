@@ -102,7 +102,7 @@ public class a3df {
                 {
                     quadCoords[vertex_i] = is.readFloat();  vertex_i=vertex_i+1;
                     quadCoords[vertex_i] = is.readFloat();  vertex_i=vertex_i+1;
-                    quadCoords[vertex_i] = -is.readFloat();  vertex_i=vertex_i+1;
+                    quadCoords[vertex_i] = is.readFloat();  vertex_i=vertex_i+1;
                     quadsTexCoords[texcoord_i] =	is.readFloat(); texcoord_i=texcoord_i+1;
                     quadsTexCoords[texcoord_i] =	is.readFloat(); texcoord_i=texcoord_i+1;
                     quadsTexCoords[texcoord_i]  =	is.readShort(); texcoord_i=texcoord_i+1;

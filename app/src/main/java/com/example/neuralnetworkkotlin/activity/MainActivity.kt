@@ -44,6 +44,16 @@ class MainActivity : Activity() {
             glSurfaceView.eKey(motionEvent)
             true
         }
+
+        rotateUp.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.rotateUp(motionEvent)
+            true
+        }
+
+        rotateDown.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.rotateDown(motionEvent)
+            true
+        }
     }
 
 

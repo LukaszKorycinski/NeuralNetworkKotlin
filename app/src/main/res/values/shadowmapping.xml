@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="vs_anim_shadowmapping"><![CDATA[
+        uniform mat4 u_VPMatrix;
+        uniform mat4 BonesMatrix[8];
+
+        attribute vec4 vPosition;
+        attribute vec3 a_TexCoordinate;
+
+        varying vec2 texCoordMid;
+        varying vec4 varPosition;
+
+        void main() {
+
+            mat4 boneMatrix = BonesMatrix[int(a_TexCoordinate.z)];
+
+            texCoordMid = a_TexCoordinate.xy;
+
+            varPosition = u_VPMatrix * boneMatrix * vec4(vPosition.xyz, 1.0);
+
+            gl_Position = u_VPMatrix * boneMatrix * vec4(vPosition.xyz, 1.0);
+        }
+    ]]></string>
+
+    <string name="ps_anim_shadowmapping"><![CDATA[
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 texCoordMid;
+        varying vec4 varPosition;
+
+        void main() {
+
+        float depth = varPosition.z*0.1f;
+        vec4 color = vec4(depth, depth, depth, 1.0);
+
+        if( color.a<0.5 ){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+    ]]></string>
+
+
+
+    <string name="vs_basic_shadowmapping">
+
+        uniform mat4 uMVPMatrix;
+        attribute vec4 vPosition;
+        varying vec4 varPosition;
+
+        void main() {
+            varPosition = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+        }
+    </string>
+
+    <string name="ps_basic_shadowmapping">
+
+        precision mediump float;
+        varying vec4 varPosition;
+
+        void main() {
+
+            float depth = varPosition.z*0.05f;
+            vec4 color = vec4(depth, depth, depth, 1.0);
+
+            gl_FragColor = color;
+        }
+    </string>
+
+
+
+
+</resources>

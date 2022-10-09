@@ -3,6 +3,8 @@ package com.example.neuralnetworkkotlin.helpers
 import android.util.Log
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector4f
+import timber.log.Timber
 
 class ControlHelper {
 
@@ -12,6 +14,23 @@ class ControlHelper {
     var left = false
     var forward = false
     var backward = false
+    var rotateUp = false
+    var rotateDown = false
+
+
+    fun rotateDown(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> rotateDown = true
+            MotionEvent.ACTION_UP -> rotateDown = false
+        }
+    }
+    fun rotateUp(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> rotateUp = true
+            MotionEvent.ACTION_UP -> rotateUp = false
+        }
+    }
+
 
     fun upKey(action: MotionEvent){
         when(action.action){
@@ -55,29 +74,40 @@ class ControlHelper {
         }
     }
 
-    val position = Vector3f(0f, 0f, -5.0f)
+    val position = Vector4f(-5.0999975f, -10.500004f, -9.300002f, 52.79998f)
 
-    fun updatePosition(): Vector3f {
-        //Log.e("position", ""+position.toString())
+    fun lightPosition(): Vector4f{
+        return Vector4f(2.2999997f, -9.4f, -12.100013f ,42.899994f)
+    }
+
+    fun updatePosition(): Vector4f {
+
+        if(rotateDown){
+            position.w = position.w - 1.1f
+        }
+        if(rotateUp){
+            position.w = position.w + 1.1f
+        }
 
         if(up){
-            position.y = position.y - 0.1f
-        }
-        if(down){
-            position.y = position.y + 0.1f
-        }
-        if(right){
-            position.x = position.x - 0.1f
-        }
-        if(left){
-            position.x = position.x + 0.1f
-        }
-        if(forward){
             position.z = position.z - 0.1f
         }
-        if(backward){
+        if(down){
             position.z = position.z + 0.1f
         }
+        if(right){
+            position.x = position.x + 0.1f
+        }
+        if(left){
+            position.x = position.x - 0.1f
+        }
+        if(forward){
+            position.y = position.y - 0.1f
+        }
+        if(backward){
+            position.y = position.y + 0.1f
+        }
+
         return position
     }
 }

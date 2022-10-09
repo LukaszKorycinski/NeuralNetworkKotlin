@@ -11,13 +11,13 @@ import java.nio.ShortBuffer
 
 class Terrain {
 
-    val size = 1.0f
+    val size = 10.0f
 
     val layerCoords = floatArrayOf(
-        -size, size, 0.0f,      // top left
-        -size, -size, 0.0f,      // bottom left
-        size, -size, 0.0f,      // bottom right
-        size, size, 0.0f       // top right
+        -size, 0.0f, size,       // top left
+        -size, 0.0f, -size,      // bottom left
+        size, 0.0f, -size,       // bottom right
+        size, 0.0f, size,        // top right
     )
 
 
@@ -71,16 +71,29 @@ class Terrain {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
 
-    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
+    fun drawTerrain(mvpMatrix: FloatArray, lightMatrix: FloatArray?, textureHandle: Int, shadowMapHandle: Int?, shader: Int) {
 
         GLES20.glUseProgram(shader)
-        val propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
-        GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
+        val uMVPMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
+        GLES20.glUniformMatrix4fv(uMVPMatrixHandler, 1, false, mvpMatrix, 0)
+
+        lightMatrix?.let{
+            val lightMatrixHandler = GLES20.glGetUniformLocation(shader, "lightMatrix")
+            GLES20.glUniformMatrix4fv(lightMatrixHandler, 1, false, lightMatrix, 0)
+        }
 
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[11])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
+
+        shadowMapHandle?.let{
+            val shadowmapHandler = GLES20.glGetUniformLocation(shader, "u_ShadowMap")
+            GLES20.glUniform1i(shadowmapHandler, 1)
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, shadowMapHandle)
+        }
+
 
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {

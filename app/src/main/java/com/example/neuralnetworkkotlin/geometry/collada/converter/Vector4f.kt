@@ -35,6 +35,10 @@ class Vector4f {
         this.w = v
     }
 
+    override fun toString(): String {
+        return x.toString() + " " +y.toString() + " " +z.toString() + " " +w.toString()
+    }
+
     fun equals(second: Vector4f): Boolean? {
         return if (Math.abs(x - second.x) < 0.00001f && Math.abs(y - second.y) < 0.00001f && Math.abs(z - second.z) < 0.00001f && Math.abs(w - second.w) < 0.00001f) true else false
     }

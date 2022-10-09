@@ -21,6 +21,9 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         setRenderer(renderer)
     }
 
+    fun rotateUp(action: MotionEvent) { renderer.rotateUp(action) }
+    fun rotateDown(action: MotionEvent) { renderer.rotateDown(action) }
+
     fun upKey(action: MotionEvent) { renderer.upKey(action) }
 
     fun downKey(action: MotionEvent) { renderer.downKey(action) }

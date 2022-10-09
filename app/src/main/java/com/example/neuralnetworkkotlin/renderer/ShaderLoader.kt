@@ -11,8 +11,40 @@ class ShaderLoader(context : Context){
     var shaderProgramSky: Int
     var shaderProgramBasic: Int
     var shaderProgramBasicAnim: Int
+    var shaderProgramBasicShadowMapping: Int
+    var shaderProgramBasicAnimShadowMapping: Int
 
     init {
+        val basicVertexShaderShadowMapping: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
+            R.string.vs_basic_shadowmapping
+        ) )
+        val basicFragmentShaderShadowMapping: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(
+            R.string.ps_basic_shadowmapping
+        ) )
+
+        shaderProgramBasicShadowMapping = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, basicVertexShaderShadowMapping)
+            GLES20.glAttachShader(it, basicFragmentShaderShadowMapping)
+            GLES20.glLinkProgram(it)
+        }
+
+
+
+        val animVertexShaderShadowMapping: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
+            R.string.vs_anim_shadowmapping
+        ) )
+        val animFragmentShaderShadowMapping: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(
+            R.string.ps_anim_shadowmapping
+        ) )
+
+        shaderProgramBasicAnimShadowMapping = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, animVertexShaderShadowMapping)
+            GLES20.glAttachShader(it, animFragmentShaderShadowMapping)
+            GLES20.glLinkProgram(it)
+        }
+
+
+
         val animVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
             R.string.vs_anim
         ) )
