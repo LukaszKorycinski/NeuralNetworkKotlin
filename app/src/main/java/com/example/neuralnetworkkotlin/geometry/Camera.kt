@@ -15,7 +15,7 @@ class Camera {
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
         nonCamMatrix = viewMatrix.clone()
 
-        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -10f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
         Matrix.translateM(viewMatrix, 0, position.x, position.y, position.z)
 
 

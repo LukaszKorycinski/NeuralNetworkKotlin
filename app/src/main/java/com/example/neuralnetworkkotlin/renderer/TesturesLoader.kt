@@ -18,8 +18,8 @@ class TexturesLoader(var context: Context) {
     fun loadTexture() {
         GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
         val textResIds: IntArray = IntArray(TEXTURES_QTY+1)
-        textResIds[0] = R.drawable.b0
-        textResIds[1] = R.drawable.b1
+        textResIds[0] = R.drawable.body
+        textResIds[1] = R.drawable.bodyy
         textResIds[2] = R.drawable.b2
         textResIds[3] = R.drawable.b3
         textResIds[4] = R.drawable.b4
@@ -52,29 +52,18 @@ class TexturesLoader(var context: Context) {
                 GLES20.GL_TEXTURE_MAG_FILTER,
                 GLES20.GL_NEAREST
             )
-            if(i==12){
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S,
-                    GLES20. GL_REPEAT
-                )
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T,
-                    GLES20.GL_CLAMP_TO_EDGE
-                )
-            }else {
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S,
-                    GLES20. GL_REPEAT
-                )
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T,
-                    GLES20.GL_CLAMP_TO_EDGE
-                )
-            }
+
+            GLES20.glTexParameteri(
+                GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_S,
+                GLES20. GL_REPEAT
+            )
+            GLES20.glTexParameteri(
+                GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_T,
+                GLES20.GL_REPEAT
+            )
+
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
 

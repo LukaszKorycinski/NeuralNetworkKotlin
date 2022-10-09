@@ -55,7 +55,7 @@ class ControlHelper {
         }
     }
 
-    val position = Vector3f(0f, 0f, 15.0f)
+    val position = Vector3f(0f, 0f, -5.0f)
 
     fun updatePosition(): Vector3f {
         //Log.e("position", ""+position.toString())
