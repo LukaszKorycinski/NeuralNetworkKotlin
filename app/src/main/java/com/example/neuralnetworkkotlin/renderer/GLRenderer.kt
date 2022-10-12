@@ -5,10 +5,12 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
-import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.Matrices
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.collada.animConverter.DrawAnimColladaModel
 import com.example.neuralnetworkkotlin.geometry.collada.converter.DrawColladaModel
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.glViewport
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.mytech.a3df
 import com.example.neuralnetworkkotlin.strategygame.Banner
@@ -20,7 +22,7 @@ import javax.microedition.khronos.opengles.GL10
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
-    private val camera = Camera()
+    private val matrices = Matrices()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader;
@@ -61,6 +63,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         controlHelper.eKey(action)
     }
 
+    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
+        matrices.onClick(motionEvent, pos)
+    }
+
     var A3df: a3df? = null
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
@@ -97,44 +103,43 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun normalPass(){
-        GLES20.glViewport(0, 0, surfaceWith, surfaceHeight)
-        val ratio: Float = surfaceWith.toFloat() / surfaceHeight.toFloat()
-        camera.perspectiveINV(ratio)
+        glViewport(matrices.renderResolution)
+
+        matrices.perspectiveINV()
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
         setUpFrame()
-        camera.setUpFrame(controlHelper.updatePosition())
-        camera.calculateLightMatrix(controlHelper.lightPosition())
+        matrices.setUpFrame(controlHelper.updatePosition())
+        matrices.calculateLightMatrix(controlHelper.lightPosition())
 
         val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
 
         //terrain.drawTerrain(camera.viewProjectionMatrix, /*shadowTextureHandle[0]*/textures.textureHandle[11], shaderLoader.shaderProgramBasic)
-        terrain.drawTerrain(camera.viewProjectionMatrix, camera.lightMatrix, textures.textureHandle[11], shadowTextureHandle[0], shaderLoader.shaderProgramBasic)
+        terrain.drawTerrain(matrices.viewProjectionMatrix, matrices.lightMatrix, textures.textureHandle[11], shadowTextureHandle[0], shaderLoader.shaderProgramBasic)
 
-        banner.draw(textures.textureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, camera)
+        banner.draw(textures.textureHandle[0], shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, matrices)
     }
 
     val shadowTextureHandle = IntArray(1)
     var theNameFBO = IntArray(1)
     var theNameRenderBuffer = IntArray(1)
-    var shadowWidth = 256
+    var shadowWidth = 512
     var shadowHeight = 256
 
     fun shadowPass() {
         GLES20.glViewport(0, 0, shadowWidth, shadowHeight)
-        val ratio: Float = shadowWidth.toFloat() / shadowHeight.toFloat()
-        camera.perspectiveINV(ratio)
+        matrices.perspectiveINV()
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, theNameFBO[0])
         setUpFrame()
-        camera.setUpFrame(controlHelper.lightPosition())
+        matrices.setUpFrame(controlHelper.lightPosition())
 
         val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
 
-        terrain.drawTerrain(camera.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
-        banner.draw(textures.textureHandle[0], shaderLoader.shaderProgramBasicAnimShadowMapping, A3df!!, camera)
+        terrain.drawTerrain(matrices.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
+        banner.draw(textures.textureHandle[0], null, shaderLoader.shaderProgramBasicAnimShadowMapping, A3df!!, matrices)
     }
     fun shadowInit(){
         GLES20.glGenTextures(1, shadowTextureHandle, 0)
@@ -162,12 +167,11 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
 
-    var surfaceWith: Int = 0
-    var surfaceHeight: Int = 0
+//    var surfaceWith: Int = 0
+//    var surfaceHeight: Int = 0
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
-        surfaceWith = width
-        surfaceHeight = height
+        matrices.renderResolution = Vector2f(width.toFloat(), height.toFloat())
     }
 
 
@@ -184,4 +188,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
 //        GLES20.glUniform1i(texturesUniformHandle, 0)
     }
+
+
 }

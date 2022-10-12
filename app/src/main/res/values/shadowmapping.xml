@@ -19,7 +19,6 @@
             texCoordMid = a_TexCoordinate.xy;
 
             varPosition = u_VPMatrix * boneMatrix * vec4(vPosition.xyz, 1.0);
-
             gl_Position = u_VPMatrix * boneMatrix * vec4(vPosition.xyz, 1.0);
         }
     ]]></string>
@@ -32,39 +31,35 @@
 
         void main() {
 
-        float depth = varPosition.z*0.1f;
-        vec4 color = vec4(depth, depth, depth, 1.0);
+        float depth = varPosition.z*0.05f;
+        vec4 color2 = vec4(depth, depth, depth, 1.0);
 
+        vec4 color = texture2D(u_Texture, texCoordMid);
         if( color.a<0.5 ){
             discard;
         }
 
-        gl_FragColor = color;
+        gl_FragColor = color2;
         }
     ]]></string>
 
 
-
     <string name="vs_basic_shadowmapping">
-
         uniform mat4 uMVPMatrix;
         attribute vec4 vPosition;
         varying vec4 varPosition;
 
         void main() {
             varPosition = uMVPMatrix * vec4(vPosition.xyz, 1.0);
-
             gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
         }
     </string>
 
     <string name="ps_basic_shadowmapping">
-
         precision mediump float;
         varying vec4 varPosition;
 
         void main() {
-
             float depth = varPosition.z*0.05f;
             vec4 color = vec4(depth, depth, depth, 1.0);
 

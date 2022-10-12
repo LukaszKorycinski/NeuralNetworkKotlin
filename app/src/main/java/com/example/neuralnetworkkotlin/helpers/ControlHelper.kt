@@ -1,10 +1,10 @@
 package com.example.neuralnetworkkotlin.helpers
 
-import android.util.Log
 import android.view.MotionEvent
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector4f
-import timber.log.Timber
+import kotlin.math.cos
+import kotlin.math.sin
 
 class ControlHelper {
 
@@ -74,26 +74,36 @@ class ControlHelper {
         }
     }
 
+
+
     val position = Vector4f(-5.0999975f, -10.500004f, -9.300002f, 52.79998f)
+    var wave = 0.0f
+
 
     fun lightPosition(): Vector4f{
-        return Vector4f(2.2999997f, -9.4f, -12.100013f ,42.899994f)
+        return Vector4f(-2.7999997f+ sin(wave)*3.0f, -8.699996f, -16.100027f+ cos(wave)*3.0f, 39.700006f)
     }
 
     fun updatePosition(): Vector4f {
+//        Log.e("Fsdfz",position.toString())
+
+        wave = wave + 0.02f
+        if(wave>180.0f){
+            wave=0.0f
+        }
 
         if(rotateDown){
-            position.w = position.w - 1.1f
+            position.w = position.w + 1.1f
         }
         if(rotateUp){
-            position.w = position.w + 1.1f
+            position.w = position.w - 1.1f
         }
 
         if(up){
-            position.z = position.z - 0.1f
+            position.z = position.z + 0.1f
         }
         if(down){
-            position.z = position.z + 0.1f
+            position.z = position.z - 0.1f
         }
         if(right){
             position.x = position.x + 0.1f
@@ -102,12 +112,14 @@ class ControlHelper {
             position.x = position.x - 0.1f
         }
         if(forward){
-            position.y = position.y - 0.1f
+            position.y = position.y + 0.1f
         }
         if(backward){
-            position.y = position.y + 0.1f
+            position.y = position.y - 0.1f
         }
 
         return position
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
+import kotlin.math.sqrt
+
 /**
  * Created by dell on 09.06.2017.
  */
@@ -25,6 +27,11 @@ class Vector2f {
     constructor(x: Float, y: Float) {
         this.x = x
         this.y = y
+    }
+
+    fun normalize(length: Float = 1.0f):Vector2f{
+        val l = sqrt(x * x + y * y) * length
+        return Vector2f(x/l, y/l)
     }
 }
 

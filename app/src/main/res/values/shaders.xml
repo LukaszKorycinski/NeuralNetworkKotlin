@@ -5,13 +5,18 @@
         <string name="vs_anim"><![CDATA[
         uniform mat4 u_VPMatrix;
         uniform mat4 BonesMatrix[8];
+        uniform mat4 lightMatrix;
 
         attribute vec4 vPosition;
         attribute vec3 a_TexCoordinate;
 
         varying vec2 texCoordMid;
+        varying vec4 positionFromLight;
 
         void main() {
+            positionFromLight = lightMatrix * vec4(vPosition.xyz, 1.0);
+            const mat4 biasMat = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0);
+            positionFromLight = biasMat * positionFromLight;
 
             mat4 boneMatrix = BonesMatrix[int(a_TexCoordinate.z)];
 
@@ -24,18 +29,29 @@
     <string name="ps_anim"><![CDATA[
         precision mediump float;
         uniform sampler2D u_Texture;
+        uniform sampler2D u_ShadowMap;
         varying vec2 texCoordMid;
+        varying vec4 positionFromLight;
 
         void main() {
+            vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
+            float fDepth = vfDepth.x;
 
+            float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
 
-        vec4 color = texture2D(u_Texture, texCoordMid);
+            if(fLDepth>0.0){
+                fLDepth=1.0 - (max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0));
+            }else{
+                fLDepth=1.0f;
+            }
 
-        if( color.a<0.5 ){
-            discard;
-        }
+            vec4 color = texture2D(u_Texture, texCoordMid);
 
-        gl_FragColor = color;
+            if( color.a<0.25 ){
+                discard;
+            }
+            vec4 colorShadow = vec4(color.x * fLDepth, color.y * fLDepth, color.z * fLDepth, 1.0f);
+            gl_FragColor = colorShadow;
         }
     ]]></string>
 
@@ -53,10 +69,12 @@
 
         void main() {
             positionFromLight = lightMatrix * vec4(vPosition.xyz, 1.0);
+            const mat4 biasMat = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0);
+            positionFromLight = biasMat * positionFromLight;
 
-            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
 
             texCoord = a_TexCoordinate;
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
         }
     </string>
 
@@ -73,13 +91,18 @@
         vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
         float fDepth = vfDepth.x;
 
-        float fLDepth = (positionFromLight.z*0.1f) - fDepth ;
+        float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
 
+            if(fLDepth>0.01){
+                fLDepth=max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0);
+            }else{
+                fLDepth=0.0f;
+            }
 
 
         vec4 color = texture2D(u_Texture, texCoord);
 
-        vec4 colorShadow = vec4(fDepth, fDepth, fDepth, 1.0f);
+        vec4 colorShadow = vec4(color.x - fLDepth, color.y - fLDepth, color.z - fLDepth, 1.0f);
 
         gl_FragColor = colorShadow;
         }

@@ -153,7 +153,7 @@ public class a3df {
     }
 
 
-    public void DrawAnimModel(int i, int t, int ShaderProgram, float wave)
+    public void DrawAnimModel(int i, int ShaderProgram, float wave)
     {//wave
 
         float[][] mat_Bonetmp = new float[boneile][16];
@@ -194,10 +194,7 @@ public class a3df {
             }
 
 
-        int texLoc = GLES20.glGetUniformLocation(ShaderProgram, "u_Texture");
-        GLES20.glUniform1i(texLoc, 0);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, t);
+
 
 
         int BonesMatrix = GLES20.glGetUniformLocation(ShaderProgram, "BonesMatrix");

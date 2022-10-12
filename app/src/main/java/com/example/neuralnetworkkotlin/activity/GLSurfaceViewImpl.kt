@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.renderer.GLRenderer
 
 class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(context, attrs) {
@@ -35,4 +36,7 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
     fun qKey(action: MotionEvent) { renderer.qKey(action) }
 
     fun eKey(action: MotionEvent) { renderer.eKey(action) }
+    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
+        renderer.onClick(motionEvent, pos)
+    }
 }
