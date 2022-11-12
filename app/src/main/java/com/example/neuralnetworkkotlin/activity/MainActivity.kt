@@ -20,45 +20,46 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
 
         glSurfaceView.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
-            view.performClick()
+            glSurfaceView.renderer.matrices.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
+            true//view.performClick()
         }
 
         up.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.upKey(motionEvent)
-            view.performClick()
+
+            glSurfaceView.renderer.controlHelper.upKey(motionEvent)
+            true//view.performClick()
         }
         down.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.downKey(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.downKey(motionEvent)
+            true//view.performClick()
         }
         left.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.leftKey(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.leftKey(motionEvent)
+            true//view.performClick()
         }
         right.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rightKey(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.rightKey(motionEvent)
+            true//view.performClick()
         }
 
         qKey.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.qKey(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.qKey(motionEvent)
+            true//view.performClick()
         }
 
         eKey.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.eKey(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.eKey(motionEvent)
+            true//view.performClick()
         }
 
         rotateUp.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rotateUp(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.rotateUp(motionEvent)
+            true//view.performClick()
         }
 
         rotateDown.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rotateDown(motionEvent)
-            view.performClick()
+            glSurfaceView.renderer.controlHelper.rotateDown(motionEvent)
+            true//view.performClick()
         }
     }
 

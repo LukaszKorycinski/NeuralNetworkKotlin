@@ -22,50 +22,10 @@ import javax.microedition.khronos.opengles.GL10
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
-    private val matrices = Matrices()
+    val matrices = Matrices()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader;
-
-    lateinit var drawColladaModel : DrawColladaModel
-    lateinit var drawAnimColladaModel : DrawAnimColladaModel
-
-
-
-    fun rotateDown(action: MotionEvent) {
-        controlHelper.rotateDown(action)
-    }
-    fun rotateUp(action: MotionEvent) {
-        controlHelper.rotateUp(action)
-    }
-
-    fun upKey(action: MotionEvent) {
-        controlHelper.upKey(action)
-    }
-
-    fun downKey(action: MotionEvent) {
-        controlHelper.downKey(action)
-    }
-
-    fun leftKey(action: MotionEvent) {
-        controlHelper.leftKey(action)
-    }
-
-    fun rightKey(action: MotionEvent) {
-        controlHelper.rightKey(action)
-    }
-
-    fun qKey(action: MotionEvent) {
-        controlHelper.qKey(action)
-    }
-
-    fun eKey(action: MotionEvent) {
-        controlHelper.eKey(action)
-    }
-
-    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
-        matrices.onClick(motionEvent, pos)
-    }
 
     var A3df: a3df? = null
 

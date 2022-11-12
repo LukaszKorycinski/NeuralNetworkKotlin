@@ -76,7 +76,7 @@ class ControlHelper {
 
 
 
-    val position = Vector4f(-5.0999975f, -10.500004f, -9.300002f, 52.79998f)
+    val position = Vector4f(-0.0f, -8.500004f, -5.300002f, 52.79998f)
     var wave = 0.0f
 
 

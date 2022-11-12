@@ -29,9 +29,13 @@ class Vector2f {
         this.y = y
     }
 
-    fun normalize(length: Float = 1.0f):Vector2f{
-        val l = sqrt(x * x + y * y) * length
-        return Vector2f(x/l, y/l)
+    fun normalize(desireL: Float = 1.0f):Vector2f{
+        val currentL = sqrt(x * x + y * y)
+        return Vector2f((x/currentL)*desireL, (y/currentL*desireL))
+    }
+
+    override fun toString(): String {
+        return (x.toString() + ", "+y.toString())
     }
 }
 

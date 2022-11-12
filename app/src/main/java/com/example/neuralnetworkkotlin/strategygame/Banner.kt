@@ -32,15 +32,18 @@ class Banner {
             uData.animf = uData.animf + 0.05f
             if (uData.animf>=4.0f)uData.animf=0.0f
 
+
+            uData.pos = matrices.pointer3d//.x = uData.pos.x + direction.x
+
             val tmpMatrix = FloatArray(16)
             Matrix.setIdentityM(tmpMatrix, 0)
-            Matrix.translateM(tmpMatrix, 0, uData.pos.x, 0.0f, uData.pos.y)
+            Matrix.translateM(tmpMatrix, 0, uData.pos.x, uData.pos.y, 0.0f )
 
 
 
-            val direction = Vector2f(uData.pos.x - matrices.pointer3d.x, uData.pos.y - matrices.pointer3d.y).normalize()
-            uData.pos.x = direction.x
-            uData.pos.y = direction.y
+            //val direction = Vector2f(uData.pos.x - matrices.pointer3d.x, uData.pos.y - matrices.pointer3d.y).normalize(0.005f)
+
+            //uData.pos.y = uData.pos.y + direction.y
 
 //            if(uData.pos.x>7.0f)dir=-1.0f
 //            if(uData.pos.x<-7.0f)dir=1.0f
@@ -50,7 +53,7 @@ class Banner {
             GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
 
             Matrix.setIdentityM(tmpMatrix, 0)
-            Matrix.translateM(tmpMatrix, 0, uData.pos.x, 0.0f, uData.pos.y)
+            Matrix.translateM(tmpMatrix, 0, uData.pos.x, uData.pos.y, 0.0f)
 
             val lightMatrix = GLES20.glGetUniformLocation(shaderProgram, "lightMatrix") //, iVMatrix;
             Matrix.multiplyMM(tmpMatrix, 0, matrices.lightMatrix, 0, tmpMatrix, 0)

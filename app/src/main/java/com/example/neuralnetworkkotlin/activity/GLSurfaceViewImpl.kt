@@ -21,22 +21,4 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
     }
-
-    fun rotateUp(action: MotionEvent) { renderer.rotateUp(action) }
-    fun rotateDown(action: MotionEvent) { renderer.rotateDown(action) }
-
-    fun upKey(action: MotionEvent) { renderer.upKey(action) }
-
-    fun downKey(action: MotionEvent) { renderer.downKey(action) }
-
-    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
-
-    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
-
-    fun qKey(action: MotionEvent) { renderer.qKey(action) }
-
-    fun eKey(action: MotionEvent) { renderer.eKey(action) }
-    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
-        renderer.onClick(motionEvent, pos)
-    }
 }
