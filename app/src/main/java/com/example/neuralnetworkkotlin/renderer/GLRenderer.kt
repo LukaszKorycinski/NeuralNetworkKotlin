@@ -185,7 +185,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             fpsCounter = 0
             time = System.currentTimeMillis()
         }
-        log.postValue("Qty "+creatures.creaturesList.size + "\nOldest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation)
+        log.postValue("Qty "+creatures.creaturesList.size +
+                "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
+                "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation)
 
 
         setUpFrame()

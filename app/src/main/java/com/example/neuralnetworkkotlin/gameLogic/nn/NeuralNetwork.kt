@@ -66,7 +66,7 @@ class NeuralNetwork : Serializable {
             midleInput.add(outputTmp)
         }// 0 1 0
         if(change)
-        Log.e("LAYER1", midleInput.joinToString { it.toString() })
+            Log.e("LAYER1", midleInput.joinToString { it.toString() })
 
 //        val midleInput2 = ArrayList<Float>()
 //        for (i in 0..neuronsPerLayer-1){

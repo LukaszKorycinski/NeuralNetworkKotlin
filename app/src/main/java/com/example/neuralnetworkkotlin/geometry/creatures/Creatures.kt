@@ -65,32 +65,41 @@ class Creatures(val collidor: Collidor) {
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
         parent: CreaturesData
     ) {
-        if (parent.size > 1.4) {
-            parent.size = parent.size -  parent.genome.kidSize//0.4f
+        if (parent.size > parent.genome.breedSize) {
+            parent.size = parent.size -  parent.genome.kidSize * parent.genome.kidsQty//0.4f
             val nn = parent.genome.neuralNetwork.clone()
-            val isMutant = nn.bread(mutantRatio)
+            var isMutant = nn.bread(mutantRatio)
+
+            val isMutant_eyeAngle = (0..mutantRatio).random()==1
+            val isMutant_breedSize = (0..mutantRatio).random()==1
+
+            val eyeAngle = parent.genome.eyeAngle + if(isMutant_eyeAngle) Random.nextDoubleFromRange(-5.0, 5.0) else 0.0
+            val breedSize = parent.genome.breedSize + if(isMutant_breedSize) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
+            val kidSize = parent.genome.kidSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
+            var kidsQty = parent.genome.kidsQty + if((0..mutantRatio).random()==1) {if(Random.nextBoolean())1 else -1} else 0
+            kidsQty = max(1, kidsQty)
+
+            if(isMutant_eyeAngle) isMutant++
+            if(isMutant_breedSize) isMutant++
 
             val color = Vector3f()
-
             color.x = parent.genome.color.x + 0.14f * isMutant * (Random.nextFloat()-0.5f)
             color.y = parent.genome.color.y + 0.14f * isMutant * (Random.nextFloat()-0.5f)
             color.z = parent.genome.color.z + 0.14f * isMutant * (Random.nextFloat()-0.5f)
             color.colorClip(0.0f, 1.0f)
 
-            val eyeAngle = parent.genome.eyeAngle + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-5.0, 5.0) else 0.0
-            val breedSize = parent.genome.breedSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
-            val kidSize = parent.genome.kidSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
-
-            onCreatureEggAdded(
-                CreaturesData(
-                    pos = Vector2f(parent.pos.x, parent.pos.y),
-                    genome = Genome(color, nn.clone(), eyeAngle, breedSize, kidSize),
-                    velocity = Vector2f().randomVelocity(1.0f),
-                    eye = Vector3f(),
-                    generation = parent.generation + 1,
-                    size = parent.genome.kidSize
+            for(i in 0..kidsQty-1) {
+                onCreatureEggAdded(
+                    CreaturesData(
+                        pos = Vector2f(parent.pos.x, parent.pos.y),
+                        genome = Genome(color, nn.clone(), eyeAngle, breedSize, kidSize, kidsQty),
+                        velocity = Vector2f().randomVelocity(1.0f),
+                        eye = Vector3f(),
+                        generation = parent.generation + 1,
+                        size = parent.genome.kidSize * 0.6f
+                    )
                 )
-            )
+            }
         } else {
             parent.size = parent.size - lifeEnergyCost * Const.step //* maxOf(parent.speed*2.0f, 1.0f)
             //Log.e("parent.size",""+parent.size+" "+lifeEnergyCost * Const.step * maxOf(parent.speed*2.0f, 1.0f)+" l "+lifeEnergyCost + " s "+Const.step + " sp "+maxOf(parent.speed*2.0f, 1.0f))
@@ -338,4 +347,5 @@ class Genome (
     var eyeAngle: Double,
     var breedSize: Float = 1.8f,
     var kidSize: Float = 0.8f,
+    var kidsQty:Int = 1
 ) : Serializable
