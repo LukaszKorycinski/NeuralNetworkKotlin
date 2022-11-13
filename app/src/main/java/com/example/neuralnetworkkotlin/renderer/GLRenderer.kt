@@ -87,7 +87,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         onCreatureAdded(CreaturesData(
             pos = Vector2f((Random.nextFloat()-0.5f)*4.0f, (Random.nextFloat()-0.5f)*4.0f),
-            genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/),
+            genome = Genome(color = Vector3f().random(), neuralNetwork = nn, eyeAngle = Random.nextDouble()*90.0/*22.5*/, 1.8f, 0.8f),
             velocity = Vector2f(1.0f, 0.0f),
             size = 1.0f,
             eye = Vector3f(),

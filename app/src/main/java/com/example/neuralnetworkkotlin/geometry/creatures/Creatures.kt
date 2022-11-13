@@ -65,31 +65,30 @@ class Creatures(val collidor: Collidor) {
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
         parent: CreaturesData
     ) {
-        if (parent.size > 1.4f) {
-            parent.size = parent.size - 0.4f
+        if (parent.size > 1.4) {
+            parent.size = parent.size -  parent.genome.kidSize//0.4f
             val nn = parent.genome.neuralNetwork.clone()
             val isMutant = nn.bread(mutantRatio)
 
             val color = Vector3f()
 
-
             color.x = parent.genome.color.x + 0.14f * isMutant * (Random.nextFloat()-0.5f)
             color.y = parent.genome.color.y + 0.14f * isMutant * (Random.nextFloat()-0.5f)
             color.z = parent.genome.color.z + 0.14f * isMutant * (Random.nextFloat()-0.5f)
-
-
             color.colorClip(0.0f, 1.0f)
 
             val eyeAngle = parent.genome.eyeAngle + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-5.0, 5.0) else 0.0
-
+            val breedSize = parent.genome.breedSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
+            val kidSize = parent.genome.kidSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
 
             onCreatureEggAdded(
                 CreaturesData(
                     pos = Vector2f(parent.pos.x, parent.pos.y),
-                    genome = Genome(color, nn.clone(), eyeAngle),
+                    genome = Genome(color, nn.clone(), eyeAngle, breedSize, kidSize),
                     velocity = Vector2f().randomVelocity(1.0f),
                     eye = Vector3f(),
-                    generation = parent.generation + 1
+                    generation = parent.generation + 1,
+                    size = parent.genome.kidSize
                 )
             )
         } else {
@@ -336,5 +335,7 @@ class CreaturesData(
 class Genome (
     var color: Vector3f,
     var neuralNetwork: NeuralNetwork,
-    var eyeAngle: Double
+    var eyeAngle: Double,
+    var breedSize: Float = 1.8f,
+    var kidSize: Float = 0.8f,
 ) : Serializable
