@@ -8,6 +8,7 @@ import com.example.neuralnetworkkotlin.Const
 import com.example.neuralnetworkkotlin.ext.nextDoubleFromRange
 import com.example.neuralnetworkkotlin.gameLogic.Collidor
 import com.example.neuralnetworkkotlin.gameLogic.nn.NeuralNetwork
+import com.example.neuralnetworkkotlin.geometry.Particle
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Line
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
@@ -15,11 +16,11 @@ import com.example.neuralnetworkkotlin.geometry.plants.SeedData
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import timber.log.Timber
 import java.io.Serializable
 import java.lang.Integer.max
 import java.lang.reflect.Type
 import kotlin.math.abs
+import kotlin.math.sin
 import kotlin.random.Random
 import kotlin.reflect.KFunction1
 
@@ -35,27 +36,55 @@ class Creatures(val collidor: Collidor) {
     var mutantRatio = 20
     var cornerSpeedMultificaier = 200.0f
 
-
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
         seedList: ArrayList<SeedData>,
         coli: Collision
-    ) {
-        creaturesList.forEach {
-            ai(it, seedList, coli)
-            energy(onCreatureEggAdded, it)
+    ): List<Particle> {
+        //sinusInput = sin(wave)
+        var particlesToAdd: List<Particle> = emptyList()
+        val eatedCreaturesIds: ArrayList<Int> = arrayListOf();
+        creaturesList.forEach { creature ->
+            if(creature.genome.eatMeat){
+                val idsToDelete = aiMeatEater(creature,
+                    ArrayList(creaturesList
+                        .filter { !it.genome.eatMeat}
+                        .filter { it.size < creature.size }
+                        .filter { !eatedCreaturesIds.contains(it.id) }
+                        .toMutableList()), coli)
+
+                eatedCreaturesIds.addAll(
+                    idsToDelete
+                )
+            }else{
+                aiPlantsEater(creature, seedList, coli)
+            }
+
+            energy(onCreatureEggAdded, creature)
 
             if(!controlMode)
-                move(it)
+                move(creature)
         }
 
+        particlesToAdd = eatedCreaturesIds.map { id ->
+            Particle(creaturesList.first { it.id == id }.pos, 0.0f)
+        }
+
+
         creaturesList =
-            creaturesList.filter { it.size > 0.2f }.filter { it.pos.y > -5.0f } as ArrayList<CreaturesData>
+            creaturesList
+                .filter { it.size > 0.2f }
+                .filter { it.pos.y > -5.0f }
+                .filter {
+                    !eatedCreaturesIds.contains(it.id)
+            } as ArrayList<CreaturesData>
 
         if (creaturesListToAdd.isNotEmpty()) {
             creaturesList.addAll(creaturesListToAdd)
             creaturesListToAdd.clear()
         }
+
+        return particlesToAdd
     }
 
 
@@ -67,6 +96,11 @@ class Creatures(val collidor: Collidor) {
     ) {
         if (parent.size > parent.genome.breedSize) {
             parent.size = parent.size -  parent.genome.kidSize * parent.genome.kidsQty//0.4f
+
+            if(parent.size < 0.0f){
+                return
+            }
+
             val nn = parent.genome.neuralNetwork.clone()
             var isMutant = nn.bread(mutantRatio)
 
@@ -92,11 +126,11 @@ class Creatures(val collidor: Collidor) {
                 onCreatureEggAdded(
                     CreaturesData(
                         pos = Vector2f(parent.pos.x, parent.pos.y),
-                        genome = Genome(color, nn.clone(), eyeAngle, breedSize, kidSize, kidsQty),
+                        genome = Genome(color, nn.clone(), eyeAngle, breedSize, kidSize, kidsQty, parent.genome.eatMeat),
                         velocity = Vector2f().randomVelocity(1.0f),
                         eye = Vector3f(),
                         generation = parent.generation + 1,
-                        size = parent.genome.kidSize * 0.6f
+                        size = parent.genome.kidSize * 0.6f,
                     )
                 )
             }
@@ -107,43 +141,26 @@ class Creatures(val collidor: Collidor) {
     }
 
 
+    private fun aiMeatEater(currentCreature: CreaturesData, meatList: ArrayList<CreaturesData>, coli: Collision): ArrayList<Int> {
 
-    private fun ai(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, coli: Collision) {
-        var closestPosition = Vector2f()
+        var eatedCreaturesIds = arrayListOf<Int>()
 
         var closestSeedL = 1.0f
-        var closestSeedIndex = -1
-
-
-
-
-//        val triangle1 = Triangle(it.pos, Vector2f(it.pos.x+0.2f, it.pos.y+0.2f), Vector2f(it.pos.x-0.2f, it.pos.y+0.2f))
-//        val triangle2 = Triangle(it.pos, Vector2f(it.pos.x+0.2f, it.pos.y+0.2f), Vector2f(it.pos.x+0.2f, it.pos.y-0.2f))
-//        val triangle3 = Triangle(it.pos, Vector2f(it.pos.x+0.2f, it.pos.y-0.2f), Vector2f(it.pos.x-0.2f, it.pos.y-0.2f))
 
         val eyeSign = currentCreature.eyeSign()
 
         val eyePos = currentCreature.pos //+ (currentCreature.velocity.normalized().mull(0.025f))
 
-
         val line1 = Line(eyePos, eyeSign )
         val line2 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(currentCreature.genome.eyeAngle)) )
         val line3 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(-currentCreature.genome.eyeAngle)) )
-//        val line4 = Line(it.pos, eyeSign.rotate(Math.toRadians(45.0)) )
-//        val line5 = Line(it.pos, eyeSign.rotate(Math.toRadians(-45.0)) )
-
 
         currentCreature.glowing = false
 
-        //val eyes: ArrayList<Float> = arrayListOf(0.0f, 0.0f, 0.0f)
-
-
-        //val startTime = System.currentTimeMillis()
-
         currentCreature.eye.x = 1.0f
-        seedList.forEachIndexed { index, seed ->
+        meatList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line1)
-            if (distance < closestSeedL) {
+            if ( distance < closestSeedL && distance < 0.5f) {
                 closestSeedL = distance
 
             }
@@ -152,79 +169,129 @@ class Creatures(val collidor: Collidor) {
 
         closestSeedL = 1.0f
         currentCreature.eye.y = 1.0f
-        seedList.forEachIndexed { index, seed ->
+        meatList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line2)
-            if (distance < 0.5f) {
+            if ( distance < closestSeedL &&  distance < 0.5f) {
                 closestSeedL = distance
             }
         }
         currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
         closestSeedL = 1.0f
+        var closestSeedLGlobal = 10000.0f
+        var closestSeedIndex = -1
+        //var closestPosition = Vector2f()
         currentCreature.eye.z = 1.0f
-        seedList.forEachIndexed { index, seed ->
+        meatList.forEachIndexed { index, seed ->
             val distance = coli.pointLineColision(seed.pos, line3)
-            if (distance < 0.5f) {
+            if ( distance < closestSeedL && distance < 0.5f) {
                 closestSeedL = distance
-                closestPosition = seed.pos
+            }
+
+            if( currentCreature.pos.distance(seed.pos) < closestSeedLGlobal){
+                closestSeedLGlobal = currentCreature.pos.distance(seed.pos)
+                //closestPosition = seed.pos
                 closestSeedIndex = index
             }
         }
         currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
-//        var closestMateL = 100000.0f
-//        var closestMateIndex = 0
-//        creaturesList.forEachIndexed { index, mate ->
-//            val distanceSex = currentCreature.pos.distance(mate.pos)//każde oko sprawdza kolizję i jeśli gdzieś jest to 1
-//
-//            if (distanceSex < closestMateL) {
-//                closestMateL = distanceSex
-//                closestPosition = mate.pos
-//                closestMateIndex = index
-//            }
-//        }
-//        closestMateL=0.5f - minOf(closestMateL, 0.5f)
-        //val endTime = System.currentTimeMillis()
-
-        //Log.e("opt", "lag = " + (endTime - startTime))
-
-
-        if (closestPosition.distance(eyePos) < 0.04f && closestSeedIndex > -1) {//jedzenie
-            if(seedList.size>closestSeedIndex){
-                currentCreature.size = currentCreature.size + energyFromEat
-                seedList.removeAt(closestSeedIndex)
+        if (closestSeedIndex > -1 && meatList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
+            if(meatList.size>closestSeedIndex){
+                currentCreature.size = currentCreature.size + meatList.get(closestSeedIndex).size * 0.95f
+                eatedCreaturesIds.add(meatList.get(closestSeedIndex).id)
+                //meatList.removeAt(closestSeedIndex)
             }
         }
-
-
 
         val neuralInput = ArrayList<Float>()
         neuralInput.add( 1.0f-currentCreature.eye.y )
         neuralInput.add( 1.0f-currentCreature.eye.x )
         neuralInput.add( 1.0f-currentCreature.eye.z )
         neuralInput.add( currentCreature.size )
-        //neuralInput.add( closestMateL )
-        //neuralInput.add(it.pos.x - closestPosition.y )//closest pos y
-        //neuralInput.add(if(isOnGround(it))1.0f else 0.0f)
+        neuralInput.add( sin(currentCreature.wave) )
 
         val neuralOutput = currentCreature.genome.neuralNetwork.inputToOutput(neuralInput)
-        //Log.e("eyeAngle",currentCreature.genome.eyeAngle.toString())
 
         currentCreature.speed = maxOf(minOf(neuralOutput.get(2), 1.0f), 0.0f)
 
         val nnOutputRotate = if((abs(neuralOutput.get(0) - neuralOutput.get(1)))<0.001f) 0.0f else neuralOutput.get(0) - neuralOutput.get(1)
         val degree = (nnOutputRotate) * Const.step * cornerSpeedMultificaier * currentCreature.speed
-
-
-//        if(!controlMode)
         currentCreature.velocity = currentCreature.velocity.rotate(Math.toRadians(degree.toDouble())).normalized()
 
-        //currentCreature.size = currentCreature.size - neuralOutput.get(2) * speedCost * Const.step
+        return eatedCreaturesIds
+    }
 
+    private fun aiPlantsEater(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, coli: Collision) {
 
-//        it.velocity.x = neuralOutput.get(0)
-//        it.velocity.y = neuralOutput.get(1)
+        var closestSeedL = 1.0f
+        val eyeSign = currentCreature.eyeSign()
 
+        val eyePos = currentCreature.pos //+ (currentCreature.velocity.normalized().mull(0.025f))
+
+        val line1 = Line(eyePos, eyeSign )
+        val line2 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(currentCreature.genome.eyeAngle)) )
+        val line3 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(-currentCreature.genome.eyeAngle)) )
+
+        currentCreature.glowing = false
+
+        currentCreature.eye.x = 1.0f
+        seedList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line1)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+            }
+        }
+        currentCreature.eye.x = closestSeedL//coli.pointLineColision(seed.pos, line1)
+
+        closestSeedL = 1.0f
+        currentCreature.eye.y = 1.0f
+        seedList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line2)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+            }
+        }
+        currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
+
+        closestSeedL = 1.0f
+        var closestSeedLGlobal = 10000.0f
+        var closestSeedIndex = -1
+        currentCreature.eye.z = 1.0f
+        seedList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line3)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+            }
+            if( currentCreature.pos.distance(seed.pos) < closestSeedLGlobal){
+                closestSeedLGlobal = currentCreature.pos.distance(seed.pos)
+                //closestPosition = seed.pos
+                closestSeedIndex = index
+            }
+        }
+        currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
+
+        if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
+            if(seedList.size>closestSeedIndex){
+                currentCreature.size = currentCreature.size + energyFromEat
+                seedList.removeAt(closestSeedIndex)
+            }
+        }
+
+        val neuralInput = ArrayList<Float>()
+        neuralInput.add( 1.0f-currentCreature.eye.y )
+        neuralInput.add( 1.0f-currentCreature.eye.x )
+        neuralInput.add( 1.0f-currentCreature.eye.z )
+        neuralInput.add( currentCreature.size )
+        neuralInput.add( sin(currentCreature.wave) )
+
+        val neuralOutput = currentCreature.genome.neuralNetwork.inputToOutput(neuralInput)
+
+        currentCreature.speed = maxOf(minOf(neuralOutput.get(2), 1.0f), 0.0f)
+
+        val nnOutputRotate = if((abs(neuralOutput.get(0) - neuralOutput.get(1)))<0.001f) 0.0f else neuralOutput.get(0) - neuralOutput.get(1)
+        val degree = (nnOutputRotate) * Const.step * cornerSpeedMultificaier * currentCreature.speed
+        currentCreature.velocity = currentCreature.velocity.rotate(Math.toRadians(degree.toDouble())).normalized()
     }
 
     var controlMode = false
@@ -327,6 +394,15 @@ class CreaturesData(
     val generation: Int,
 ) : Serializable {
     fun drawSize(): Float = size
+    private var idSecret: Int = 0
+
+    val id:Int
+    get() {
+        if(idSecret==0){
+            idSecret = Random.nextInt()
+        }
+        return idSecret
+    }
 
     fun getAngle(): Float {
         return Math.atan2(velocity.x.toDouble(), velocity.y.toDouble()).toFloat()*180f/3.1415f
@@ -347,5 +423,6 @@ class Genome (
     var eyeAngle: Double,
     var breedSize: Float = 1.8f,
     var kidSize: Float = 0.8f,
-    var kidsQty:Int = 1
+    var kidsQty:Int = 1,
+    var eatMeat:Boolean = false
 ) : Serializable

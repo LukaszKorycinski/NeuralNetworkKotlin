@@ -16,17 +16,21 @@ class Neuron{
     fun inputToOutput (input :ArrayList<Float>):Float{
         var sum = 0.0f
 
+        var index = 0
+        for (i in input){
+            sum = sum +  i * weights.get(index)
+            index++
+        }
 
-
-        for(i in 0..input.size-1){
+//        for(i in 0..input.size-1){
 //            when(i){
 //                0 -> {sum = sum +  input.get(i) * weights.get(i)}
 //                1 -> {sum = sum +  input.get(i) * weights.get(i)}
 //                2 -> {sum = sum +  input.get(i) * weights.get(i)}
 //                3 -> {sum = sum +  input.get(i) * weights.get(i)}
 //            }
-            sum = sum +  input.get(i) * weights.get(i)
-        }
+//            sum = sum +  input.get(i) * weights.get(i)
+//        }
 
         return sum//sigmoid( sum )
     }

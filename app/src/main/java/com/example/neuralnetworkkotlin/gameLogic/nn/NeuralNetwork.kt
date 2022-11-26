@@ -10,13 +10,13 @@ class NeuralNetwork : Serializable {
         return Gson().fromJson<NeuralNetwork>(stringProject, NeuralNetwork::class.java)
     }
 
-    val neuronsPerLayer = 4
+    val neuronsPerLayer = 5
     var neurons = arrayOf<Array<Neuron>>()
 
     fun makeNewBrain(){
         neurons = arrayOf<Array<Neuron>>()
 
-        for (i in 0..3) {
+        for (i in 0..4) {
             var inerArray = arrayOf<Neuron>()
             for (j in 0..neuronsPerLayer) {
                 val neuron = Neuron()

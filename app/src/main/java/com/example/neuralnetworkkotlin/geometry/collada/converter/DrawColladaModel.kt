@@ -9,6 +9,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import kotlin.math.PI
 
 
 class DrawColladaModel(mesh: Mesh) {
@@ -94,6 +95,7 @@ class DrawColladaModel(mesh: Mesh) {
     var mvpMatrixHandler : Int = 0
     var mColorAccentHandle : Int = 0
     var waveHandler: Int = 0
+    var texHandler: Int = 0
     var wave = 0.0f
 
     fun setOGLDataGrass(textureHandle: Int, shader: Int) {
@@ -108,7 +110,7 @@ class DrawColladaModel(mesh: Mesh) {
         }
         GLES20.glUniform1f(waveHandler, wave)
 
-        val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
+        texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
@@ -124,7 +126,7 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glUseProgram(shader)
         mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
 
-        val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
+        texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
@@ -169,25 +171,35 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
     }
 
-    fun draw(mvpMatrix: FloatArray, positionScale: CreaturesData) {
+    fun draw(mvpMatrix: FloatArray, creature: CreaturesData, textureHandle: Int, dragonTextureHandle: Int) {
+
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
         Matrix.setIdentityM(transMatrix, 0)
 
-        Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
-        Matrix.rotateM(transMatrix, 0, -positionScale.getAngle(), 0.0f, 0.0f, 1.0f)
-        Matrix.scaleM(transMatrix, 0, positionScale.drawSize(), positionScale.drawSize(), positionScale.drawSize())
+        Matrix.translateM(transMatrix, 0, creature.pos.x, creature.pos.y, 0f)
+        Matrix.rotateM(transMatrix, 0, -creature.getAngle(), 0.0f, 0.0f, 1.0f)
+        Matrix.scaleM(transMatrix, 0, creature.drawSize(), creature.drawSize(), creature.drawSize())
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
 
-        positionScale.wave=positionScale.wave+0.08f*positionScale.speed
-        if(positionScale.wave>1000.0f){
-            positionScale.wave = 0.0f
+        creature.wave=creature.wave+0.08f*creature.speed
+        if(creature.wave>2* PI){
+            creature.wave = 0.0f
         }
-        GLES20.glUniform1f(waveHandler, positionScale.wave)
+        GLES20.glUniform1f(waveHandler, creature.wave)
 
-        GLES20.glUniform3f(mColorAccentHandle, positionScale.genome.color.x, positionScale.genome.color.y, positionScale.genome.color.z)
+        if(creature.genome.eatMeat){
+            GLES20.glUniform1i(texHandler, 0)
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, dragonTextureHandle)
+        }else{
+            GLES20.glUniform1i(texHandler, 0)
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
+        }
+        GLES20.glUniform3f(mColorAccentHandle, creature.genome.color.x, creature.genome.color.y, creature.genome.color.z)
 
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)

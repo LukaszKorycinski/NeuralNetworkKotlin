@@ -75,6 +75,9 @@ class Egg(val collidor: Collidor) {
     }
 
     fun draw(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
+
+
+
         GLES20.glUseProgram(shader)
         val mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
 

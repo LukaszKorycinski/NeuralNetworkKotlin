@@ -18,8 +18,17 @@ class ShaderLoader(context : Context){
     var shaderProgramCreatures: Int
     var shaderProgramEyes: Int
     var shaderProgramFont: Int
+    var shaderProgramParticles: Int
 
     init {
+        val vertexParticles: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_basic, context)
+        val fragmentParticles: Int = loadShader(GLES20.GL_FRAGMENT_SHADER,  R.string.ps_particles, context)
+
+        shaderProgramParticles = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, vertexParticles)
+            GLES20.glAttachShader(it, fragmentParticles)
+            GLES20.glLinkProgram(it)
+        }
 
         val animVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_anim, context)
         val animFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_anim, context)

@@ -30,6 +30,7 @@ import kotlin.random.Random
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
+    lateinit var particleEffects: ParticleEffects
     lateinit var collidor: Collidor
     lateinit var seeds: Seed
     lateinit var eggs: Egg
@@ -75,7 +76,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun creatureKey(action: MotionEvent) {
         when (action.action) {
             MotionEvent.ACTION_DOWN -> {
-                addRandomCreature()
+                //addRandomCreature()
+                onCreatureAdded()
             }
         }
     }
@@ -142,6 +144,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)//GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
         terrain = Terrain(context)
+        particleEffects = ParticleEffects(context)
         collidor = Collidor(terrain)
         seeds = Seed(collidor)
         eggs = Egg(collidor)
@@ -187,7 +190,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
         log.postValue("Qty "+creatures.creaturesList.size +
                 "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
-                "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation)
+                "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation
+                + "\nPredators " + creatures.creaturesList.filter { it.genome.eatMeat }.size
+        )
 
 
         setUpFrame()
@@ -200,7 +205,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for(i in 0..controlHelper.stepsPerFrame-1){
             seeds.loop(::onSeedAdded)
-            creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
+            particleEffects.particles = particleEffects.particles +  creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
             eggs.loop(::onCreatureAdded)
         }
         if (creatures.creaturesList.isNullOrEmpty()){
@@ -214,7 +219,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             drawModel.drawColladaModelCreature.setOGLDataCreatures(textures.textureHandle[14], shaderLoader.shaderProgramCreatures, textures.textureHandle[0])
             creatures.creaturesList.forEach {
-                drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it)
+                drawModel.drawColladaModelCreature.draw(camera.viewProjectionMatrix, it, textures.textureHandle[14], textures.textureHandle[1])
             }
 
             drawModel.drawColladaModelCreature.setOGLDataCreatures(
@@ -238,7 +243,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
 
 
-
+        particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
 
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
@@ -254,6 +259,15 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     private fun onCreatureAdded(creature: CreaturesData) {
+        creatures.add(creature)
+    }
+
+    private fun onCreatureAdded() {
+        val creature = creatures.creaturesList.get(creatures.creaturesList.size-1)
+        creature.genome.eatMeat = true
+        creature.genome.kidsQty = 1
+        creature.genome.color=Vector3f(1f,0.0f,0.0f)
+
         creatures.add(creature)
     }
 

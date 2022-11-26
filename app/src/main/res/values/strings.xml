@@ -53,6 +53,27 @@
 
 
 
+
+    <string name="ps_particles"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform float size;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec4 color = texture2D(u_Texture, texCoord);
+
+        color.a = color.a - size;
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
+
+
     <string name="vs_basic">
 
         uniform mat4 uMVPMatrix;
