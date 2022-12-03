@@ -90,6 +90,7 @@ class ParticleEffects(context: Context) {
         GLES20.glEnable(GLES20.GL_BLEND)
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
         GLES20.glBlendEquationSeparate(GLES20.GL_FUNC_ADD, GLES20.GL_FUNC_ADD)
+
         GLES20.glUseProgram(shader)
         val mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
         //GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvpMatrix, 0)

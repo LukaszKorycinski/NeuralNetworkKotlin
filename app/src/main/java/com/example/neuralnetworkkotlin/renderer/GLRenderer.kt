@@ -243,11 +243,11 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
 
 
-        particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
+
 
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
-
+        //particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
 
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
