@@ -8,7 +8,12 @@ import com.example.neuralnetworkkotlin.mytech.a3df
 
 class Banner {
 
+
     var units = Unit()
+
+    fun logic(matrices: Matrices){
+        units.calculateUnistPos(matrices.pointer3d)
+    }
 
     fun draw(texture: Int, shadowMapHandle: Int?, shaderProgram: Int, A3df: a3df, matrices: Matrices){
         GLES20.glUseProgram(shaderProgram)
@@ -28,25 +33,17 @@ class Banner {
             GLES20.glUniformMatrix4fv(lightMatrixHandler, 1, false, matrices.lightMatrix, 0)
         }
 
+
+
         for (uData in units.unitsData){
-            uData.animf = uData.animf + 0.05f
-            if (uData.animf>=4.0f)uData.animf=0.0f
-
-
-            uData.pos = matrices.pointer3d//.x = uData.pos.x + direction.x
-
             val tmpMatrix = FloatArray(16)
             Matrix.setIdentityM(tmpMatrix, 0)
-            Matrix.translateM(tmpMatrix, 0, uData.pos.x, uData.pos.y, 0.0f )
+            Matrix.translateM(tmpMatrix, 0, uData.pos.x,  0.0f, uData.pos.y )
+
+//            unit.pos.x = i*1.5f
+//            unit.pos.y = j*0.85f
 
 
-
-            //val direction = Vector2f(uData.pos.x - matrices.pointer3d.x, uData.pos.y - matrices.pointer3d.y).normalize(0.005f)
-
-            //uData.pos.y = uData.pos.y + direction.y
-
-//            if(uData.pos.x>7.0f)dir=-1.0f
-//            if(uData.pos.x<-7.0f)dir=1.0f
 
             val iVPMatrix = GLES20.glGetUniformLocation(shaderProgram, "u_VPMatrix") //, iVMatrix;
             Matrix.multiplyMM(tmpMatrix, 0, matrices.viewProjectionMatrix, 0, tmpMatrix, 0)

@@ -70,6 +70,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
         setUpFrame()
         matrices.setUpFrame(controlHelper.updatePosition())
+        matrices.handleCursor()
         matrices.calculateLightMatrix(controlHelper.lightPosition())
 
         val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
@@ -79,6 +80,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         terrain.drawTerrain(matrices.viewProjectionMatrix, matrices.lightMatrix, textures.textureHandle[11], shadowTextureHandle[0], shaderLoader.shaderProgramBasic)
 
         banner.draw(textures.textureHandle[0], shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, matrices)
+        banner.logic(matrices)
     }
 
     val shadowTextureHandle = IntArray(1)

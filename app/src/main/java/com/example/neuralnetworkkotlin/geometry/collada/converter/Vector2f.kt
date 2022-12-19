@@ -37,5 +37,18 @@ class Vector2f {
     override fun toString(): String {
         return (x.toString() + ", "+y.toString())
     }
+
+    fun length(): Float {
+        return sqrt(x * x + y * y)
+    }
+
+    fun normalizeOrLow(desireL: Float = 1.0f): Vector2f {
+        val currentL = sqrt(x * x + y * y)
+        return if(currentL>desireL)  normalize(desireL) else this
+    }
+
+    fun distance(p2: Vector2f): Double {
+        return Math.sqrt(Math.pow((x - p2.x).toDouble(), 2.0) + Math.pow((y - p2.y).toDouble(), 2.0))
+    }
 }
 
