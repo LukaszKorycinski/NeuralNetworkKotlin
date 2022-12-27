@@ -71,6 +71,11 @@ class Terrain {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
 
+
+
+
+
+
     fun drawTerrain(mvpMatrix: FloatArray, lightMatrix: FloatArray?, textureHandle: Int, shadowMapHandle: Int?, shader: Int) {
 
         GLES20.glUseProgram(shader)
@@ -134,4 +139,27 @@ class Terrain {
 
 
 
+    var width: Int = 0
+    var height = 0
+    var nChannels = 0
+
+
+    fun initHmap(){
+        // vertex generation
+        var vertices = floatArrayOf()
+
+        for(i in 0..height)
+        {
+            for(j in 0..width)
+            {
+
+                // vertex
+                vertices = vertices+(  );        // v.x
+                vertices = vertices+(  ); // v.y
+                vertices = vertices+(  );        // v.z
+            }
+        }
+    }
+
+    fun drawHmapTerrain(mvpMatrix: FloatArray, lightMatrix: FloatArray?, textureHandle: Int, shadowMapHandle: Int?, shader: Int){}
 }
