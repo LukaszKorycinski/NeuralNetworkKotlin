@@ -13,6 +13,7 @@ class ShaderLoader(context : Context){
     var shaderProgramBasicAnim: Int
     var shaderProgramBasicShadowMapping: Int
     var shaderProgramBasicAnimShadowMapping: Int
+    var shaderProgramBasicAlpha: Int
 
     init {
         val basicVertexShaderShadowMapping: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
@@ -89,8 +90,14 @@ class ShaderLoader(context : Context){
         }
 
 
-
-
+        val basicAlphaFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(
+            R.string.ps_basic_alpha
+        ) )
+        shaderProgramBasicAlpha = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, basicVertexShader)
+            GLES20.glAttachShader(it, basicAlphaFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
 
         val fogVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
             R.string.vs_fog

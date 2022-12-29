@@ -108,6 +108,40 @@
         }
     </string>
 
+    <string name="ps_basic_alpha"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D u_ShadowMap;
+        varying vec2 texCoord;
+        varying vec4 positionFromLight;
+
+        void main() {
+
+        vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
+        float fDepth = vfDepth.x;
+
+        float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
+
+            if(fLDepth>0.01){
+                fLDepth=max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0);
+            }else{
+                fLDepth=0.0f;
+            }
+
+
+        vec4 color = texture2D(u_Texture, texCoord);
+
+        vec4 colorShadow = vec4(color.x - fLDepth, color.y - fLDepth, color.z - fLDepth, 1.0f);
+
+        if( color.a<0.25 ){
+            discard;
+        }
+
+        gl_FragColor = colorShadow;
+        }
+    ]]></string>
+
 
     <string name="vs_background">
 

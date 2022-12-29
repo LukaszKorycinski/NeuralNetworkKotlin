@@ -1,15 +1,14 @@
 package com.example.neuralnetworkkotlin.geometry
 
+import android.content.Context
 import android.opengl.GLES20
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
-import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
-class Terrain {
+class Terrain(context: Context) {
 
     val size = 10.0f
 
@@ -31,7 +30,7 @@ class Terrain {
 
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3) // order to draw vertices
 
-    private val vertexBufferBackground: FloatBuffer =
+    private val vertexBuffer: FloatBuffer =
         // (# of coordinate values * 4 bytes per float)
         ByteBuffer.allocateDirect(layerCoords.size * 4)
             .run {
@@ -43,7 +42,7 @@ class Terrain {
             }
 
     // initialize byte buffer for the draw list
-    private val drawListBufferTrack: ShortBuffer =
+    private val drawListBuffer: ShortBuffer =
         // (# of coordinate values * 2 bytes per short)
         ByteBuffer.allocateDirect(drawOrder.size * 2).run {
             order(ByteOrder.nativeOrder())
@@ -66,14 +65,8 @@ class Terrain {
             }
 
 
-    private var positionHandle: Int = 0
 
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
-
-
-
-
-
 
 
     fun drawTerrain(mvpMatrix: FloatArray, lightMatrix: FloatArray?, textureHandle: Int, shadowMapHandle: Int?, shader: Int) {
@@ -101,7 +94,7 @@ class Terrain {
 
 
 
-        positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
+        GLES20.glGetAttribLocation(shader, "vPosition").also {
             val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
 
             GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
@@ -124,42 +117,15 @@ class Terrain {
                 GLES20.GL_FLOAT,
                 false,
                 vertexStride,
-                vertexBufferBackground
+                vertexBuffer
             )
 
             GLES20.glDrawElements(
                 GLES20.GL_TRIANGLES, drawOrder.size,
-                GLES20.GL_UNSIGNED_SHORT, drawListBufferTrack
+                GLES20.GL_UNSIGNED_SHORT, drawListBuffer
             )
 
             GLES20.glDisableVertexAttribArray(it)
         }
     }
-
-
-
-
-    var width: Int = 0
-    var height = 0
-    var nChannels = 0
-
-
-    fun initHmap(){
-        // vertex generation
-        var vertices = floatArrayOf()
-
-        for(i in 0..height)
-        {
-            for(j in 0..width)
-            {
-
-                // vertex
-                vertices = vertices+(  );        // v.x
-                vertices = vertices+(  ); // v.y
-                vertices = vertices+(  );        // v.z
-            }
-        }
-    }
-
-    fun drawHmapTerrain(mvpMatrix: FloatArray, lightMatrix: FloatArray?, textureHandle: Int, shadowMapHandle: Int?, shader: Int){}
 }

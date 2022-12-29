@@ -2,7 +2,6 @@ package com.example.neuralnetworkkotlin.activity
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,7 +19,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
 
         glSurfaceView.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.renderer.matrices.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
+            glSurfaceView.renderer.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
             true//view.performClick()
         }
 

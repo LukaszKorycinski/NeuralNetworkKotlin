@@ -7,13 +7,11 @@ import android.util.Log
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.Matrices
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.collada.animConverter.DrawAnimColladaModel
-import com.example.neuralnetworkkotlin.geometry.collada.converter.DrawColladaModel
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.glViewport
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.mytech.a3df
-import com.example.neuralnetworkkotlin.strategygame.Banner
+import com.example.neuralnetworkkotlin.strategygame.Banners
 import timber.log.Timber
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -32,7 +30,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
-        terrain = Terrain()
+        terrain = Terrain(context)
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
@@ -55,7 +53,11 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowInit()
     }
 
-    var banner = Banner()
+    var banners = Banners()
+
+    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
+        banners.onClick(motionEvent, pos, matrices)
+    }
 
     override fun onDrawFrame(unused: GL10) {
         shadowPass()
@@ -70,7 +72,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
         setUpFrame()
         matrices.setUpFrame(controlHelper.updatePosition())
-        matrices.handleCursor()
         matrices.calculateLightMatrix(controlHelper.lightPosition())
 
         val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
@@ -78,9 +79,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         //terrain.drawTerrain(camera.viewProjectionMatrix, /*shadowTextureHandle[0]*/textures.textureHandle[11], shaderLoader.shaderProgramBasic)
         terrain.drawTerrain(matrices.viewProjectionMatrix, matrices.lightMatrix, textures.textureHandle[11], shadowTextureHandle[0], shaderLoader.shaderProgramBasic)
+        banners.pointer.draw(matrices.viewProjectionMatrix, textures.textureHandle[2], shaderLoader.shaderProgramBasicAlpha)
 
-        banner.draw(textures.textureHandle[0], shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, matrices)
-        banner.logic(matrices)
+        banners.draw(textures.textureHandle[0], shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, matrices)
+        banners.logic()
     }
 
     val shadowTextureHandle = IntArray(1)
@@ -95,13 +97,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, theNameFBO[0])
         setUpFrame()
-        matrices.setUpFrame(controlHelper.lightPosition())
+        matrices.setUpFrame(controlHelper.lightPosition(), true)
 
         val texHandler = GLES20.glGetUniformLocation(shaderLoader.shaderProgramBasic, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
 
         terrain.drawTerrain(matrices.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
-        banner.draw(textures.textureHandle[0], null, shaderLoader.shaderProgramBasicAnimShadowMapping, A3df!!, matrices)
+        banners.draw(textures.textureHandle[0], null, shaderLoader.shaderProgramBasicAnimShadowMapping, A3df!!, matrices)
     }
     fun shadowInit(){
         GLES20.glGenTextures(1, shadowTextureHandle, 0)

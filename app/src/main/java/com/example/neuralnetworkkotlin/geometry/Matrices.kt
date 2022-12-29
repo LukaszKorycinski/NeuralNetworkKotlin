@@ -18,10 +18,11 @@ class Matrices {
     var nonCamViewProjectionMatrix = FloatArray(16)
 
     fun calculateLightMatrix(position: Vector4f){
-        Matrix.setIdentityM(viewMatrix, 0)
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
 
         Matrix.rotateM(
-            viewMatrix,
+            tmpMatrix,
             0,
             position.w,
             1.0f,
@@ -29,35 +30,34 @@ class Matrices {
             0.0f
         )
         Matrix.translateM(
-            viewMatrix,
+            tmpMatrix,
             0,
             position.x, position.y, position.z
         )
 
-        Matrix.multiplyMM(lightMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+        Matrix.multiplyMM(lightMatrix, 0, projectionMatrix, 0, tmpMatrix, 0)
     }
 
 
-
+    var renderResolution = Vector2f()
 
     fun perspectiveINV() {
         val ratio: Float = renderResolution.x / renderResolution.y
         Matrix.perspectiveM(projectionMatrix,0,40.0f, ratio, 3.0f, 150.0f)
     }
 
-    var cursorPos = Vector2f()
-    var pointer3d = Vector2f()
-    var renderResolution = Vector2f()
 
-    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
-        cursorPos = pos
-    }
 
-    fun setUpFrame(position: Vector4f) {
-        Matrix.setIdentityM(viewMatrix, 0)
+
+
+
+
+    fun setUpFrame(position: Vector4f, shadowPass: Boolean = false) {
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
 
         Matrix.rotateM(
-            viewMatrix,
+            tmpMatrix,
             0,
             position.w,
             1.0f,
@@ -65,32 +65,25 @@ class Matrices {
             0.0f
         )
         Matrix.translateM(
-            viewMatrix,
+            tmpMatrix,
             0,
             position.x, position.y, position.z
         )
 
-        Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+        Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, tmpMatrix, 0)
 
-
-
+        if(!shadowPass){
+            viewMatrix = tmpMatrix
+        }
     }
 
-    fun handleCursor(){
-        pointer3d = unproject(cursorPos.x  , cursorPos.y )
-
-        Log.e("dsfzs", "ds " + pointer3d)
-        Log.e("dsfzs", "ds " + cursorPos)
-        Log.e("dsfzs", "///////////.//")
-    }
-
-    fun unproject(x: Float, y: Float): Vector2f {
+    fun unproject(xy: Vector2f): Vector2f {
         val outPoint1: FloatArray = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
         val outPoint2: FloatArray = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
 
-        val fixedY = renderResolution.y - y  - 1f
+        val fixedY = renderResolution.y - xy.y  - 1f
         GLU.gluUnProject(
-            x,fixedY,0.0f,
+            xy.x,fixedY,0.0f,
             viewMatrix, 0,
             projectionMatrix, 0,
             intArrayOf(0, 0, renderResolution.x.toInt(), renderResolution.y.toInt()), 0,
@@ -98,7 +91,7 @@ class Matrices {
         )
 
         GLU.gluUnProject(
-            x,fixedY,1.0f,
+            xy.x,fixedY,1.0f,
             viewMatrix, 0,
             projectionMatrix, 0,
             intArrayOf(0, 0, renderResolution.x.toInt(), renderResolution.y.toInt()), 0,
