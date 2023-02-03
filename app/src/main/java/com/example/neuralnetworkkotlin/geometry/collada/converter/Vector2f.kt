@@ -38,6 +38,13 @@ class Vector2f {
         return (x.toString() + ", "+y.toString())
     }
 
+    fun rotate(radians: Double): Vector2f{
+        val ca = Math.cos(radians).toFloat()
+        val sa = Math.sin(radians).toFloat()
+
+        return Vector2f(ca*x - sa*y, sa*x + ca*y)
+    }
+
     fun length(): Float {
         return sqrt(x * x + y * y)
     }

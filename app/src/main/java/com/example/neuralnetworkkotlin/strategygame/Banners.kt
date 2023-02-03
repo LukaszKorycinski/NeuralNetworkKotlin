@@ -20,12 +20,14 @@ class Banners {
         when (motionEvent.action){
             MotionEvent.ACTION_DOWN -> {
                 units.clearDestination(pointer3d)
-                pointer.clearDestination(pointer3d)
+                pointer.clearDestination(pointer3d, units.unitsData.get(units.unitsData.size/2).pos)
                 pointer.recalculate()
             }
             MotionEvent.ACTION_UP -> {
                 units.addDestination(pointer3d)
+                units.closeDestination()
                 pointer.addDestination(pointer3d)
+                pointer.end()
                 pointer.recalculate()
             }
             MotionEvent.ACTION_MOVE -> {
@@ -43,7 +45,7 @@ class Banners {
     }
 
 
-    fun draw(texture: Int, shadowMapHandle: Int?, shaderProgram: Int, A3df: a3df, matrices: Matrices){
+    fun draw(texture: Int,lightMatrix: FloatArray?,  shadowMapHandle: Int?, shaderProgram: Int, A3df: a3df, matrices: Matrices){//gpu instancing trzeba zrobić tu i w trawie
         GLES20.glUseProgram(shaderProgram)
 
         val texLoc = GLES20.glGetUniformLocation(shaderProgram, "u_Texture")
@@ -65,17 +67,18 @@ class Banners {
             val tmpMatrix = FloatArray(16)
             Matrix.setIdentityM(tmpMatrix, 0)
             Matrix.translateM(tmpMatrix, 0, uData.pos.x,  0.0f, uData.pos.y )
+            val scale = if(uData.mutable) 1.2f else 1.0f
+            Matrix.scaleM(tmpMatrix, 0, scale, scale, scale)
 
-            val iVPMatrix = GLES20.glGetUniformLocation(shaderProgram, "u_VPMatrix") //, iVMatrix;
+            val iVPMatrix = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix") //, iVMatrix;
             Matrix.multiplyMM(tmpMatrix, 0, matrices.viewProjectionMatrix, 0, tmpMatrix, 0)
             GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
 
-            Matrix.setIdentityM(tmpMatrix, 0)
-            Matrix.translateM(tmpMatrix, 0, uData.pos.x, uData.pos.y, 0.0f)
+            lightMatrix?.let {
+                val lightMatrixLoc = GLES20.glGetUniformLocation(shaderProgram, "lightMatrix") //, iVMatrix;
+                GLES20.glUniformMatrix4fv(lightMatrixLoc, 1, false, it, 0)
+            }
 
-            val lightMatrix = GLES20.glGetUniformLocation(shaderProgram, "lightMatrix") //, iVMatrix;
-            Matrix.multiplyMM(tmpMatrix, 0, matrices.lightMatrix, 0, tmpMatrix, 0)
-            GLES20.glUniformMatrix4fv(lightMatrix, 1, false, tmpMatrix, 0)
 
             A3df.DrawAnimModel(0, shaderProgram, uData.animf)
         }

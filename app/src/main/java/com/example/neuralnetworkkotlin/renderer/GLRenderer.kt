@@ -5,12 +5,15 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.geometry.Grass
 import com.example.neuralnetworkkotlin.geometry.Matrices
+import com.example.neuralnetworkkotlin.geometry.StaticMesh
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.glViewport
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.mytech.a3df
+import com.example.neuralnetworkkotlin.mytech.f3ds
 import com.example.neuralnetworkkotlin.strategygame.Banners
 import timber.log.Timber
 import javax.microedition.khronos.egl.EGLConfig
@@ -25,7 +28,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var textures = TexturesLoader(context)
     lateinit var shaderLoader: ShaderLoader;
 
-    var A3df: a3df? = null
+    var filesA3df: a3df? = null
+    var files3ds: f3ds? = null
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
@@ -48,12 +52,17 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //        val object3DDataList = colladaLoader.loadFromAsset(context, "cowboy.dae")
         Timber.e("debagier")
 
-        A3df = a3df(context)
+        filesA3df = a3df(context)
         a3df.load()
+        files3ds = f3ds(context)
+        f3ds.load()
+
         shadowInit()
     }
 
     var banners = Banners()
+    var grass = Grass()
+    var staticMesh = StaticMesh()
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
         banners.onClick(motionEvent, pos, matrices)
@@ -79,9 +88,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         //terrain.drawTerrain(camera.viewProjectionMatrix, /*shadowTextureHandle[0]*/textures.textureHandle[11], shaderLoader.shaderProgramBasic)
         terrain.drawTerrain(matrices.viewProjectionMatrix, matrices.lightMatrix, textures.textureHandle[11], shadowTextureHandle[0], shaderLoader.shaderProgramBasic)
-        banners.pointer.draw(matrices.viewProjectionMatrix, textures.textureHandle[2], shaderLoader.shaderProgramBasicAlpha)
 
-        banners.draw(textures.textureHandle[0], shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, A3df!!, matrices)
+        staticMesh.draw(matrices, textures, files3ds!!, matrices.lightMatrix,  shadowTextureHandle[0], shaderLoader.shaderProgramBasic )
+        grass.draw(matrices, textures, files3ds!!, matrices.lightMatrix,  shadowTextureHandle[0], shaderLoader.shaderProgramGrass )
+
+        banners.pointer.draw(matrices.viewProjectionMatrix,  textures.textureHandle[2], shaderLoader.shaderProgramBasicAlpha)
+
+        banners.draw(textures.textureHandle[0], matrices.lightMatrix,shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, filesA3df!!, matrices)
         banners.logic()
     }
 
@@ -103,7 +116,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glUniform1i(texHandler, 0)
 
         terrain.drawTerrain(matrices.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
-        banners.draw(textures.textureHandle[0], null, shaderLoader.shaderProgramBasicAnimShadowMapping, A3df!!, matrices)
+        banners.draw(textures.textureHandle[0], null, null, shaderLoader.shaderProgramBasicAnimShadowMapping, filesA3df!!, matrices)
     }
     fun shadowInit(){
         GLES20.glGenTextures(1, shadowTextureHandle, 0)

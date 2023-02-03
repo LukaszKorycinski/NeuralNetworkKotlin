@@ -14,6 +14,7 @@ class ShaderLoader(context : Context){
     var shaderProgramBasicShadowMapping: Int
     var shaderProgramBasicAnimShadowMapping: Int
     var shaderProgramBasicAlpha: Int
+    var shaderProgramGrass: Int
 
     init {
         val basicVertexShaderShadowMapping: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
@@ -95,6 +96,15 @@ class ShaderLoader(context : Context){
         ) )
         shaderProgramBasicAlpha = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, basicVertexShader)
+            GLES20.glAttachShader(it, basicAlphaFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
+
+        val grassVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(
+            R.string.vs_grass
+        ) )
+        shaderProgramGrass = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, grassVertexShader)
             GLES20.glAttachShader(it, basicAlphaFragmentShader)
             GLES20.glLinkProgram(it)
         }

@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.strategygame
 
 import android.util.Log
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import com.example.neuralnetworkkotlin.ext.middle
 import kotlin.random.Random
 
 class UnitData{
@@ -9,6 +10,8 @@ class UnitData{
     var animf: Float = 0.0f
     var pos = Vector2f()
     var destination: ArrayList<Vector2f> = arrayListOf()
+    var tmpDestination: ArrayList<Vector2f> = arrayListOf()
+    var mutable = false
 }
 
 class Units {
@@ -44,26 +47,40 @@ class Units {
     }
 
     fun clearDestination(middle: Vector2f){
-        unitsData.map {
-            it.destination = arrayListOf()
-//            it.destination.add(middle)
-            val posLocal = callPosLoc(it.no)
-            it.destination.add(Vector2f ( posLocal.x - middle.x, posLocal.y - middle.y ))
-            Log.e("add","dst: "+it.no+" "+Vector2f ( posLocal.x, posLocal.y ))
-        }
-    }
 
-    fun addDestination(middle: Vector2f){
-        unitsData.map { unit ->
-            unit.destination.lastOrNull()?.let{ lastDest ->
-                if( middle.distance(lastDest) > 1.5f){
-                    val posLocal = callPosLoc(unit.no)
-                    unit.destination.add(Vector2f ( posLocal.x - middle.x, posLocal.y - middle.y ))
-//                    unit.destination.add(middle)
+        unitsData.middle()?.let {
+            if( middle.distance(it.pos) < 1.7 ){
+                unitsData.map {
+                    it.tmpDestination = arrayListOf()
+                    val posLocal = callPosLoc(it.no)
+                    it.tmpDestination.add(Vector2f ( posLocal.x - middle.x, posLocal.y - middle.y ))
+                    it.mutable = true
+                    Log.e("add","dst: "+it.no+" "+Vector2f ( posLocal.x, posLocal.y ))
                 }
             }
         }
     }
+
+    fun addDestination(middle: Vector2f){
+        unitsData
+            .filter { it.mutable }
+            .map { unit ->
+            unit.tmpDestination.lastOrNull()?.let{ lastDest ->
+                if( middle.distance(lastDest) > 1.5f){
+                    val posLocal = callPosLoc(unit.no)
+                    unit.tmpDestination.add(Vector2f ( posLocal.x - middle.x, posLocal.y - middle.y ))
+                }
+            }
+        }
+    }
+
+    fun closeDestination(){
+        unitsData.map {
+            it.destination = it.tmpDestination
+            it.mutable=false
+        }
+    }
+
 
     fun loop(){
         unitsData.forEachIndexed { index, uData ->
@@ -88,3 +105,6 @@ class Units {
         }
     }
 }
+
+
+

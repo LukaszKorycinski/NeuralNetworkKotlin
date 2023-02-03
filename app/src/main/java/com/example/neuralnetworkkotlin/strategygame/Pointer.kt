@@ -7,14 +7,19 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import kotlin.math.PI
+import kotlin.math.atan2
 
 class Pointer {
+
+    var start = Vector2f()
     var points: ArrayList<Vector2f> = arrayListOf()
 
 
-    fun clearDestination(pointer3d: Vector2f) {
+    fun clearDestination(pointer3d: Vector2f, start: Vector2f) {
         points.clear()
         points.add(pointer3d)
+        this.start = start
     }
 
     fun addDestination(pointer3d: Vector2f) {
@@ -25,7 +30,9 @@ class Pointer {
         }
     }
 
+    fun end() {
 
+    }
 
     var layerCoords = floatArrayOf()
     var textureCoords = floatArrayOf()
@@ -42,28 +49,29 @@ class Pointer {
         layerCoords = floatArrayOf()
         textureCoords = floatArrayOf()
         drawOrder = shortArrayOf()
-        var i=0
         val y = 0.1f
 
+        points.forEachIndexed { i, p ->
+
+            //val angle = 90.0f * PI/180.0f
+            val angle = (if(i==0){
+                atan2(points.get(i).y - start.y, p.x - start.x) * 180 / PI
+            }else{
+                atan2(points.get(i).y - points.get(i-1).y, p.x - points.get(i-1).x) * 180 / PI
+            }-90.0) * PI/180.0f
 
 
+            var vec1 = Vector2f(-size, size).rotate(angle)
+            var vec2 = Vector2f(-size,-size).rotate(angle)
+            var vec3 = Vector2f( size,-size).rotate(angle)
+            var vec4 = Vector2f( size, size).rotate(angle)
 
-
-        for (p in points){
-
-
-            val arrow = floatArrayOf(
-                -size, y, size,       // top left
-                -size, y, -size,      // bottom left
-                size, y, -size,       // bottom right
-                size, y, size,        // top right
-            )
 
             layerCoords = layerCoords + floatArrayOf(
-                arrow.get(0) + p.x, arrow.get(1), arrow.get(2) + p.y,       // top left
-                arrow.get(3) + p.x, arrow.get(4), arrow.get(5) + p.y,      // bottom left
-                arrow.get(6) + p.x, arrow.get(7), arrow.get(8) + p.y,       // bottom right
-                arrow.get(9) + p.x, arrow.get(10), arrow.get(11) + p.y,        // top right
+                vec1.x + p.x, y, vec1.y + p.y,       // top left
+                vec2.x + p.x, y, vec2.y + p.y,      // bottom left
+                vec3.x + p.x, y, vec3.y + p.y,       // bottom right
+                vec4.x + p.x, y, vec4.y + p.y,        // top right
             )
             textureCoords = textureCoords + floatArrayOf(
                 1.0f, 0.0f,      // top left
@@ -72,7 +80,6 @@ class Pointer {
                 0.0f, 0.0f       // top right
             )
             drawOrder = drawOrder + shortArrayOf((0+4*i).toShort(), (1+4*i).toShort(), (2+4*i).toShort(), (0+4*i).toShort(), (2+4*i).toShort(), (3+4*i).toShort()) // order to draw vertices
-            i++
         }
 
         vertexBuffer =

@@ -21,8 +21,8 @@ class TexturesLoader(var context: Context) {
         textResIds[0] = R.drawable.body
         textResIds[1] = R.drawable.bodyy
         textResIds[2] = R.drawable.path
-        textResIds[3] = R.drawable.b3
-        textResIds[4] = R.drawable.b4
+        textResIds[3] = R.drawable.grass
+        textResIds[4] = R.drawable.stone
         textResIds[5] = R.drawable.b5
         textResIds[6] = R.drawable.b6
         textResIds[7] = R.drawable.b7
