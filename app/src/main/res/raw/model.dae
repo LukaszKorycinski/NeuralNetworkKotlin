@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.3.1" xmlns="http://www.collada.org/2005/COLLADASchema">
+	<asset>
+		<author>Mikael Lagre</author>
+		<authoring_tool>Blender 249 COLLADA Exporter</authoring_tool>
+		<up_axis>Z_UP</up_axis>
+		<unit meter="0.01" name="centimeter"/>
+	</asset>
+	<library type="IMAGE"/>
+	<library type="TEXTURE"/>
+	<library type="MATERIAL">
+		<material id="Material-Lib" name="Material">
+			<shader id="Material-Phong">
+				<technique profile="COMMON">
+					<pass>
+						<program url="PHONG">
+							<param flow="IN" name="COLOR" sid="color" type="float3">0.800000 0.800000 0.800000</param>
+							<param flow="IN" name="DIFFUSE" sid="diffuse" type="float3">0.800000 0.800000 0.800000</param>
+							<param flow="IN" name="AMBIENT" sid="ambient" type="float3">0.400000 0.400000 0.400000</param>
+							<param flow="IN" name="SPECULAR" sid="specular" type="float3">0.250000 0.250000 0.250000</param>
+							<param flow="IN" name="EMISSION" sid="emission" type="float3">0.000000 0.000000 0.000000</param>
+							<param flow="IN" name="SHININESS" sid="shininess" type="float">12.500000</param>
+							<param flow="IN" name="TRANSPARENT" sid="transparent" type="float">0.800000 0.800000 0.800000</param>
+							<param flow="IN" name="TRANSPARENCY" sid="transparency" type="float">0.000000</param>
+							<param flow="IN" name="REFLECTIVE" sid="reflective" type="float3">1.000000 1.000000 1.000000</param>
+							<param flow="IN" name="REFLECTIVITY" sid="reflectivity" type="float">0.800000</param>
+						</program>
+					</pass>
+				</technique>
+			</shader>
+		</material>
+	</library>
+	<library type="GEOMETRY">
+		<geometry id="Cube-Lib" name="Cube">
+			<mesh>
+				<source id="Cube-Pos" name="Cube-Pos">
+					<float_array count="75" id="Cube-Pos-Array" name="Cube-Pos-Array">0.312077 1.809280 0.058470 0.354944 0.867779 0.058470 -0.609640 0.867779 0.037737 -0.576664 1.809280 0.037737 -0.635096 1.061947 0.015701 -0.540148 0.016373 0.015701 0.424436 0.016372 -0.022294 0.331700 1.059779 0.015701 -0.646819 0.236571 0.015701 0.413719 0.251747 0.015701 -0.045742 0.019184 0.033421 -0.052634 0.251748 0.015701 -0.055535 0.011685 -0.022294 -0.601097 0.107779 0.083818 -0.303664 0.907928 0.036256 -0.743023 1.106329 0.036256 -0.821076 0.041085 0.083818 0.766966 0.334658 -0.005413 -0.027171 1.020958 -0.005413 0.358249 1.052685 -0.005413 0.868367 0.540952 -0.005413 -0.618674 0.562641 0.083818 -0.999054 0.584666 0.083818 0.246646 0.449289 -0.005413 0.410606 0.795831 -0.005413</float_array>
+					<technique profile="COMMON">
+						<accessor count="51" id="Cube-Pos-Array-Accessor" offset="0" source="#Cube-Pos-Array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique>
+				</source>
+				<source id="Cube-Normal" name="Cube-Normal">
+					<float_array count="153" id="Cube-Normal-Array" name="Cube-Normal-Array">0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 0.000000 -0.000000 1.000000 0.000000 -0.000000 1.000000 0.000000 -0.000000 1.000000 0.043804 0.097004 0.994320 0.043804 0.097004 0.994320 0.043804 0.097004 0.994320 0.005113 0.088309 0.996080 0.005113 0.088309 0.996080 0.005113 0.088309 0.996080 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 -0.000000 -0.000000 1.000000 0.001555 -0.159293 0.987230 0.001555 -0.159293 0.987230 0.001555 -0.159293 0.987230 -0.000000 -0.156327 0.987705 -0.000000 -0.156327 0.987705 -0.000000 -0.156327 0.987705 -0.036143 0.074860 0.996539 -0.036143 0.074860 0.996539 -0.036143 0.074860 0.996539 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.000000 0.000000 1.000000 -0.023322 0.000817 0.999728 -0.023322 0.000817 0.999728 -0.023322 0.000817 0.999728 -0.021489 -0.000978 0.999769 -0.021489 -0.000978 0.999769 -0.021489 -0.000978 0.999769</float_array>
+					<technique profile="COMMON">
+						<accessor count="51" id="Cube-Normal-Array-Accessor" offset="0" source="#Cube-Normal-Array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique>
+				</source>
+				<source id="Cube-UV1" name="Cube-UV1">
+					<float_array count="102" id="Cube-UV1-Array" name="Cube-UV1-Array">0.124061 0.631428 0.200060 0.791210 0.008884 0.791638 0.006565 0.628427 0.124061 0.631428 0.008884 0.791638 0.124061 0.631428 0.216278 0.631428 0.200060 0.791210 0.341290 0.678520 0.356013 0.595878 0.432438 0.593202 0.341290 0.678520 0.432438 0.593202 0.417059 0.676075 0.351681 0.785859 0.341290 0.678520 0.397085 0.783715 0.341290 0.678520 0.417059 0.676075 0.397085 0.783715 0.239940 0.671423 0.232535 0.569725 0.327825 0.567049 0.239940 0.671423 0.327825 0.567049 0.315244 0.668995 0.250926 0.788432 0.239940 0.671423 0.296330 0.786288 0.239940 0.671423 0.315244 0.668995 0.296330 0.786288 0.123231 0.576534 0.218397 0.584885 0.216278 0.631428 0.123231 0.576534 0.216278 0.631428 0.124061 0.631428 0.027403 0.577461 0.125167 0.578017 0.124061 0.631428 0.027403 0.577461 0.124061 0.631428 0.006565 0.628427 0.189392 0.991167 0.013651 0.991167 0.007130 0.804993 0.189392 0.991167 0.007130 0.804993 0.197869 0.804993</float_array>
+					<technique profile="COMMON">
+						<accessor count="51" id="Cube-UV1-Array-Accessor" offset="0" source="#Cube-UV1-Array" stride="2">
+							<param name="S" type="float"/>
+							<param name="T" type="float"/>
+						</accessor>
+					</technique>
+				</source>
+				<vertices count="51" id="Cube-Vertices" name="Cube-Vertices">
+					<input semantic="POSITION" source="#Cube-Pos"/>
+				</vertices>
+				<polygons count="17" material="#Material-Lib">
+					<input idx="0" semantic="VERTEX" source="#Cube-Vertices"/>
+					<input idx="1" semantic="NORMAL" source="#Cube-Normal"/>
+					<input idx="2" semantic="TEXCOORD" source="#Cube-UV1"/>
+					<p>11 0 0 7 1 1 4 2 2</p>
+					<p>8 3 3 11 4 4 4 5 5</p>
+					<p>11 6 6 9 7 7 7 8 8</p>
+					<p>24 9 9 19 10 10 18 11 11</p>
+					<p>24 12 12 18 13 13 23 14 14</p>
+					<p>20 15 15 24 16 16 17 17 17</p>
+					<p>24 18 18 23 19 19 17 20 20</p>
+					<p>21 21 21 14 22 22 15 23 23</p>
+					<p>21 24 24 15 25 25 22 26 26</p>
+					<p>13 27 27 21 28 28 16 29 29</p>
+					<p>21 30 30 22 31 31 16 32 32</p>
+					<p>12 33 33 6 34 34 9 35 35</p>
+					<p>12 36 36 9 37 37 11 38 38</p>
+					<p>5 39 39 10 40 40 11 41 41</p>
+					<p>5 42 42 11 43 43 8 44 44</p>
+					<p>0 45 45 3 46 46 2 47 47</p>
+					<p>0 48 48 2 49 49 1 50 50</p>
+				</polygons>
+			</mesh>
+		</geometry>
+	</library>
+	<library type="LIGHT"/>
+	<library type="CAMERA"/>
+	<library type="ANIMATION"/>
+	<scene id="Scene" name="Scene"/>
+</COLLADA>

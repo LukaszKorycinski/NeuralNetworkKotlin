@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+        <string name="vs_anim"><![CDATA[
+        uniform mat4 uMVPMatrix;
+        uniform mat4 BonesMatrix[8];
+        uniform mat4 lightMatrix;
+
+        attribute vec4 vPosition;
+        attribute vec3 a_TexCoordinate;
+
+        varying vec2 texCoordMid;
+        varying vec4 positionFromLight;
+
+        void main() {
+            positionFromLight = lightMatrix * vec4(vPosition.xyz, 1.0);
+            const mat4 biasMat = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0);
+            positionFromLight = biasMat * positionFromLight;
+
+            mat4 boneMatrix = BonesMatrix[int(a_TexCoordinate.z)];
+
+            texCoordMid = a_TexCoordinate.xy;
+
+            gl_Position = uMVPMatrix * boneMatrix * vec4(vPosition.xyz, 1.0);
+        }
+    ]]></string>
+
+    <string name="ps_anim"><![CDATA[
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D u_ShadowMap;
+        varying vec2 texCoordMid;
+        varying vec4 positionFromLight;
+
+        void main() {
+            vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
+            float fDepth = vfDepth.x;
+
+            float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
+
+            if(fLDepth>0.0){
+                fLDepth=1.0 - (max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0));
+            }else{
+                fLDepth=1.0f;
+            }
+
+            vec4 color = texture2D(u_Texture, texCoordMid);
+
+            if( color.a<0.25 ){
+                discard;
+            }
+            vec4 colorShadow = vec4(color.x * fLDepth, color.y * fLDepth, color.z * fLDepth, 1.0f);
+            gl_FragColor = colorShadow;
+        }
+    ]]></string>
+
+
+    <string name="vs_grass">
+
+        uniform mat4 uMVPMatrix;
+        uniform mat4 lightMatrix;
+        uniform float wave;
+        attribute vec4 vPosition;
+        attribute vec3 vNormal;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 texCoord;
+        varying vec4 positionFromLight;
+
+        void main() {
+            vec4 posTmp = vec4(vPosition.x + sin(wave) * vPosition.y * 0.08, vPosition.y, vPosition.z + cos(wave) * vPosition.y * 0.08, 1.0);
+
+            positionFromLight = lightMatrix * vec4(posTmp.xyz, 1.0);
+            const mat4 biasMat = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0);
+            positionFromLight = biasMat * positionFromLight;
+
+            texCoord = a_TexCoordinate;
+            gl_Position = uMVPMatrix * posTmp;
+        }
+    </string>
+
+    <string name="vs_basic">
+
+        uniform mat4 uMVPMatrix;
+        uniform mat4 lightMatrix;
+        attribute vec4 vPosition;
+        attribute vec3 vNormal;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 texCoord;
+        varying vec4 positionFromLight;
+
+        void main() {
+            positionFromLight = lightMatrix * vec4(vPosition.xyz, 1.0);
+            const mat4 biasMat = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0);
+            positionFromLight = biasMat * positionFromLight;
+
+
+            texCoord = a_TexCoordinate;
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+        }
+    </string>
+
+    <string name="ps_basic">
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D u_ShadowMap;
+        varying vec2 texCoord;
+        varying vec4 positionFromLight;
+
+        void main() {
+
+        vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
+        float fDepth = vfDepth.x;
+
+        float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
+
+            if(fLDepth>0.01){
+                fLDepth=max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0);
+            }else{
+                fLDepth=0.0f;
+            }
+
+
+        vec4 color = texture2D(u_Texture, texCoord);
+
+        vec4 colorShadow = vec4(color.x - fLDepth, color.y - fLDepth, color.z - fLDepth, 1.0f);
+
+        gl_FragColor = colorShadow;
+        }
+    </string>
+
+    <string name="ps_basic_alpha"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D u_ShadowMap;
+        varying vec2 texCoord;
+        varying vec4 positionFromLight;
+
+        void main() {
+
+        vec2 vfDepth = texture2DProj(u_ShadowMap, positionFromLight).xy;
+        float fDepth = vfDepth.x;
+
+        float fLDepth = ((positionFromLight.z*0.05f) - fDepth );
+
+            if(fLDepth>0.01){
+                fLDepth=max(min(fLDepth, 0.1875) - fLDepth*0.25, 0.0);
+            }else{
+                fLDepth=0.0f;
+            }
+
+
+        vec4 color = texture2D(u_Texture, texCoord);
+
+        vec4 colorShadow = vec4(color.x - fLDepth, color.y - fLDepth, color.z - fLDepth, 1.0f);
+
+        if( color.a<0.25 ){
+            discard;
+        }
+
+        gl_FragColor = colorShadow;
+        }
+    ]]></string>
+
+
+    <string name="vs_background">
+
+        uniform mat4 uMVPMatrix;
+        uniform vec3 eyePosition;
+        uniform float modelPositionIN;
+
+        attribute vec4 vPosition;
+        attribute vec2 a_TexCoordinate;
+
+        varying vec2 v_TexCoordinate;
+        varying float modelPosition;
+
+        void main() {
+            modelPosition = modelPositionIN;
+
+            gl_Position = uMVPMatrix * vPosition;
+
+            vec2 paralaxTexcoord = a_TexCoordinate;
+
+            float parallax = modelPosition * 0.1;
+
+            paralaxTexcoord.x = paralaxTexcoord.x + eyePosition.x*parallax;
+            paralaxTexcoord.y = paralaxTexcoord.y + eyePosition.y*parallax;
+
+            v_TexCoordinate = paralaxTexcoord;
+        }
+    </string>
+
+    <string name="ps_background"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform float wave;
+        varying vec2 v_TexCoordinate;
+        varying float modelPosition;
+
+        void main() {
+            vec2 texCoord = v_TexCoordinate;
+
+            float length = texture2D(u_Texture, texCoord).g*0.02;
+
+            float localVawe = wave+modelPosition*5.0;
+
+            texCoord.x = texCoord.x + sin(localVawe)*length;
+            texCoord.y = texCoord.y - abs(sin(localVawe)*length*0.05);
+
+            vec4 color = texture2D(u_Texture, texCoord);
+
+            vec4 paint = vec4(1.0, 0.709, 0.1, 1.0);
+
+            if( color.r<0.5 ){
+                discard;
+            }
+
+            gl_FragColor = paint * (0.1+vec4(1.0-modelPosition)*0.7);
+        }
+    ]]></string>
+
+
+
+    <string name="vs_fog">
+
+        uniform mat4 uMVPMatrix;
+        uniform vec3 eyePosition;
+        uniform float modelPositionIN;
+        uniform float wave;
+        uniform float waveSin;
+
+        attribute vec4 vPosition;
+        attribute vec2 a_TexCoordinate;
+
+        varying vec2 v_TexCoordinate;
+        varying float modelPosition;
+
+        void main() {
+            modelPosition = modelPositionIN;
+
+            gl_Position = uMVPMatrix * vPosition;
+
+            vec2 paralaxTexcoord = a_TexCoordinate;
+
+            float parallax = modelPosition * 0.1;
+
+            paralaxTexcoord.x = paralaxTexcoord.x + eyePosition.x*parallax + wave;
+            paralaxTexcoord.y = paralaxTexcoord.y + eyePosition.y*parallax + sin(waveSin+modelPosition)*0.02;
+
+            v_TexCoordinate = paralaxTexcoord;
+        }
+    </string>
+
+    <string name="ps_fog"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 v_TexCoordinate;
+        varying float modelPosition;
+
+        void main() {
+            vec2 texCoord = v_TexCoordinate;
+
+            vec4 color = texture2D(u_Texture, texCoord);
+
+
+
+            color = vec4(1.0, 0.709, 0.1, color.b);
+
+            gl_FragColor = color;
+        }
+    ]]></string>
+
+
+
+
+
+
+
+    <string name="vs_sky"><![CDATA[
+
+        uniform mat4 uMVPMatrix;
+        uniform float wave;
+        attribute vec4 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 v_TexCoordinate;
+
+        void main() {
+            gl_Position = uMVPMatrix * vPosition;
+            v_TexCoordinate = a_TexCoordinate;
+        }
+    ]]></string>
+
+    <string name="ps_sky"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 v_TexCoordinate;
+
+        void main() {
+
+            vec4 color = texture2D(u_Texture, v_TexCoordinate);
+
+            gl_FragColor = color;
+        }
+    ]]></string>
+
+</resources>

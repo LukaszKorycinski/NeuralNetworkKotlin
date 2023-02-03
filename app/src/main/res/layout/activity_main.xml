@@ -1,12 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".activity.MainActivity">
 
 
+    <com.example.neuralnetworkkotlin.activity.GLSurfaceViewImpl
+            android:id="@+id/glSurfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+            android:id="@+id/right"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_right"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/down"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/right"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/left"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/down"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/up"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_up"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintEnd_toStartOf="@+id/right"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/eKey"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_up"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/right"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/qKey"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_down"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/left"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/rotateUp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_up"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintEnd_toStartOf="@+id/qKey"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    <ImageView
+            android:id="@+id/rotateDown"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/qKey"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
