@@ -7,7 +7,7 @@ import com.example.neuralnetworkkotlin.geometry.Matrices
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.mytech.a3df
 
-class Banners {
+class Banner {
 
 
     var units = Units()
