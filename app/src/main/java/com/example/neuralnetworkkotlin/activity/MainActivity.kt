@@ -7,12 +7,16 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.ext.observeNonNull
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
     lateinit var zoomGestureListener: ScaleGestureDetector
 
@@ -136,6 +140,12 @@ class MainActivity : Activity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             }
         )
+
+        lifecycleScope.launch {
+            delay(300)
+            seekbar4.progress = 8
+        }
+
 
         seekbar5.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {

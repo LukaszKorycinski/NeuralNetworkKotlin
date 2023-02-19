@@ -30,11 +30,16 @@ class Creatures(val collidor: Collidor) {
     var creaturesList = ArrayList<CreaturesData>()
     var creaturesListToAdd = ArrayList<CreaturesData>()
 
-    var lifeEnergyCost = 0.025f
+    final val INITIAL_LIFE_ENERGY_COST = 0.025f
+    final val INITIA_ENERGY_FRON_EAT = 0.3f
+
+    var lifeEnergyCost = INITIAL_LIFE_ENERGY_COST
     var speedCost = 0.025f
-    var energyFromEat = 0.3f
+    var energyFromEat = INITIA_ENERGY_FRON_EAT
     var mutantRatio = 20
     var cornerSpeedMultificaier = 200.0f
+
+    var energyFromEatCompensator = 0.0f
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
@@ -273,7 +278,7 @@ class Creatures(val collidor: Collidor) {
 
         if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
             if(seedList.size>closestSeedIndex){
-                currentCreature.size = currentCreature.size + energyFromEat
+                currentCreature.size = currentCreature.size + energyFromEat + energyFromEatCompensator
                 seedList.removeAt(closestSeedIndex)
             }
         }

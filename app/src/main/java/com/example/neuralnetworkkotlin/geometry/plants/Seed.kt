@@ -49,11 +49,19 @@ class Seed(val collidor: Collidor) {
 
         onSeedAdded(seedsToAdd)
 
-        if(seedsList.size < 20){
+        if(seedsList.filter{it.pos.x<0.0f}.size < 12){
             onSeedAdded(listOf(
-                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat()-0.5f)*5.0f, (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                SeedData(Vector2f(-Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f(-Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f(-Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+            ))
+        }
+
+        if(seedsList.filter{it.pos.x>0.0f}.size < 12){
+            onSeedAdded(listOf(
+                SeedData(Vector2f(Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f(Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                SeedData(Vector2f(Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
             ))
         }
 

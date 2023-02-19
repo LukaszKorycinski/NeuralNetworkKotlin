@@ -109,12 +109,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     fun seekbar1Update(value: Int) {
-        creatures.lifeEnergyCost = 0.025f + value.toFloat() * 0.0005f
+        creatures.lifeEnergyCost = creatures.INITIAL_LIFE_ENERGY_COST + value.toFloat() * 0.0005f
         Log.e("tag","creatures.lifeEnergyCost "+creatures.lifeEnergyCost )
     }
 
     fun seekbar2Update(value: Int) {
-        creatures.energyFromEat = 0.3f + value.toFloat() * 0.02f
+        creatures.energyFromEat = creatures.INITIA_ENERGY_FRON_EAT + value.toFloat() * 0.02f
         Log.e("tag","creatures.energyFromEat"+creatures.energyFromEat )
     }
 
@@ -192,7 +192,15 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
                 "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation
                 + "\nPredators " + creatures.creaturesList.filter { it.genome.eatMeat }.size
+                + "\nenergyFromEatCompensator " + creatures.energyFromEatCompensator
         )
+        when{
+            creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = -0.2f
+            creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = -0.04f
+            creatures.creaturesList.size<10 -> creatures.energyFromEatCompensator = 0.3f
+            creatures.creaturesList.size<50 -> creatures.energyFromEatCompensator = 0.04f
+            else -> creatures.energyFromEatCompensator = 0.0f
+        }
 
 
         setUpFrame()
