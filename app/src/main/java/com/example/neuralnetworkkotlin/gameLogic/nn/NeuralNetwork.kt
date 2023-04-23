@@ -10,15 +10,16 @@ class NeuralNetwork : Serializable {
         return Gson().fromJson<NeuralNetwork>(stringProject, NeuralNetwork::class.java)
     }
 
-    val neuronsPerLayer = 5
+    val neuronsPerLayer = 8
+    val layers = 4
     var neurons = arrayOf<Array<Neuron>>()
 
     fun makeNewBrain(){
         neurons = arrayOf<Array<Neuron>>()
 
-        for (i in 0..4) {
+        for (i in 0..neuronsPerLayer) {
             var inerArray = arrayOf<Neuron>()
-            for (j in 0..neuronsPerLayer) {
+            for (j in 0..layers) {
                 val neuron = Neuron()
                 neuron.makeRandomWeights(neuronsPerLayer)
                 inerArray += neuron
@@ -68,11 +69,11 @@ class NeuralNetwork : Serializable {
         if(change)
             Log.e("LAYER1", midleInput.joinToString { it.toString() })
 
-//        val midleInput2 = ArrayList<Float>()
-//        for (i in 0..neuronsPerLayer-1){
-//            val outputTmp = neurons[i][1].inputToOutput(midleInput)
-//            midleInput2.add(outputTmp)
-//        }
+        val midleInput2 = ArrayList<Float>()
+        for (i in 0..neuronsPerLayer-1){
+            val outputTmp = neurons[i][1].inputToOutput(midleInput)
+            midleInput2.add(outputTmp)
+        }
 //        if(change)
 //        Log.e("LAYER2", midleInput2.joinToString { it.toString() })
 //        val midleInput3 = ArrayList<Float>()
@@ -95,7 +96,7 @@ class NeuralNetwork : Serializable {
 
         val finalOutput = ArrayList<Float>()
         for (i in 0..2){
-            val outputTmp = neurons[i][1].inputToOutput(midleInput)
+            val outputTmp = neurons[i][2].inputToOutput(midleInput2)
             finalOutput.add(outputTmp)
         }
         if(change)

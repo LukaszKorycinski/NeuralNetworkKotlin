@@ -32,9 +32,10 @@ class Creatures(val collidor: Collidor) {
 
     final val INITIAL_LIFE_ENERGY_COST = 0.025f
     final val INITIA_ENERGY_FRON_EAT = 0.3f
+    final val INITIA_SPEED_COST = 0.025f
 
     var lifeEnergyCost = INITIAL_LIFE_ENERGY_COST
-    var speedCost = 0.025f
+    var speedCost = INITIA_SPEED_COST
     var energyFromEat = INITIA_ENERGY_FRON_EAT
     var mutantRatio = 20
     var cornerSpeedMultificaier = 200.0f
@@ -57,12 +58,16 @@ class Creatures(val collidor: Collidor) {
                         .filter { it.size < creature.size }
                         .filter { !eatedCreaturesIds.contains(it.id) }
                         .toMutableList()), coli)
-
                 eatedCreaturesIds.addAll(
                     idsToDelete
                 )
             }else{
-                aiPlantsEater(creature, seedList, coli)
+                aiPlantsEater(creature, seedList,
+                    ArrayList(creaturesList
+                        .filter { it.genome.eatMeat}
+                        .filter { it.size > creature.size }
+                        .toMutableList())
+                    ,coli)
             }
 
             energy(onCreatureEggAdded, creature)
@@ -213,6 +218,9 @@ class Creatures(val collidor: Collidor) {
         neuralInput.add( 1.0f-currentCreature.eye.y )
         neuralInput.add( 1.0f-currentCreature.eye.x )
         neuralInput.add( 1.0f-currentCreature.eye.z )
+        neuralInput.add( 0.0f )
+        neuralInput.add( 0.0f )
+        neuralInput.add( 0.0f )
         neuralInput.add( currentCreature.size )
         neuralInput.add( sin(currentCreature.wave) )
 
@@ -227,7 +235,7 @@ class Creatures(val collidor: Collidor) {
         return eatedCreaturesIds
     }
 
-    private fun aiPlantsEater(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, coli: Collision) {
+    private fun aiPlantsEater(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, predatorList: List<CreaturesData>, coli: Collision) {
 
         var closestSeedL = 1.0f
         val eyeSign = currentCreature.eyeSign()
@@ -238,6 +246,10 @@ class Creatures(val collidor: Collidor) {
         val line2 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(currentCreature.genome.eyeAngle)) )
         val line3 = Line(eyePos,eyePos+(eyeSign-eyePos).rotate(Math.toRadians(-currentCreature.genome.eyeAngle)) )
 
+        var isPredator1 = false
+        var isPredator2 = false
+        var isPredator3 = false
+
         currentCreature.glowing = false
 
         currentCreature.eye.x = 1.0f
@@ -247,7 +259,15 @@ class Creatures(val collidor: Collidor) {
                 closestSeedL = distance
             }
         }
+        predatorList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line1)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+                isPredator1 = true
+            }
+        }
         currentCreature.eye.x = closestSeedL//coli.pointLineColision(seed.pos, line1)
+
 
         closestSeedL = 1.0f
         currentCreature.eye.y = 1.0f
@@ -257,7 +277,17 @@ class Creatures(val collidor: Collidor) {
                 closestSeedL = distance
             }
         }
+        predatorList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line2)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+                isPredator2 = true
+            }
+        }
         currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
+
+
+
 
         closestSeedL = 1.0f
         var closestSeedLGlobal = 10000.0f
@@ -274,6 +304,13 @@ class Creatures(val collidor: Collidor) {
                 closestSeedIndex = index
             }
         }
+        predatorList.forEachIndexed { index, seed ->
+            val distance = coli.pointLineColision(seed.pos, line3)
+            if ( distance < closestSeedL && distance < 0.5f) {
+                closestSeedL = distance
+                isPredator3 = true
+            }
+        }
         currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
         if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
@@ -287,6 +324,9 @@ class Creatures(val collidor: Collidor) {
         neuralInput.add( 1.0f-currentCreature.eye.y )
         neuralInput.add( 1.0f-currentCreature.eye.x )
         neuralInput.add( 1.0f-currentCreature.eye.z )
+        neuralInput.add( if(isPredator2) 1.0f else 0.0f )
+        neuralInput.add( if(isPredator1) 1.0f else 0.0f )
+        neuralInput.add( if(isPredator3) 1.0f else 0.0f )
         neuralInput.add( currentCreature.size )
         neuralInput.add( sin(currentCreature.wave) )
 

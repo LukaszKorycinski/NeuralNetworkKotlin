@@ -40,8 +40,14 @@ class Seed(val collidor: Collidor) {
 
             move(it)
             if (it.age > 2.0f) {
-                seedsToAdd.add(SeedData(Vector2f(it.pos.x+0.1f, it.pos.y), Vector2f().randomVelocity(0.5f), 0.3f))
-                seedsToAdd.add(SeedData(it.pos, Vector2f().randomVelocity( 0.7f ), 0.2f))
+                if( it.pos.distance(Vector2f(0.0f,0.0f))>6.0 ){
+                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
+                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
+                }else{
+                    seedsToAdd.add(SeedData(Vector2f(it.pos.x+0.1f, it.pos.y), Vector2f().randomVelocity(0.5f), 0.3f))
+                    seedsToAdd.add(SeedData(it.pos, Vector2f().randomVelocity( 0.7f ), 0.2f))
+                }
+
             }
 
         }
@@ -49,7 +55,7 @@ class Seed(val collidor: Collidor) {
 
         onSeedAdded(seedsToAdd)
 
-        if(seedsList.filter{it.pos.x<0.0f}.size < 12){
+        if(seedsList.filter{it.pos.x<0.0f}.size < 22){
             onSeedAdded(listOf(
                 SeedData(Vector2f(-Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
                 SeedData(Vector2f(-Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
@@ -57,7 +63,7 @@ class Seed(val collidor: Collidor) {
             ))
         }
 
-        if(seedsList.filter{it.pos.x>0.0f}.size < 12){
+        if(seedsList.filter{it.pos.x>0.0f}.size < 14){
             onSeedAdded(listOf(
                 SeedData(Vector2f(Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
                 SeedData(Vector2f(Math.abs((Random.nextFloat()-0.5f)*5.0f), (Random.nextFloat()-0.5f)*5.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
@@ -65,7 +71,7 @@ class Seed(val collidor: Collidor) {
             ))
         }
 
-        seedsList = seedsList.filter { it.age <= 2.0f }.filter { !collidor.colision(it.pos) } as ArrayList<SeedData>
+        seedsList = seedsList.filter { it.age <= 2.0f }.filter { !collidor.colision(it.pos) }.filter { it.pos.x<0.0f || Math.abs(it.pos.y)<4.0f  } as ArrayList<SeedData>
     }
 
     private fun move(it: SeedData) {

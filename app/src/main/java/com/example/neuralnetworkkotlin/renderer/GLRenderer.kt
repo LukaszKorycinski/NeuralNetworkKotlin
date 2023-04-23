@@ -130,7 +130,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun seekbar5Update(value: Int) {
-        creatures.speedCost = 0.025f + value.toFloat() * 0.0005f
+        creatures.speedCost = creatures.INITIA_SPEED_COST + value.toFloat() * 0.0005f
         Log.e("tag","creatures.speedCost "+creatures.speedCost )
     }
 
@@ -248,6 +248,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //            creatures.creaturesList.forEach {
 //                drawModel.drawColladaModelCreature.drawGeneration(camera.viewProjectionMatrix, it)
 //            }
+            particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
         }
 
 
@@ -255,7 +256,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
-        //particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
+
 
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
