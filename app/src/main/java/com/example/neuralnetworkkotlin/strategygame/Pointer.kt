@@ -12,14 +12,16 @@ import kotlin.math.atan2
 
 class Pointer {
 
-    var start = Vector2f()
+    //var start = Vector2f()
     var points: ArrayList<Vector2f> = arrayListOf()
 
 
-    fun clearDestination(pointer3d: Vector2f, start: Vector2f) {
+    fun clearDestination(pointer3d: Vector2f) {
         points.clear()
         points.add(pointer3d)
-        this.start = start
+        //this.start = start
+
+        recalculate()
     }
 
     fun addDestination(pointer3d: Vector2f) {
@@ -28,10 +30,7 @@ class Pointer {
                 points.add(pointer3d)
             }
         }
-    }
-
-    fun end() {
-
+        recalculate()
     }
 
     var layerCoords = floatArrayOf()
@@ -55,31 +54,38 @@ class Pointer {
 
             //val angle = 90.0f * PI/180.0f
             val angle = (if(i==0){
-                atan2(points.get(i).y - start.y, p.x - start.x) * 180 / PI
+                atan2(points.get(i).y - points.get(0).y, p.x - points.get(0).x) * 180 / PI
             }else{
                 atan2(points.get(i).y - points.get(i-1).y, p.x - points.get(i-1).x) * 180 / PI
             }-90.0) * PI/180.0f
 
 
-            var vec1 = Vector2f(-size, size).rotate(angle)
-            var vec2 = Vector2f(-size,-size).rotate(angle)
-            var vec3 = Vector2f( size,-size).rotate(angle)
-            var vec4 = Vector2f( size, size).rotate(angle)
+            val vec1 = Vector2f(-size, size).rotate(angle)
+            val vec2 = Vector2f(-size,-size).rotate(angle)
+            val vec3 = Vector2f( size,-size).rotate(angle)
+            val vec4 = Vector2f( size, size).rotate(angle)
 
 
-            layerCoords = layerCoords + floatArrayOf(
+            layerCoords += floatArrayOf(
                 vec1.x + p.x, y, vec1.y + p.y,       // top left
                 vec2.x + p.x, y, vec2.y + p.y,      // bottom left
                 vec3.x + p.x, y, vec3.y + p.y,       // bottom right
                 vec4.x + p.x, y, vec4.y + p.y,        // top right
             )
-            textureCoords = textureCoords + floatArrayOf(
+            textureCoords += floatArrayOf(
                 1.0f, 0.0f,      // top left
                 1.0f, 1.0f,      // bottom left
                 0.0f, 1f,      // bottom right
                 0.0f, 0.0f       // top right
             )
-            drawOrder = drawOrder + shortArrayOf((0+4*i).toShort(), (1+4*i).toShort(), (2+4*i).toShort(), (0+4*i).toShort(), (2+4*i).toShort(), (3+4*i).toShort()) // order to draw vertices
+            drawOrder += shortArrayOf(
+                (0 + 4 * i).toShort(),
+                (1 + 4 * i).toShort(),
+                (2 + 4 * i).toShort(),
+                (0 + 4 * i).toShort(),
+                (2 + 4 * i).toShort(),
+                (3 + 4 * i).toShort()
+            ) // order to draw vertices
         }
 
         vertexBuffer =

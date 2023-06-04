@@ -30,6 +30,8 @@
         precision mediump float;
         uniform sampler2D u_Texture;
         uniform sampler2D u_ShadowMap;
+        uniform sampler2D uColors_Texture;
+        uniform vec3 unitColor;
         varying vec2 texCoordMid;
         varying vec4 positionFromLight;
 
@@ -45,7 +47,10 @@
                 fLDepth=1.0f;
             }
 
-            vec4 color = texture2D(u_Texture, texCoordMid);
+            vec4 colorTextColor = texture2D(uColors_Texture, texCoordMid);
+            vec4 colorText = texture2D(u_Texture, texCoordMid);
+
+            vec4 color = vec4(unitColor, 1.0) * colorText * colorTextColor.g + colorText * (1.0-colorTextColor.g);
 
             if( color.a<0.25 ){
                 discard;

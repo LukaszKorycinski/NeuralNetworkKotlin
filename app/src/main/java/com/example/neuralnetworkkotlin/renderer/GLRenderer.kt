@@ -94,7 +94,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         banners.pointer.draw(matrices.viewProjectionMatrix,  textures.textureHandle[2], shaderLoader.shaderProgramBasicAlpha)
 
-        banners.draw(textures.textureHandle[0], matrices.lightMatrix,shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, filesA3df!!, matrices)
+        banners.draw(textures.textureHandle, matrices.lightMatrix,shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, filesA3df!!, matrices)
         banners.logic()
     }
 
@@ -116,7 +116,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glUniform1i(texHandler, 0)
 
         terrain.drawTerrain(matrices.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
-        banners.draw(textures.textureHandle[0], null, null, shaderLoader.shaderProgramBasicAnimShadowMapping, filesA3df!!, matrices)
+        banners.draw(textures.textureHandle, null, null, shaderLoader.shaderProgramBasicAnimShadowMapping, filesA3df!!, matrices)
     }
     fun shadowInit(){
         GLES20.glGenTextures(1, shadowTextureHandle, 0)

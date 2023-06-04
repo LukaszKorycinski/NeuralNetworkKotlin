@@ -13,7 +13,7 @@ import java.nio.ShortBuffer;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-
+import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f;
 import timber.log.Timber;
 
 public class a3df {
@@ -153,18 +153,60 @@ public class a3df {
     }
 
 
-    public void DrawAnimModel(int i, int ShaderProgram, float wave)
+    float interpolate(float x, float y, float z, float w)
+    {
+        float w2 = w * 2f;
+
+        if(w2<=1.0f){
+            return x * (1f-w2) + y * w2;
+        }else{
+            return y * (1f-(w2-1f)) + z * (w2-1f);
+        }
+    }
+
+    public static Vector3f boneManip = new Vector3f(0f);
+
+    public void DrawAnimModel(int i, int ShaderProgram, float currentFrame, float wave)
     {//wave
 
         float[][] mat_Bonetmp = new float[boneile][16];
         float[] BonesMatrixestmp = new float[boneile*16];
 
+        //BONES:
+        //0: body
+        //1: head
+        //2: biceR
+        //3: araR
+        //4: armL
+        //5: biceL
+        //6: leg
+        //7: leg
+
         for (int i2=0;i2<boneile;i2++)
         {
-            float rotation2 = interpolate(bonerotZ2[i][i2][(int)wave], bonerotZ2[i][i2][(int)wave+1], wave);
+            float rotation2 = interpolate(bonerotZ2[i][i2][(int)currentFrame], bonerotZ2[i][i2][(int)currentFrame+1], currentFrame);
+
             float[] translation2 = new float[2];
-            translation2[0] = interpolate(bonepos2[i][i2][(int)wave][0], bonepos2[i][i2][(int)wave+1][0], wave);
-            translation2[1] = interpolate(bonepos2[i][i2][(int)wave][1], bonepos2[i][i2][(int)wave+1][1], wave);
+            translation2[0] = interpolate(bonepos2[i][i2][(int)currentFrame][0], bonepos2[i][i2][(int)currentFrame+1][0], currentFrame);
+            translation2[1] = interpolate(bonepos2[i][i2][(int)currentFrame][1], bonepos2[i][i2][(int)currentFrame+1][1], currentFrame);
+
+//            if(i2== 4 || i2== 5){
+//                if(i2== 4){
+//                    translation2[0] += boneManip.getX();
+//                    translation2[1] += boneManip.getY();
+//                }
+//                rotation2 = boneManip.getZ();
+//            }
+
+            //wave
+            float waveSin = (float) Math.abs(Math.sin(wave*Math.PI));
+            if(i2== 4 || i2== 5){
+                if(i2== 4){
+                    translation2[0] = interpolate(0.01f, -0.06f, 0.3f, waveSin);
+                    translation2[1] = interpolate(-0.1f, 0.16f, 0.869f, waveSin);
+                }
+                rotation2 = interpolate(38.0f, -29.0f, -121.0f, waveSin);
+            }
 
             float[] mat_trans1tmp = new float[16];
             float[] mat_rot2tmp = new float[16];

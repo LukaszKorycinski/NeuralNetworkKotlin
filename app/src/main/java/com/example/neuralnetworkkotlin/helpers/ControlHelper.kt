@@ -3,6 +3,8 @@ package com.example.neuralnetworkkotlin.helpers
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector4f
+import com.example.neuralnetworkkotlin.mytech.a3df
+import timber.log.Timber
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -91,6 +93,25 @@ class ControlHelper {
         if(wave>180.0f){
             wave=0.0f
         }
+
+//        if(up){
+//            a3df.boneManip.x = a3df.boneManip.x + 0.01f
+//        }
+//        if(down){
+//            a3df.boneManip.x = a3df.boneManip.x - 0.01f
+//        }
+//        if(right){
+//            a3df.boneManip.y = a3df.boneManip.y + 0.01f
+//        }
+//        if(left){
+//            a3df.boneManip.y = a3df.boneManip.y - 0.01f
+//        }
+//        if(rotateDown){
+//            a3df.boneManip.z = a3df.boneManip.z + 1f
+//        }
+//        if(rotateUp){
+//            a3df.boneManip.z = a3df.boneManip.z - 1f
+//        }
 
         if(rotateDown){
             position.w = position.w + 1.1f

@@ -15,6 +15,10 @@ class Vector2f {
         y = 0.0f
     }
 
+    companion object{
+        fun sum(x: Vector2f, y: Vector2f) = Vector2f(x.x+y.x, x.y+y.y);
+    }
+
     fun equals(second: Vector2f): Boolean {
         return if (Math.abs(x - second.x) < 0.0001f && Math.abs(y - second.y) < 0.0001f) true else false
     }
