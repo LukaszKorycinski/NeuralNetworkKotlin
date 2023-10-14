@@ -11,10 +11,15 @@ class ControlHelper {
     var right = false
     var left = false
     var mode = true
+    var switchEyes = true
     var stepsPerFrame = 1
 
     fun switchMode(isChecked: Boolean) {
         this.mode = isChecked
+    }
+
+    fun switchEyes(isChecked: Boolean) {
+        this.switchEyes = isChecked
     }
 
     fun upKey(action: MotionEvent){
@@ -50,7 +55,7 @@ class ControlHelper {
     }
 
     fun onZoomEnd(zoom: Float){
-        position.z = position.z*zoomTmp
+        position.z = position.z / zoomTmp
         zoomTmp = 1.0f
     }
 
@@ -79,7 +84,7 @@ class ControlHelper {
 
         positionOut.x = position.x
         positionOut.y = position.y
-        positionOut.z = position.z*zoomTmp
+        positionOut.z = position.z / zoomTmp
 
         return positionOut
     }

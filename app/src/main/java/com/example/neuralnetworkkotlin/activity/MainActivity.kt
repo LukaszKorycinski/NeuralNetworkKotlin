@@ -65,6 +65,11 @@ class MainActivity : AppCompatActivity() {
             glSurfaceView.switchMode(switchMode.isChecked)
         }
 
+        switchEyes.isChecked=true
+        switchEyes.setOnCheckedChangeListener { buttonView, isChecked ->
+            glSurfaceView.switchEyes(switchEyes.isChecked)
+        }
+
 
         up.setOnTouchListener { view, motionEvent ->
             glSurfaceView.upKey(motionEvent)
@@ -119,16 +124,16 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        seekbar3.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    glSurfaceView.seekbar3Update(i)
-                    seekbar3TV.text = i.toString()
-                }
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            }
-        )
+//        seekbar3.setOnSeekBarChangeListener(
+//            object : SeekBar.OnSeekBarChangeListener {
+//                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+//                    glSurfaceView.seekbar3Update(i)
+//                    seekbar3TV.text = i.toString()
+//                }
+//                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+//                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+//            }
+//        )
 
         seekbar4.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {

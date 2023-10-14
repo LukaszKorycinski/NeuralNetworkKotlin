@@ -1,6 +1,5 @@
 package com.example.neuralnetworkkotlin.geometry.collada.converter
 
-import org.jbox2d.common.Vec2
 import java.io.Serializable
 import kotlin.math.sqrt
 import kotlin.random.Random

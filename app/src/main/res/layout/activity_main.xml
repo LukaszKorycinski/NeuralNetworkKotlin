@@ -65,8 +65,8 @@
             android:id="@+id/seekbar1"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:max="200"
-            android:min="-50"
+            android:max="20"
+            android:min="-10"
             android:progress="0"
             android:backgroundTint="@color/colorAccent"
             android:progressTint="@color/colorAccent"
@@ -93,8 +93,8 @@
             android:id="@+id/seekbar2"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:max="50"
-            android:min="-50"
+            android:max="20"
+            android:min="-20"
             android:progress="0"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/colorAccent"
@@ -118,34 +118,34 @@
             app:layout_constraintTop_toTopOf="@+id/seekbar2"
             app:layout_constraintEnd_toEndOf="@+id/seekbar2" />
 
-    <SeekBar
-            android:id="@+id/seekbar3"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:min="0"
-            android:progress="2"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorAccent"
-            android:progressTint="@color/colorAccent"
-            android:thumbTint="@color/colorAccent"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar2"
-            app:layout_constraintStart_toStartOf="parent"/>
-    <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="CornerSpeed"
-            android:textColor="@color/textColor"
-            app:layout_constraintTop_toTopOf="@+id/seekbar3"
-            app:layout_constraintStart_toStartOf="parent"/>
-    <TextView
-            android:id="@+id/seekbar3TV"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text=""
-            android:textColor="@color/textColor"
-            app:layout_constraintTop_toTopOf="@+id/seekbar3"
-            app:layout_constraintEnd_toEndOf="@+id/seekbar3" />
+<!--    <SeekBar-->
+<!--            android:id="@+id/seekbar3"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:max="100"-->
+<!--            android:min="0"-->
+<!--            android:progress="2"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:backgroundTint="@color/colorAccent"-->
+<!--            android:progressTint="@color/colorAccent"-->
+<!--            android:thumbTint="@color/colorAccent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/seekbar2"-->
+<!--            app:layout_constraintStart_toStartOf="parent"/>-->
+<!--    <TextView-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:text="CornerSpeed"-->
+<!--            android:textColor="@color/textColor"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/seekbar3"-->
+<!--            app:layout_constraintStart_toStartOf="parent"/>-->
+<!--    <TextView-->
+<!--            android:id="@+id/seekbar3TV"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:text=""-->
+<!--            android:textColor="@color/textColor"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/seekbar3"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/seekbar3" />-->
 
 
     <SeekBar
@@ -159,7 +159,7 @@
             android:backgroundTint="@color/colorAccent"
             android:progressTint="@color/colorAccent"
             android:thumbTint="@color/colorAccent"
-            app:layout_constraintTop_toBottomOf="@+id/seekbar3"
+            app:layout_constraintTop_toBottomOf="@+id/seekbar2"
             app:layout_constraintStart_toStartOf="parent"/>
     <TextView
             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
             android:id="@+id/seekbar5"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:max="200"
+            android:max="50"
             android:min="-50"
             android:progress="0"
             android:layout_marginTop="8dp"
@@ -236,15 +236,23 @@
             app:layout_constraintTop_toTopOf="@+id/seekbar6"
             app:layout_constraintEnd_toEndOf="@+id/seekbar6" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Switch"
+            android:text="GFX"
             android:textColor="@color/textColor"
             app:layout_constraintTop_toBottomOf="@+id/seekbar6"
             app:layout_constraintStart_toStartOf="parent"/>
 
+    <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchEyes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="switchEyes"
+            android:textColor="@color/textColor"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
             android:id="@+id/saveButton"
@@ -253,7 +261,7 @@
             android:text="saveNN"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/switchMode"
+            app:layout_constraintTop_toBottomOf="@+id/switchEyes"
             app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
@@ -264,7 +272,7 @@
             android:background="@color/colorAccent"
             android:padding="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/switchMode"
+            app:layout_constraintTop_toBottomOf="@+id/switchEyes"
             app:layout_constraintStart_toEndOf="@+id/saveButton"/>
 
     <ImageView

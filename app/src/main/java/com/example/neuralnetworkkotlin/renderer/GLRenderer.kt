@@ -49,6 +49,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         controlHelper.switchMode(isChecked)
     }
 
+    fun switchEyes(isChecked: Boolean) {
+        controlHelper.switchEyes(isChecked)
+    }
+
     fun upKey(action: MotionEvent) {
         controlHelper.upKey(action)
     }
@@ -187,19 +191,27 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             fps.postValue(fpsCounter)
             fpsCounter = 0
             time = System.currentTimeMillis()
+
+            val logString = "Qty "+creatures.creaturesList.size +
+                    "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
+                    "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation +
+                    "\nPredators " + creatures.creaturesList.filter { it.genome.eatMeat }.size +
+                    "\nenergyFromEatCompensator " + creatures.energyFromEatCompensator
+
+            log.postValue(logString)
+            Log.e("Stats:", logString)
         }
-        log.postValue("Qty "+creatures.creaturesList.size +
-                "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
-                "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation
-                + "\nPredators " + creatures.creaturesList.filter { it.genome.eatMeat }.size
-                + "\nenergyFromEatCompensator " + creatures.energyFromEatCompensator
-        )
+
+
+
+
         when{
-            creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = -0.2f
-            creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = -0.04f
-            creatures.creaturesList.size<10 -> creatures.energyFromEatCompensator = 0.3f
-            creatures.creaturesList.size<50 -> creatures.energyFromEatCompensator = 0.04f
-            else -> creatures.energyFromEatCompensator = 0.0f
+            creatures.creaturesList.size>200 -> creatures.energyFromEatCompensator = 0.2f
+            creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = 0.7f
+            creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = 0.9f
+            creatures.creaturesList.size<10 -> creatures.energyFromEatCompensator = 2.0f
+            creatures.creaturesList.size<50 -> creatures.energyFromEatCompensator = 1.3f
+            else -> creatures.energyFromEatCompensator = 1.0f
         }
 
 
@@ -234,8 +246,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 textures.textureHandle[10],
                 shaderLoader.shaderProgramEyes
             )
-            creatures.creaturesList.forEach {
-                drawModel.drawColladaModelCreature.drawEye(camera.viewProjectionMatrix, it)
+            if(controlHelper.switchEyes){
+                creatures.creaturesList.forEach {
+                    drawModel.drawColladaModelCreature.drawEye(camera.viewProjectionMatrix, it)
+                }
             }
 
 
@@ -248,7 +262,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //            creatures.creaturesList.forEach {
 //                drawModel.drawColladaModelCreature.drawGeneration(camera.viewProjectionMatrix, it)
 //            }
-            particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
+            //particleEffects.drawParticles(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramParticles)
         }
 
 
@@ -273,7 +287,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private fun onCreatureAdded() {
         val creature = creatures.creaturesList.get(creatures.creaturesList.size-1)
-        creature.genome.eatMeat = true
         creature.genome.kidsQty = 1
         creature.genome.color=Vector3f(1f,0.0f,0.0f)
 

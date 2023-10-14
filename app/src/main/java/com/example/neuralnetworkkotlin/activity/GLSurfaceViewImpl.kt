@@ -30,6 +30,8 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
     }
     fun switchMode(isChecked: Boolean) {renderer.switchMode(isChecked)}
 
+    fun switchEyes(isChecked: Boolean) {renderer.switchEyes(isChecked)}
+
     fun upKey(action: MotionEvent) { renderer.upKey(action) }
 
     fun downKey(action: MotionEvent) { renderer.downKey(action) }

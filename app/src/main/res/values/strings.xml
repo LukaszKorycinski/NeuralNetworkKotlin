@@ -65,7 +65,7 @@
 
         vec4 color = texture2D(u_Texture, texCoord);
 
-        color.a = color.a - size;
+
 
         gl_FragColor = color;
         }

@@ -40,7 +40,7 @@ class Creatures(val collidor: Collidor) {
     var mutantRatio = 20
     var cornerSpeedMultificaier = 200.0f
 
-    var energyFromEatCompensator = 0.0f
+    var energyFromEatCompensator = 1.0f
 
     fun loop(
         onCreatureEggAdded: KFunction1<@ParameterName(name = "creature") CreaturesData, Unit>,
@@ -315,7 +315,7 @@ class Creatures(val collidor: Collidor) {
 
         if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
             if(seedList.size>closestSeedIndex){
-                currentCreature.size = currentCreature.size + energyFromEat + energyFromEatCompensator
+                currentCreature.size = currentCreature.size + energyFromEat * energyFromEatCompensator
                 seedList.removeAt(closestSeedIndex)
             }
         }
