@@ -14,7 +14,7 @@ import com.example.neuralnetworkkotlin.glViewport
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.mytech.a3df
 import com.example.neuralnetworkkotlin.mytech.f3ds
-import com.example.neuralnetworkkotlin.strategygame.Banner
+import com.example.neuralnetworkkotlin.strategygame.Banners
 import timber.log.Timber
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -60,7 +60,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowInit()
     }
 
-    var banner = Banner()
+    var banner = Banners()
     var grass = Grass()
     var staticMesh = StaticMesh()
 
@@ -94,7 +94,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         banner.pointer.draw(matrices.viewProjectionMatrix,  textures.textureHandle[2], shaderLoader.shaderProgramBasicAlpha)
 
-        banner.draw(textures.textureHandle[0], matrices.lightMatrix,shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, filesA3df!!, matrices)
+        banner.draw(textures.textureHandle, matrices.lightMatrix,shadowTextureHandle[0], shaderLoader.shaderProgramBasicAnim, filesA3df!!, matrices)
         banner.logic()
     }
 
@@ -116,7 +116,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glUniform1i(texHandler, 0)
 
         terrain.drawTerrain(matrices.viewProjectionMatrix, null, textures.textureHandle[11], null, shaderLoader.shaderProgramBasicShadowMapping)
-        banner.draw(textures.textureHandle[0], null, null, shaderLoader.shaderProgramBasicAnimShadowMapping, filesA3df!!, matrices)
+        banner.draw(textures.textureHandle, null, null, shaderLoader.shaderProgramBasicAnimShadowMapping, filesA3df!!, matrices)
     }
     fun shadowInit(){
         GLES20.glGenTextures(1, shadowTextureHandle, 0)
