@@ -195,7 +195,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val logString = "Qty "+creatures.creaturesList.size +
                     "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
                     "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation +
-                    "\nPredators " + creatures.creaturesList.filter { it.genome.eatMeat }.size +
+                    "\nBiggest " + creatures.creaturesList.maxOf { it.size } +
                     "\nenergyFromEatCompensator " + creatures.energyFromEatCompensator
 
             log.postValue(logString)
@@ -206,6 +206,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
         when{
+            creatures.creaturesList.size>300 -> creatures.energyFromEatCompensator = 0.0f
             creatures.creaturesList.size>200 -> creatures.energyFromEatCompensator = 0.2f
             creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = 0.7f
             creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = 0.9f
@@ -226,7 +227,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         for(i in 0..controlHelper.stepsPerFrame-1){
             seeds.loop(::onSeedAdded)
             particleEffects.particles = particleEffects.particles +  creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
-            eggs.loop(::onCreatureAdded)
+            eggs.loop(::onCreatureAdded, onBranchAdded = { branches.add(it) })
         }
         if (creatures.creaturesList.isNullOrEmpty()){
             addRandomCreature()
@@ -275,9 +276,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }
 
+    val branches = mutableListOf<Branch>()
 
     private fun onCreatureEggAdded(creature: CreaturesData) {
-        eggs.add( EggData(creature.genome, creature.pos, creature.velocity, 1.01f, creature.generation) )
+        eggs.add( EggData(creature.genome, creature.pos, creature.velocity, 1.01f, creature.generation, creature.id) )
     }
 
 

@@ -184,7 +184,7 @@ class DrawColladaModel(mesh: Mesh) {
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
 
-        creature.wave=creature.wave+0.08f*creature.speed
+        creature.wave=creature.wave+0.08f
         if(creature.wave>2* PI){
             creature.wave = 0.0f
         }

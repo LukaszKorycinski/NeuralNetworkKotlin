@@ -51,24 +51,24 @@ class Creatures(val collidor: Collidor) {
         var particlesToAdd: List<Particle> = emptyList()
         val eatedCreaturesIds: ArrayList<Int> = arrayListOf();
         creaturesList.forEach { creature ->
-            if(creature.genome.eatMeat){
-                val idsToDelete = aiMeatEater(creature,
-                    ArrayList(creaturesList
-                        .filter { !it.genome.eatMeat}
-                        .filter { it.size < creature.size }
-                        .filter { !eatedCreaturesIds.contains(it.id) }
-                        .toMutableList()), coli)
-                eatedCreaturesIds.addAll(
-                    idsToDelete
-                )
-            }else{
+//            if(creature.genome.eatMeat){
+//                val idsToDelete = aiMeatEater(creature,
+//                    ArrayList(creaturesList
+//                        .filter { !it.genome.eatMeat}
+//                        .filter { it.size < creature.size }
+//                        .filter { !eatedCreaturesIds.contains(it.id) }
+//                        .toMutableList()), coli)
+//                eatedCreaturesIds.addAll(
+//                    idsToDelete
+//                )
+//            }else{
                 aiPlantsEater(creature, seedList,
                     ArrayList(creaturesList
                         .filter { it.genome.eatMeat}
                         .filter { it.size > creature.size }
                         .toMutableList())
                     ,coli)
-            }
+//            }
 
             energy(onCreatureEggAdded, creature)
 
@@ -145,7 +145,7 @@ class Creatures(val collidor: Collidor) {
                 )
             }
         } else {
-            parent.size = parent.size - lifeEnergyCost * Const.step //* maxOf(parent.speed*2.0f, 1.0f)
+            parent.size = parent.size - lifeEnergyCost * Const.step * parent.size //* maxOf(parent.speed*2.0f, 1.0f)
             //Log.e("parent.size",""+parent.size+" "+lifeEnergyCost * Const.step * maxOf(parent.speed*2.0f, 1.0f)+" l "+lifeEnergyCost + " s "+Const.step + " sp "+maxOf(parent.speed*2.0f, 1.0f))
         }
     }
@@ -313,7 +313,7 @@ class Creatures(val collidor: Collidor) {
         }
         currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
-        if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f) {//jedzenie
+        if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f*currentCreature.size) {//jedzenie
             if(seedList.size>closestSeedIndex){
                 currentCreature.size = currentCreature.size + energyFromEat * energyFromEatCompensator
                 seedList.removeAt(closestSeedIndex)
@@ -428,6 +428,7 @@ class Creatures(val collidor: Collidor) {
 
 
 class CreaturesData(
+    var id: Int = 0,
     var pos: Vector2f,
     var velocity: Vector2f,
     var size: Float = 1.0f,
@@ -439,15 +440,6 @@ class CreaturesData(
     val generation: Int,
 ) : Serializable {
     fun drawSize(): Float = size
-    private var idSecret: Int = 0
-
-    val id:Int
-    get() {
-        if(idSecret==0){
-            idSecret = Random.nextInt()
-        }
-        return idSecret
-    }
 
     fun getAngle(): Float {
         return Math.atan2(velocity.x.toDouble(), velocity.y.toDouble()).toFloat()*180f/3.1415f

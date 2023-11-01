@@ -14,8 +14,17 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import kotlin.random.Random
 import kotlin.reflect.KFunction1
 
+
+class Branch(
+    val parentId: Int,
+    val id: Int,
+    val genome: Genome,
+){
+
+}
 
 class Egg(val collidor: Collidor) {
     var eggsList = ArrayList<EggData>()
@@ -25,7 +34,10 @@ class Egg(val collidor: Collidor) {
         eggsList.add(egg)
     }
 
-    fun loop(onCreatureAdded: KFunction1<@ParameterName(name = "plant") CreaturesData, Unit>) {
+    fun loop(
+        onCreatureAdded: KFunction1<@ParameterName(name = "plant") CreaturesData, Unit>,
+        onBranchAdded: (branch: Branch) -> Unit,
+    ) {
         eggsList.forEach {
 
             if (it.age < 1.0f) {
@@ -39,7 +51,9 @@ class Egg(val collidor: Collidor) {
             if (it.age > 1.0f) {
                 move(it)
                 if (it.age > 2.0f) {
-                    onCreatureAdded(CreaturesData(pos = it.pos, genome = it.genome, velocity = Vector2f(1.0f, 0.0f), size = 1.0f, eye = Vector3f(), generation = it.generation))
+                    val id = Random.nextInt()
+                    onBranchAdded(Branch(it.parentId, id, it.genome))
+                    onCreatureAdded(CreaturesData(pos = it.pos, genome = it.genome, velocity = Vector2f(1.0f, 0.0f), size = 1.0f, eye = Vector3f(), generation = it.generation, id = id))
                 }
             }
         }
@@ -204,7 +218,8 @@ class EggData(
     var pos: Vector2f,
     var velocity: Vector2f,
     var age: Float,
-    var generation: Int
+    var generation: Int,
+    var parentId: Int,
 ) {
 
 
