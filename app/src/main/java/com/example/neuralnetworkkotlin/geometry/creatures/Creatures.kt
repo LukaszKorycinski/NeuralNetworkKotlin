@@ -20,6 +20,7 @@ import java.io.Serializable
 import java.lang.Integer.max
 import java.lang.reflect.Type
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.sin
 import kotlin.random.Random
 import kotlin.reflect.KFunction1
@@ -62,11 +63,11 @@ class Creatures(val collidor: Collidor) {
 //                    idsToDelete
 //                )
 //            }else{
-                aiPlantsEater(creature, seedList,
-                    ArrayList(creaturesList
-                        .filter { it.genome.eatMeat}
-                        .filter { it.size > creature.size }
-                        .toMutableList())
+                aiPlantsEater(creature, seedList//,
+//                    ArrayList(creaturesList
+//                        .filter { it.genome.eatMeat}
+//                        .filter { it.size > creature.size }
+//                        .toMutableList())
                     ,coli)
 //            }
 
@@ -84,12 +85,19 @@ class Creatures(val collidor: Collidor) {
         creaturesList =
             creaturesList
                 .filter { it.size > 0.2f }
+                .filter { it.size < 2.0f }
                 .filter { it.pos.y > -5.0f }
                 .filter {
                     !eatedCreaturesIds.contains(it.id)
             } as ArrayList<CreaturesData>
 
         if (creaturesListToAdd.isNotEmpty()) {
+
+            val tmpList = creaturesListToAdd.map {
+                it.genome.kidsQty = min(it.genome.kidsQty, 4)
+                it
+            }
+
             creaturesList.addAll(creaturesListToAdd)
             creaturesListToAdd.clear()
         }
@@ -117,10 +125,10 @@ class Creatures(val collidor: Collidor) {
             val isMutant_eyeAngle = (0..mutantRatio).random()==1
             val isMutant_breedSize = (0..mutantRatio).random()==1
 
-            val eyeAngle = parent.genome.eyeAngle + if(isMutant_eyeAngle) Random.nextDoubleFromRange(-5.0, 5.0) else 0.0
+            val eyeAngle = parent.genome.eyeAngle + if(isMutant_eyeAngle) Random.nextDoubleFromRange(-3.0, 3.0) else 0.0
             val breedSize = parent.genome.breedSize + if(isMutant_breedSize) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
             val kidSize = parent.genome.kidSize + if((0..mutantRatio).random()==1) Random.nextDoubleFromRange(-0.1, 0.1).toFloat() else 0.0f
-            var kidsQty = parent.genome.kidsQty + if((0..mutantRatio).random()==1) {if(Random.nextBoolean())1 else -1} else 0
+            var kidsQty = parent.genome.kidsQty + min(if((0..mutantRatio).random()==1) {if(Random.nextBoolean())1 else -1} else 0, 4)
             kidsQty = max(1, kidsQty)
 
             if(isMutant_eyeAngle) isMutant++
@@ -235,7 +243,7 @@ class Creatures(val collidor: Collidor) {
         return eatedCreaturesIds
     }
 
-    private fun aiPlantsEater(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, predatorList: List<CreaturesData>, coli: Collision) {
+    private fun aiPlantsEater(currentCreature: CreaturesData, seedList: ArrayList<SeedData>, /*predatorList: List<CreaturesData>,*/ coli: Collision) {
 
         var closestSeedL = 1.0f
         val eyeSign = currentCreature.eyeSign()
@@ -259,13 +267,13 @@ class Creatures(val collidor: Collidor) {
                 closestSeedL = distance
             }
         }
-        predatorList.forEachIndexed { index, seed ->
-            val distance = coli.pointLineColision(seed.pos, line1)
-            if ( distance < closestSeedL && distance < 0.5f) {
-                closestSeedL = distance
-                isPredator1 = true
-            }
-        }
+//        predatorList.forEachIndexed { index, seed ->
+//            val distance = coli.pointLineColision(seed.pos, line1)
+//            if ( distance < closestSeedL && distance < 0.5f) {
+//                closestSeedL = distance
+//                isPredator1 = true
+//            }
+//        }
         currentCreature.eye.x = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
 
@@ -277,13 +285,13 @@ class Creatures(val collidor: Collidor) {
                 closestSeedL = distance
             }
         }
-        predatorList.forEachIndexed { index, seed ->
-            val distance = coli.pointLineColision(seed.pos, line2)
-            if ( distance < closestSeedL && distance < 0.5f) {
-                closestSeedL = distance
-                isPredator2 = true
-            }
-        }
+//        predatorList.forEachIndexed { index, seed ->
+//            val distance = coli.pointLineColision(seed.pos, line2)
+//            if ( distance < closestSeedL && distance < 0.5f) {
+//                closestSeedL = distance
+//                isPredator2 = true
+//            }
+//        }
         currentCreature.eye.y = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
 
@@ -304,13 +312,13 @@ class Creatures(val collidor: Collidor) {
                 closestSeedIndex = index
             }
         }
-        predatorList.forEachIndexed { index, seed ->
-            val distance = coli.pointLineColision(seed.pos, line3)
-            if ( distance < closestSeedL && distance < 0.5f) {
-                closestSeedL = distance
-                isPredator3 = true
-            }
-        }
+//        predatorList.forEachIndexed { index, seed ->
+//            val distance = coli.pointLineColision(seed.pos, line3)
+//            if ( distance < closestSeedL && distance < 0.5f) {
+//                closestSeedL = distance
+//                isPredator3 = true
+//            }
+//        }
         currentCreature.eye.z = closestSeedL//coli.pointLineColision(seed.pos, line1)
 
         if (closestSeedIndex > -1 && seedList.get(closestSeedIndex).pos.distance(eyePos) < 0.04f*currentCreature.size) {//jedzenie

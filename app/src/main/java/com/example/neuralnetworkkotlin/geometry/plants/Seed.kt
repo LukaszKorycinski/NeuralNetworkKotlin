@@ -31,7 +31,7 @@ class Seed(val collidor: Collidor) {
             seedsList.add(seed)
     }
 
-    fun loop(onSeedAdded: KFunction1<@ParameterName(name = "seed") List<SeedData>, Unit>) {
+    fun loop(onSeedAdded: KFunction1<@ParameterName(name = "seed") List<SeedData>, Unit>, interval: Boolean) {
         val seedsToAdd: ArrayList<SeedData> = ArrayList()
         seedsList.forEach {
 
@@ -39,55 +39,66 @@ class Seed(val collidor: Collidor) {
             it.age = it.age + 0.25f * Const.step
 
             move(it)
-            if (it.age > 2.0f) {
-                if( it.pos.distance(Vector2f(0.0f,0.0f))>6.0 ){
-                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
-                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
-                }else{
-                    seedsToAdd.add(SeedData(Vector2f(it.pos.x+0.1f, it.pos.y), Vector2f().randomVelocity(0.5f), 0.3f))
-                    seedsToAdd.add(SeedData(it.pos, Vector2f().randomVelocity( 0.7f ), 0.2f))
-                }
-
-            }
+//            if (it.age > 2.0f) {
+////                if( it.pos.distance(Vector2f(0.0f,0.0f))>6.0 ){
+////                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
+////                    seedsToAdd.add(SeedData(it.pos, Vector2f(-it.pos.x, -it.pos.y).rotate(Random.nextDouble()*0.2), 0.3f))
+////                }else{
+//                    seedsToAdd.add(SeedData(Vector2f(it.pos.x+0.1f, it.pos.y), Vector2f().randomVelocity(0.5f), 0.3f))
+//                    seedsToAdd.add(SeedData(it.pos, Vector2f().randomVelocity( 0.7f ), 0.2f))
+////                }
+//
+//            }
 
         }
 
 
         onSeedAdded(seedsToAdd)
 
-        if(seedsList.filter{it.pos.x < 0.0f && it.pos.y < 0.0f}.size < 10){
-            onSeedAdded(listOf(
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
-            ))
+        if(interval){
+            if(seedsList.filter{it.pos.x < 0.0f && it.pos.y < 0.0f}.size < 10){
+                onSeedAdded(listOf(
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f ), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                ))
+            }
+
+            if(seedsList.filter{it.pos.x < 0.0f && it.pos.y > 0.0f}.size < 10){
+                onSeedAdded(listOf(
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                ))
+            }
+
+            if(seedsList.filter{it.pos.x > 0.0f && it.pos.y < 0.0f}.size < 10){
+                onSeedAdded(listOf(
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                ))
+            }
+
+            if(seedsList.filter{it.pos.x > 0.0f && it.pos.y > 0.0f}.size < 10){
+                onSeedAdded(listOf(
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                ))
+            }
+
+            if(seedsList.filter{it.pos.x < 11f && it.pos.x > 8f && it.pos.y > 8f && it.pos.y < 11f}.size < 25){
+                onSeedAdded(listOf(
+                    SeedData(Vector2f(8f+(Random.nextFloat())*3.0f, 8f+(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(8f+(Random.nextFloat())*3.0f, 8f+(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
+                    SeedData(Vector2f(8f+(Random.nextFloat())*3.0f, 8f+(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
+                ))
+            }
         }
 
-        if(seedsList.filter{it.pos.x < 0.0f && it.pos.y > 0.0f}.size < 10){
-            onSeedAdded(listOf(
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f(-(Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
-            ))
-        }
 
-        if(seedsList.filter{it.pos.x > 0.0f && it.pos.y < 0.0f}.size < 10){
-            onSeedAdded(listOf(
-                SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat())*3.0f, -(Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
-            ))
-        }
-
-        if(seedsList.filter{it.pos.x > 0.0f && it.pos.y > 0.0f}.size < 10){
-            onSeedAdded(listOf(
-                SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.9f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.7f), Random.nextFloat()*2.0f),
-                SeedData(Vector2f((Random.nextFloat())*3.0f, (Random.nextFloat())*3.0f), Vector2f().randomVelocity(0.8f), Random.nextFloat()*2.0f)
-            ))
-        }
-
-        seedsList = seedsList.filter { it.age <= 2.0f }.filter { !collidor.colision(it.pos) }.filter { it.pos.x<0.0f || Math.abs(it.pos.y)<4.0f  } as ArrayList<SeedData>
+        seedsList = seedsList.filter { it.age <= 2.0f } as ArrayList<SeedData>
     }
 
     private fun move(it: SeedData) {
