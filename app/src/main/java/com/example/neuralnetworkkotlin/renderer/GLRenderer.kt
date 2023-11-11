@@ -187,7 +187,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
         fpsCounter++
-        if(System.currentTimeMillis() - time > 1000){
+        val interval = System.currentTimeMillis() - time > 1000
+        if(interval){
             fps.postValue(fpsCounter)
             fpsCounter = 0
             time = System.currentTimeMillis()
@@ -200,20 +201,22 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             log.postValue(logString)
             Log.e("Stats:", logString)
+
+            when{
+                creatures.creaturesList.size>300 -> creatures.energyFromEatCompensator = 0.0f
+                creatures.creaturesList.size>200 -> creatures.energyFromEatCompensator = 0.2f
+                creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = 0.7f
+                creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = 0.9f
+                creatures.creaturesList.size<10 -> creatures.energyFromEatCompensator = 2.0f
+                creatures.creaturesList.size<50 -> creatures.energyFromEatCompensator = 1.3f
+                else -> creatures.energyFromEatCompensator = 1.0f
+            }
         }
 
 
 
 
-        when{
-            creatures.creaturesList.size>300 -> creatures.energyFromEatCompensator = 0.0f
-            creatures.creaturesList.size>200 -> creatures.energyFromEatCompensator = 0.2f
-            creatures.creaturesList.size>150 -> creatures.energyFromEatCompensator = 0.7f
-            creatures.creaturesList.size>100 -> creatures.energyFromEatCompensator = 0.9f
-            creatures.creaturesList.size<10 -> creatures.energyFromEatCompensator = 2.0f
-            creatures.creaturesList.size<50 -> creatures.energyFromEatCompensator = 1.3f
-            else -> creatures.energyFromEatCompensator = 1.0f
-        }
+
 
 
         setUpFrame()
@@ -225,7 +228,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //        }
 
         for(i in 0..controlHelper.stepsPerFrame-1){
-            seeds.loop(::onSeedAdded)
+            seeds.loop(::onSeedAdded, interval)
             particleEffects.particles = particleEffects.particles +  creatures.loop(::onCreatureEggAdded, seeds.seedsList, coli)
             eggs.loop(::onCreatureAdded, onBranchAdded = { branches.add(it) })
         }
@@ -289,8 +292,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private fun onCreatureAdded() {
         val creature = creatures.creaturesList.get(creatures.creaturesList.size-1)
+        creature.pos = Vector2f(9f, 9f)
         creature.genome.kidsQty = 1
-        creature.genome.color=Vector3f(1f,0.0f,0.0f)
+        creature.genome.color=Vector3f(Random.nextFloat(),Random.nextFloat(),Random.nextFloat())
 
         creatures.add(creature)
     }
