@@ -3,14 +3,12 @@ package com.example.neuralnetworkkotlin.viewgroups
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
-
-import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+import javax.vecmath.Vector3f
 import kotlin.math.PI
 
 const val COORDS_PER_VERTEX = 3

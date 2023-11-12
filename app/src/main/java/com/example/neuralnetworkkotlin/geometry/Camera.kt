@@ -1,7 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry
 
 import android.opengl.Matrix
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector3f
+import javax.vecmath.Vector3f
 
 class Camera {
 

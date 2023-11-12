@@ -1,12 +1,11 @@
 package com.example.neuralnetworkkotlin.helpers
 
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Line
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import timber.log.Timber
 import java.util.ArrayList
+import javax.vecmath.Vector2f
 
-
+class Triangle(val a: Vector2f, val b: Vector2f, val c: Vector2f)
+class Line(val v: Vector2f, val w: Vector2f)
 class Collision {
 
     fun pointTriangleColision(s: Vector2f, triangle: Triangle):Boolean{

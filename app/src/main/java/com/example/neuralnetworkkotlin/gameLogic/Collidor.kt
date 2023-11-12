@@ -2,7 +2,8 @@ package com.example.neuralnetworkkotlin.gameLogic
 
 import android.util.Log
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
+import javax.vecmath.Vector2f
+
 
 class Collidor(val terrain: Terrain) {
 

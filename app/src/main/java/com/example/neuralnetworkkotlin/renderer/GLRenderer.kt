@@ -6,7 +6,6 @@ import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
 import com.example.neuralnetworkkotlin.geometry.Camera
-import com.example.neuralnetworkkotlin.geometry.DrawModel
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
@@ -18,7 +17,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
 
-    lateinit var drawModel: DrawModel
     lateinit var backGround: BackGround
 
 
@@ -62,10 +60,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain = Terrain(context)
 
-        drawModel = DrawModel(context)
-
         backGround = BackGround(context)
-
 
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
