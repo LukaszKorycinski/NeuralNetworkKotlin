@@ -2,9 +2,6 @@ package com.example.neuralnetworkkotlin.geometry.collada.converter
 
 import android.opengl.GLES20
 import android.opengl.Matrix
-import com.example.neuralnetworkkotlin.geometry.PlantsData
-import com.example.neuralnetworkkotlin.geometry.creatures.CreaturesData
-
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -98,29 +95,6 @@ class DrawColladaModel(mesh: Mesh) {
     var texHandler: Int = 0
     var wave = 0.0f
 
-    fun setOGLDataGrass(textureHandle: Int, shader: Int) {
-        GLES20.glUseProgram(shader)
-        mvpMatrixHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
-
-        val waveHandler = GLES20.glGetUniformLocation(shader, "wave")
-
-        wave=wave+0.04f
-        if(wave>1000.0f){
-            wave = 0.0f
-        }
-        GLES20.glUniform1f(waveHandler, wave)
-
-        texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
-        GLES20.glUniform1i(texHandler, 0)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
-
-        mPositionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
-        mNormalHandle = GLES20.glGetAttribLocation(shader, "vNormal")
-        mTexCoordHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
-    }
-
-
 
     fun setOGLDataCreatures(textureHandle: Int, shader: Int, textureHandleGradient: Int? = null) {
         GLES20.glUseProgram(shader)
@@ -147,12 +121,11 @@ class DrawColladaModel(mesh: Mesh) {
         mColorAccentHandle = GLES20.glGetUniformLocation(shader, "colorAccent")
     }
 
-    fun draw(mvpMatrix: FloatArray, positionScale: PlantsData) {
+    fun draw(mvpMatrix: FloatArray) {
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
         Matrix.setIdentityM(transMatrix, 0)
-        Matrix.translateM(transMatrix, 0, positionScale.pos.x, positionScale.pos.y, 0f)
-        Matrix.scaleM(transMatrix, 0, positionScale.drawSize(), positionScale.drawSize(), positionScale.drawSize())
+
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
@@ -171,35 +144,20 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
     }
 
-    fun draw(mvpMatrix: FloatArray, creature: CreaturesData, textureHandle: Int, dragonTextureHandle: Int) {
+    fun draw(mvpMatrix: FloatArray, textureHandle: Int, dragonTextureHandle: Int) {
 
         val mvptMatrix = FloatArray(16)
         val transMatrix = FloatArray(16)
         Matrix.setIdentityM(transMatrix, 0)
 
-        Matrix.translateM(transMatrix, 0, creature.pos.x, creature.pos.y, 0f)
-        Matrix.rotateM(transMatrix, 0, -creature.getAngle(), 0.0f, 0.0f, 1.0f)
-        Matrix.scaleM(transMatrix, 0, creature.drawSize(), creature.drawSize(), creature.drawSize())
         Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
 
         GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
 
-        creature.wave=creature.wave+0.08f
-        if(creature.wave>2* PI){
-            creature.wave = 0.0f
-        }
-        GLES20.glUniform1f(waveHandler, creature.wave)
+        GLES20.glUniform1i(texHandler, 0)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, dragonTextureHandle)
 
-        if(creature.genome.eatMeat){
-            GLES20.glUniform1i(texHandler, 0)
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, dragonTextureHandle)
-        }else{
-            GLES20.glUniform1i(texHandler, 0)
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
-        }
-        GLES20.glUniform3f(mColorAccentHandle, creature.genome.color.x, creature.genome.color.y, creature.genome.color.z)
 
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
@@ -213,110 +171,6 @@ class DrawColladaModel(mesh: Mesh) {
         GLES20.glDisableVertexAttribArray(mPositionHandle)
         GLES20.glDisableVertexAttribArray(mNormalHandle)
         GLES20.glDisableVertexAttribArray(mTexCoordHandle)
-    }
-
-
-    val eyeSize = 0.2f
-    fun drawEye(mvpMatrix: FloatArray, creature: CreaturesData) {
-        val mvptMatrix = FloatArray(16)
-        val transMatrix = FloatArray(16)
-        Matrix.setIdentityM(transMatrix, 0)
-
-        Matrix.translateM(transMatrix, 0, creature.eyeSign().x, creature.eyeSign().y, 0f)
-
-        Matrix.scaleM(transMatrix, 0, eyeSize, eyeSize, eyeSize)
-        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
-
-        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
-
-        GLES20.glUniform3f(mColorAccentHandle, creature.eye.x, creature.eye.x, creature.eye.x)
-
-        GLES20.glEnableVertexAttribArray(mPositionHandle)
-        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
-        GLES20.glEnableVertexAttribArray(mNormalHandle)
-        GLES20.glVertexAttribPointer(mNormalHandle, 3, GLES20.GL_FLOAT, false, 0, normalBuffer)
-        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
-        GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texcoordBuffer)
-
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
-
-
-
-
-        Matrix.setIdentityM(transMatrix, 0)
-
-        val rotated = creature.pos+(creature.eyeSign()-creature.pos).rotate(Math.toRadians(creature.genome.eyeAngle))
-        Matrix.translateM(transMatrix, 0, rotated.x, rotated.y, 0f)
-
-        Matrix.scaleM(transMatrix, 0, eyeSize, eyeSize, eyeSize)
-        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
-
-        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
-
-        GLES20.glUniform3f(mColorAccentHandle, creature.eye.y, creature.eye.y, creature.eye.y)
-
-
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
-//
-//
-//
-//
-        Matrix.setIdentityM(transMatrix, 0)
-
-        val rotated2 = creature.pos+(creature.eyeSign()-creature.pos).rotate(Math.toRadians(-creature.genome.eyeAngle))
-        Matrix.translateM(transMatrix, 0, rotated2.x, rotated2.y, 0f)
-
-        Matrix.scaleM(transMatrix, 0, eyeSize, eyeSize, eyeSize)
-        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
-
-        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
-
-        GLES20.glUniform3f(mColorAccentHandle, creature.eye.z, creature.eye.z, creature.eye.z)
-
-
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
-
-
-
-
-        GLES20.glDisableVertexAttribArray(mPositionHandle)
-        GLES20.glDisableVertexAttribArray(mNormalHandle)
-        GLES20.glDisableVertexAttribArray(mTexCoordHandle)
-
-    }
-
-
-
-
-    val textSize = 0.9f
-    fun drawGeneration(mvpMatrix: FloatArray, creature: CreaturesData) {
-        val mvptMatrix = FloatArray(16)
-        val transMatrix = FloatArray(16)
-        Matrix.setIdentityM(transMatrix, 0)
-
-        Matrix.translateM(transMatrix, 0, creature.pos.x, creature.pos.y, 0f)
-
-        Matrix.scaleM(transMatrix, 0, textSize, textSize, textSize)
-        Matrix.multiplyMM(mvptMatrix, 0, mvpMatrix, 0, transMatrix, 0)
-
-        GLES20.glUniformMatrix4fv(mvpMatrixHandler, 1, false, mvptMatrix, 0)
-
-        GLES20.glUniform3f(mColorAccentHandle, creature.eye.x, creature.eye.x, creature.eye.x)
-
-        GLES20.glEnableVertexAttribArray(mPositionHandle)
-        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
-        GLES20.glEnableVertexAttribArray(mNormalHandle)
-        GLES20.glVertexAttribPointer(mNormalHandle, 3, GLES20.GL_FLOAT, false, 0, normalBuffer)
-        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
-        GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texcoordBuffer)
-
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesCout, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
-
-
-        GLES20.glDisableVertexAttribArray(mPositionHandle)
-        GLES20.glDisableVertexAttribArray(mNormalHandle)
-        GLES20.glDisableVertexAttribArray(mTexCoordHandle)
-
     }
 }
 

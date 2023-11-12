@@ -11,15 +11,9 @@ class ControlHelper {
     var right = false
     var left = false
     var mode = true
-    var switchEyes = true
-    var stepsPerFrame = 1
 
     fun switchMode(isChecked: Boolean) {
         this.mode = isChecked
-    }
-
-    fun switchEyes(isChecked: Boolean) {
-        this.switchEyes = isChecked
     }
 
     fun upKey(action: MotionEvent){
