@@ -14,13 +14,13 @@ import kotlin.math.PI
 const val COORDS_PER_VERTEX = 3
 
 
-class BackGround(context: Context) {
+class BackGround() {
 
     val layerCoords = floatArrayOf(
-        -10f, 20f, 0.0f,      // top left
-        -10f, -20f, 0.0f,      // bottom left
-        10f, -20f, 0.0f,      // bottom right
-        10f, 20f, 0.0f       // top right
+        -12f, 20f, 0.0f,      // top left
+        -12f, -20f, 0.0f,      // bottom left
+        12f, -20f, 0.0f,      // bottom right
+        12f, 20f, 0.0f       // top right
     )
 
 

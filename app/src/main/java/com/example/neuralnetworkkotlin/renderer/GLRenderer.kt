@@ -60,7 +60,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain = Terrain(context)
 
-        backGround = BackGround(context)
+        backGround = BackGround()
 
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
