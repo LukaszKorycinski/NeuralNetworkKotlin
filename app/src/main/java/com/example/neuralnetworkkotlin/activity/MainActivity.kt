@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                Log.e("TAG", "scaleFactor "+detector?.scaleFactor)
-
                 detector?.scaleFactor?.let{
                     glSurfaceView.onZoom(it)
                 }
@@ -49,8 +47,6 @@ class MainActivity : AppCompatActivity() {
                 detector?.scaleFactor?.let{
                     glSurfaceView.onZoomEnd(it)
                 }
-
-                Log.e("TAG", "onScaleEnd "+detector?.scaleFactor)
                 super.onScaleEnd(detector)
             }
 

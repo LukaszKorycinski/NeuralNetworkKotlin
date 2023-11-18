@@ -6,6 +6,26 @@ import android.opengl.GLES20
 import android.opengl.GLUtils
 import com.example.neuralnetworkkotlin.R
 
+
+enum class TEXTURES(val id: Int, val resId: Int){
+    CHAMP_GRADIENT(0, R.drawable.champ_gradient),
+    DRAGON(1, R.drawable.dragon),
+    SMOKE(2, R.drawable.smoke),
+    B3(3, R.drawable.b3),
+    STRING(4, R.drawable.string),
+    EGG(5, R.drawable.egg),
+    TERRAINTEXTURE3(6, R.drawable.terraintexture3),
+    TERRAINTEXTURE2(7, R.drawable.terraintexture2),
+    TERRAINTEXTURE(8, R.drawable.terraintexture),
+    SEED(9, R.drawable.seed),
+    PLANT(10, R.drawable.plant),
+    TERRAIN(11, R.drawable.terrain),
+    FOG_BACKGROUND(12, R.drawable.fog_background),
+    SKY(13, R.drawable.sky),
+    CHAMP(14, R.drawable.champ),
+}
+
+
 class TexturesLoader(var context: Context) {
 
     companion object {
@@ -17,30 +37,15 @@ class TexturesLoader(var context: Context) {
 
     fun loadTexture() {
         GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
-        val textResIds: IntArray = IntArray(TEXTURES_QTY + 1)
-        textResIds[0] = R.drawable.champ_gradient
-        textResIds[1] = R.drawable.dragon
-        textResIds[2] = R.drawable.smoke
-        textResIds[3] = R.drawable.b3
-        textResIds[4] = R.drawable.string
-        textResIds[5] = R.drawable.egg
-        textResIds[6] = R.drawable.terraintexture3
-        textResIds[7] = R.drawable.terraintexture2
-        textResIds[8] = R.drawable.terraintexture
-        textResIds[9] = R.drawable.seed
-        textResIds[10] = R.drawable.plant
-        textResIds[11] = R.drawable.terrain
-        textResIds[12] = R.drawable.fog_background
-        textResIds[13] = R.drawable.sky
-        textResIds[14] = R.drawable.champ
 
-        for (i in 0..TEXTURES_QTY) {
+
+        TEXTURES.values().forEach { texture ->
             val options = BitmapFactory.Options()
             options.inScaled = true // No pre-scaling
 
-            val bitmap = BitmapFactory.decodeResource(context.resources, textResIds[i], options)
+            val bitmap = BitmapFactory.decodeResource(context.resources, texture.resId, options)
 
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[i])
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[texture.id])
 
             GLES20.glTexParameteri(
                 GLES20.GL_TEXTURE_2D,
@@ -53,7 +58,7 @@ class TexturesLoader(var context: Context) {
                 GLES20.GL_NEAREST
             )
 
-            if(i==13){
+            if(texture == TEXTURES.SKY){
                 GLES20.glTexParameteri(
                     GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_S,
@@ -77,10 +82,7 @@ class TexturesLoader(var context: Context) {
                 )
             }
 
-
-
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
-
             bitmap.recycle()
         }
     }

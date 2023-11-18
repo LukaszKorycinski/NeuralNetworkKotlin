@@ -6,6 +6,8 @@ import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
 import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.F3d
+import com.example.neuralnetworkkotlin.geometry.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
@@ -23,35 +25,16 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
+    val f3d = F3d(context)
     lateinit var shaderLoader: ShaderLoader
 
-    fun switchMode(isChecked: Boolean) {
-        controlHelper.switchMode(isChecked)
-    }
-
-    fun upKey(action: MotionEvent) {
-        controlHelper.upKey(action)
-    }
-
-    fun downKey(action: MotionEvent) {
-        controlHelper.downKey(action)
-    }
-
-    fun leftKey(action: MotionEvent) {
-        controlHelper.leftKey(action)
-    }
-
-    fun rightKey(action: MotionEvent) {
-        controlHelper.rightKey(action)
-    }
-
-    fun onZoom(zoom: Float) {
-        controlHelper.onZoom(zoom)
-    }
-
-    fun onZoomEnd(zoom: Float) {
-        controlHelper.onZoomEnd(zoom)
-    }
+    fun switchMode(isChecked: Boolean) { controlHelper.switchMode(isChecked) }
+    fun upKey(action: MotionEvent) { controlHelper.upKey(action) }
+    fun downKey(action: MotionEvent) { controlHelper.downKey(action) }
+    fun leftKey(action: MotionEvent) { controlHelper.leftKey(action) }
+    fun rightKey(action: MotionEvent) { controlHelper.rightKey(action) }
+    fun onZoom(zoom: Float) { controlHelper.onZoom(zoom) }
+    fun onZoomEnd(zoom: Float) { controlHelper.onZoomEnd(zoom) }
 
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
@@ -93,6 +76,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
 
+        f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL, textures.textureHandle[TEXTURES.DRAGON.id], shaderLoader.shaderProgramBasic)
 
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
     }

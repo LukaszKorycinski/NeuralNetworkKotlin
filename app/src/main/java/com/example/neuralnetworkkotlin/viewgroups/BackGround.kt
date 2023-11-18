@@ -3,6 +3,7 @@ package com.example.neuralnetworkkotlin.viewgroups
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
+import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -89,7 +90,7 @@ class BackGround() {
             GLES20.glUniform1i(texHandler, 0)
 
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[13])
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SKY.id])
 
         GLES20.glUseProgram(shader)
         var propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
