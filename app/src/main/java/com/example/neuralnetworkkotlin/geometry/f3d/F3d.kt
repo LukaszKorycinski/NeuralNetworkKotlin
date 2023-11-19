@@ -14,8 +14,10 @@ import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -154,7 +156,7 @@ class F3d(val appContext: Context) {
 
 
         val xmlFileInputStream = appContext.resources.openRawResource(R.raw.dragon)
-        val xmlFileString = FileOperation.readTextFile(xmlFileInputStream)
+        val xmlFileString = readTextFile(xmlFileInputStream)
 
         val jSonFile = xmlToJson(xmlFileString)
 
@@ -206,10 +208,30 @@ class F3d(val appContext: Context) {
         }
     }
 
-    fun xmlToJson(xmlString: String): JSONObject? {
+    private fun xmlToJson(xmlString: String): JSONObject? {
 
         val xmlToJson = XmlToJson.Builder(xmlString).build()
 
         return xmlToJson.toJson()
+    }
+
+    private fun readTextFile(inputStream: InputStream): String {
+        val outputStream = ByteArrayOutputStream()
+
+        val buf = ByteArray(1024)
+        var len: Int
+        try {
+            len = inputStream.read(buf)
+            while (len != -1) {
+                outputStream.write(buf, 0, len)
+                len = inputStream.read(buf)
+            }
+            outputStream.close()
+            inputStream.close()
+        } catch (e: IOException) {
+
+        }
+
+        return outputStream.toString()
     }
 }
