@@ -8,6 +8,8 @@ import com.example.neuralnetworkkotlin.ext.distance
 import com.example.neuralnetworkkotlin.geometry.f3d.collada.Collada
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.google.gson.Gson
+import fr.arnaudguyon.xmltojsonlib.XmlToJson
+import org.json.JSONObject
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
 import timber.log.Timber
@@ -154,7 +156,7 @@ class F3d(val appContext: Context) {
         val xmlFileInputStream = appContext.resources.openRawResource(R.raw.dragon)
         val xmlFileString = FileOperation.readTextFile(xmlFileInputStream)
 
-        val jSonFile = Json.xmlToJson(xmlFileString)
+        val jSonFile = xmlToJson(xmlFileString)
 
         val colladaModel = Gson().fromJson(jSonFile!!.toString(), Collada::class.java)
 
@@ -202,5 +204,12 @@ class F3d(val appContext: Context) {
             e.printStackTrace()
             Timber.e(e)
         }
+    }
+
+    fun xmlToJson(xmlString: String): JSONObject? {
+
+        val xmlToJson = XmlToJson.Builder(xmlString).build()
+
+        return xmlToJson.toJson()
     }
 }
