@@ -29,7 +29,7 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 
@@ -37,8 +37,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.2"
     implementation group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
+    implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 
-    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01'
     implementation 'javax.vecmath:vecmath:1.5.2'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
