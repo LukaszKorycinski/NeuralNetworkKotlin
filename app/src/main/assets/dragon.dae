@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.1">
+    <library_geometries>
+        <geometry id="id-mesh-7" name="Plane">
+            <mesh>
+                <source id="id-mesh-7-positions">
+                    <float_array id="id-mesh-7-positions-array" count="18"> 1.0 -1.0 0.0 -1.0 1.0 0.0 -1.0 -1.0 0.0 1.0 -1.0 0.0 1.0 1.0 0.0 -1.0 1.0 0.0</float_array>
+                    <technique_common>
+                        <accessor source="#id-mesh-7-positions-array" count="6" stride="3">
+                            <param name="X" type="float"/>
+                            <param name="Y" type="float"/>
+                            <param name="Z" type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="id-mesh-7-normals">
+                    <float_array id="id-mesh-7-normals-array" count="18"> 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 1.0</float_array>
+                    <technique_common>
+                        <accessor source="#id-mesh-7-normals-array" count="6" stride="3">
+                            <param name="X" type="float"/>
+                            <param name="Y" type="float"/>
+                            <param name="Z" type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="id-mesh-7-texcoord-0">
+                    <float_array id="id-mesh-7-texcoord-0-array" count="12"> 0.6705905199050903 0.032534509897232056 0.07159705460071564 0.6315280199050903 0.07159705460071564 0.032534509897232056 0.8971529603004456 0.33722198009490967 0.8971529603004456 0.9362155199050903 0.29815950989723206 0.9362155199050903</float_array>
+                    <technique_common>
+                        <accessor source="#id-mesh-7-texcoord-0-array" count="6" stride="2">
+                            <param name="S" type="float"/>
+                            <param name="T" type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <vertices id="id-mesh-7-vertices">
+                    <input semantic="POSITION" source="#id-mesh-7-positions"/>
+                </vertices>
+                <triangles count="2" material="id-trimat-8">
+                    <input semantic="VERTEX" source="#id-mesh-7-vertices" offset="0"/>
+                    <input semantic="NORMAL" source="#id-mesh-7-normals" offset="0"/>
+                    <input semantic="TEXCOORD" source="#id-mesh-7-texcoord-0" offset="0" set="0"/>
+                    <p> 0 1 2 3 4 5 </p>
+                </triangles>
+            </mesh>
+        </geometry>
+    </library_geometries>
+</COLLADA>

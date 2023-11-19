@@ -1,9 +1,14 @@
 package com.example.neuralnetworkkotlin.geometry
 
 import android.content.Context
+import android.content.res.XmlResourceParser
 import android.opengl.GLES20
+import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.ext.distance
+import com.example.neuralnetworkkotlin.geometry.f3d.collada.Collada
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
+import org.simpleframework.xml.Serializer
+import org.simpleframework.xml.core.Persister
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.DataInputStream
@@ -25,37 +30,27 @@ data class File3d(
     var indicesBuffer: ShortBuffer? = null,
     var indicesQty: Int = 0,
     ) {
-    fun generateIndicesObject(vertices: MutableList<Vector3f>, textCoords: MutableList<Vector2f>) {
-        val indices: MutableList<Short> = mutableListOf()
-        val verticesOut: MutableList<Vector3f> = mutableListOf()
-        val textCoordsOut: MutableList<Vector2f> = mutableListOf()
 
-        vertices.forEach { verticeIn ->
-            var isExist = false
-
-            verticesOut.forEachIndexed { index, verticeOut ->
-                if ( verticeIn.distance(verticeOut) < 0.0001f && verticeIn.distance(verticeOut) < 0.0001f ) {
-                    isExist = true
-                    indices.add(index.toShort())
-                    return@forEachIndexed
-                }
-
-                if (!isExist) {
-                    verticesOut.add(verticeOut)
-                    textCoordsOut.add(textCoords[index])
-                    indices.add((verticesOut.size - 1).toShort())
-                }
-            }
+    private var fileIterator = 0
+        get() {
+            field++
+            return field-1
         }
+
+    fun generateIndicesObject(vertices: MutableList<Vector3f>, textCoords: MutableList<Vector2f>, indices: MutableList<Int>) {
+//        val indices: MutableList<Short> = mutableListOf()
+//        val verticesOut: MutableList<Vector3f> = mutableListOf()
+//        val textCoordsOut: MutableList<Vector2f> = mutableListOf()
 
         val coordsFloatArray = FloatArray(vertices.size * 3)
         val texCoordsFloatArray = FloatArray(vertices.size * 2)
         val indicesShortArray = ShortArray(indices.size)
 
-        vertices.forEachIndexed() { index, vertice ->
-            coordsFloatArray[index * 3] = vertice.x
-            coordsFloatArray[index * 3 + 1] = vertice.y
-            coordsFloatArray[index * 3 + 2] = vertice.z
+        fileIterator = 0
+        vertices.forEach { vertice ->
+            coordsFloatArray[fileIterator] = vertice.x
+            coordsFloatArray[fileIterator] = vertice.y
+            coordsFloatArray[fileIterator] = vertice.z
         }
         val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
         vbb.order(ByteOrder.nativeOrder())
@@ -63,10 +58,10 @@ data class File3d(
         vertexBuffer?.put(coordsFloatArray)
         vertexBuffer?.position(0)
 
-
-        textCoords.forEachIndexed() { index, textCoord ->
-            texCoordsFloatArray[index * 2] = textCoord.x
-            texCoordsFloatArray[index * 2 + 1] = textCoord.y
+        fileIterator = 0
+        textCoords.forEach { textCoord ->
+            texCoordsFloatArray[fileIterator] = textCoord.x
+            texCoordsFloatArray[fileIterator] = textCoord.y
         }
         val tcbb = ByteBuffer.allocateDirect(texCoordsFloatArray.size * 4)
         tcbb.order(ByteOrder.nativeOrder())
@@ -75,8 +70,8 @@ data class File3d(
         texBuffer?.position(0)
 
         indicesQty = indices.size
-        indices.forEachIndexed() { index, indice ->
-            indicesShortArray[index] = indice
+        indices.forEachIndexed { index, indice ->
+            indicesShortArray[index] = indice.toShort()
         }
         val ibb = ByteBuffer.allocateDirect(indices.size * 2)
         ibb.order(ByteOrder.nativeOrder())
@@ -119,43 +114,77 @@ class F3d(val appContext: Context) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
-    var fileIterator = 0
+    private var fileIterator = 0
         get() {
             field++
             return field-1
         }
 
     init {
+        val stringBuilder = StringBuilder()
+
         try {
+            // Otwórz plik w folderze "assets"
+            val inputStream = appContext.assets.open("dragon.dae")
+            val reader = BufferedReader(InputStreamReader(inputStream))
 
-            files.map { file ->
-                val vertices: MutableList<Vector3f> = mutableListOf()
-                val textCoords: MutableList<Vector2f> = mutableListOf()
-
-                val inputStream = DataInputStream(appContext.assets.open(file.fileName.fileName))
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                val fileContent = reader.readLine().split(" ")
-                reader.close()
-                inputStream.close()
-
-                fileIterator = 0
-
-                val qty: Int = fileContent[fileIterator].toInt()
-                Timber.e(qty.toString())
-                for (j in 0 until qty) {
-                    vertices.add(Vector3f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
-                    Timber.e(vertices.last().toString())
-                }
-
-                for (j in 0 until qty) {
-                    textCoords.add(Vector2f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
-                    Timber.e(textCoords.last().toString())
-                }
-
-
-                file.generateIndicesObject(vertices, textCoords)
-                file
+            // Odczytaj plik wiersz po wierszu
+            var line: String? = reader.readLine()
+            while (line != null) {
+                stringBuilder.append(line).append("\n")
+                line = reader.readLine()
             }
+
+            // Zamknij strumień
+            reader.close()
+            inputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val xmlToParse = stringBuilder.toString()
+
+        val serializer: Serializer = Persister()
+        val dataFetch = serializer.read(Collada::class.java, xmlToParse)
+
+
+
+
+        try {
+//            files.map { file ->
+//                val vertices: MutableList<Vector3f> = mutableListOf()
+//                val textCoords: MutableList<Vector2f> = mutableListOf()
+//                val indices: MutableList<Int> = mutableListOf()
+//
+//                val inputStream = DataInputStream(appContext.assets.open(file.fileName.fileName))
+//                val reader = BufferedReader(InputStreamReader(inputStream))
+//                val fileContent = reader.readLine().split(" ")
+//                reader.close()
+//                inputStream.close()
+//
+//                fileIterator = 0
+//
+//                val qty: Int = fileContent[fileIterator].toInt()
+//                Timber.e(qty.toString())
+//                for (j in 0 until qty) {
+//                    vertices.add(Vector3f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
+//                    Timber.e(vertices.last().toString())
+//                }
+//
+//                for (j in 0 until qty) {
+//                    textCoords.add(Vector2f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
+//                    Timber.e(textCoords.last().toString())
+//                }
+//
+//                val qtyIndexes: Int = fileContent[fileIterator].toInt()
+//                Timber.e(qty.toString())
+//                for (j in 0 until qtyIndexes) {
+//                    indices.add(fileContent[fileIterator].toInt())
+//                }
+//
+//                file.generateIndicesObject(vertices, textCoords, indices)
+//                file
+//            }
         } catch (e: IOException) {
             e.printStackTrace()
             Timber.e(e)
