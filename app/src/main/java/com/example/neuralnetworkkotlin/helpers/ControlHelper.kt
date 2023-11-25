@@ -57,7 +57,7 @@ class ControlHelper {
 
 
     val position = Vector3f(0f, 0f, 15.0f)
-    var zoomTmp = 0.0f
+    var zoomTmp = 1.0f
 
     fun updatePosition(): Vector3f {
 

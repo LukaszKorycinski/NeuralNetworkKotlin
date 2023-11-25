@@ -1,10 +1,6 @@
 package com.example.neuralnetworkkotlin.geometry.f3d.collada
 
 import com.google.gson.annotations.SerializedName
-import org.simpleframework.xml.Attribute
-import org.simpleframework.xml.Element
-import org.simpleframework.xml.ElementList
-import org.simpleframework.xml.Root
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
@@ -14,7 +10,7 @@ class ColladaFile {
     var collada: Collada? = null
 
     fun getVertex(): List<Vector3f> {
-        val source = collada?.library_geometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.VERT.index)
+        val source = collada?.libraryGeometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.VERT.index)
         val vertices = mutableListOf<Vector3f>()
 
         source?.getAsList()?.let{
@@ -30,7 +26,7 @@ class ColladaFile {
     }
 
     fun getTexcoords(): List<Vector2f> {
-        val source = collada?.library_geometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.TEXC.index)
+        val source = collada?.libraryGeometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.TEXC.index)
         val texcoords = mutableListOf<Vector2f>()
 
         source?.getAsList()?.let{
@@ -45,14 +41,80 @@ class ColladaFile {
     }
 
     fun getIndices(): List<Int> {
-        val indices = collada?.library_geometries?.geometry?.mesh?.triangles?.getAsList()
+        val indices = collada?.libraryGeometries?.geometry?.mesh?.triangles?.getAsList()
         return indices ?: emptyList()
     }
 }
 
+class Source {
+    @SerializedName("float_array")
+    var float_array: FloatArray? = null
+}
+
+class Animation {
+    @SerializedName("source")
+    var source: List<Source>? = null
+}
+
 class Collada {
     @SerializedName("library_geometries")
-    var library_geometries: LibraryGeometries? = null
+    var libraryGeometries: LibraryGeometries? = null
+
+    @SerializedName("library_controllers")
+    var libraryControllers: LibraryControllers? = null
+
+    @SerializedName("library_animations")
+    var libraryAnimations: LibraryAnimations? = null
+
+    @SerializedName("library_visual_scenes")
+    var libraryVisualScenes: LibraryVisualScenes? = null
+}
+
+class LibraryVisualScenes {
+    @SerializedName("visual_scene")
+    var visual_scene: Visual_scene? = null
+}
+
+class Visual_scene {
+    @SerializedName("node")
+    var node: List<NodeList>? = null
+}
+
+class NodeList {
+    @SerializedName("node")
+    var node: List<Node>? = null
+}
+
+class Node {
+
+}
+
+class LibraryAnimations {
+    @SerializedName("animation")
+    var animation: List<Animation>? = null
+}
+
+class LibraryControllers {
+    @SerializedName("controller")
+    var controller: Controller? = null
+}
+
+class Skin {
+    @SerializedName("vertex_weights")
+    var vertexWeights: VertexWeights? = null
+
+    @SerializedName("source")
+    var source: List<Source>? = null
+}
+
+class VertexWeights {
+    @SerializedName("v")
+    var v: String? = null
+}
+
+class Controller {
+    @SerializedName("skin")
+    var skin: Skin? = null
 }
 
 class LibraryGeometries {
@@ -76,10 +138,10 @@ class ColladaMesh {
 
 class ColladaSource {
     @SerializedName("float_array")
-    val float_array: Float_Array? = null
+    val floatArray: FloatArray? = null
 
     fun getAsList(): List<Float> {
-        return float_array?.content?.split(" ")?.filter { it.isNotBlank() }?.map { it.toFloat() } ?: emptyList()
+        return floatArray?.content?.split(" ")?.filter { it.isNotBlank() }?.map { it.toFloat() } ?: emptyList()
     }
 
     enum class CHANNEL(val index: Int) {
@@ -89,7 +151,7 @@ class ColladaSource {
     }
 }
 
-class Float_Array {
+class FloatArray {
     @SerializedName("content")
     val content: String? = null
 }
