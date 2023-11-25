@@ -1,44 +1,106 @@
 package com.example.neuralnetworkkotlin.geometry.f3d.collada
 
+import com.google.gson.annotations.SerializedName
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
+import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 
-@Root(strict = false, name = "COLLADA")
+
+class ColladaFile {
+    @SerializedName("COLLADA")
+    var collada: Collada? = null
+
+    fun getVertex(): List<Vector3f> {
+        val source = collada?.library_geometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.VERT.index)
+        val vertices = mutableListOf<Vector3f>()
+
+        source?.getAsList()?.let{
+            for (i in it.indices step 3) {
+                val x = it[i]
+                val y = it[i+1]
+                val z = it[i+2]
+                vertices.add(Vector3f(x, y, z))
+            }
+        }
+
+        return vertices
+    }
+
+    fun getTexcoords(): List<Vector2f> {
+        val source = collada?.library_geometries?.geometry?.mesh?.sources?.get(ColladaSource.CHANNEL.TEXC.index)
+        val texcoords = mutableListOf<Vector2f>()
+
+        source?.getAsList()?.let{
+            for (i in it.indices step 2) {
+                val x = it[i]
+                val y = it[i+1]
+                texcoords.add(Vector2f(x, y))
+            }
+        }
+
+        return texcoords
+    }
+
+    fun getIndices(): List<Int> {
+        val indices = collada?.library_geometries?.geometry?.mesh?.triangles?.getAsList()
+        return indices ?: emptyList()
+    }
+}
+
 class Collada {
-    @field:ElementList(name = "library_geometries", required = false)
-    var library_geometries: List<LibraryGeometries>? = null
+    @SerializedName("library_geometries")
+    var library_geometries: LibraryGeometries? = null
 }
 
-@Root(strict = false, name = "library_geometries")
 class LibraryGeometries {
-    @field:ElementList(name = "geometry", required = false)
-    var geometry: List<ColladaGeometry>? = null
+    @SerializedName("geometry")
+    var geometry: ColladaGeometry? = null
 }
 
-@Root(strict = false, name = "geometry")
 class ColladaGeometry {
-    @field:ElementList(name = "mesh", required = false)
-    var mesh: List<ColladaMesh>? = null
+    @SerializedName("mesh")
+    var mesh: ColladaMesh? = null
 }
 
-@Root(strict = false, name = "mesh")
 class ColladaMesh {
-    @field:ElementList(name = "source", required = false)
+    @SerializedName("source")
     val sources: List<ColladaSource>? = null
 
     //val vertices: ColladaVertices,
-    @field:ElementList(name = "triangles", required = false)
-    val triangles: List<ColladaTriangles>? = null
+    @SerializedName("triangles")
+    val triangles: ColladaTriangles? = null
 }
 
 class ColladaSource {
-    @field:ElementList(name = "float_array", required = false)
-    val float_array: List<FloatArray>? = null
+    @SerializedName("float_array")
+    val float_array: Float_Array? = null
+
+    fun getAsList(): List<Float> {
+        return float_array?.content?.split(" ")?.filter { it.isNotBlank() }?.map { it.toFloat() } ?: emptyList()
+    }
+
+    enum class CHANNEL(val index: Int) {
+        VERT(0),
+        NORM(1),
+        TEXC(2),
+    }
 }
 
-data class ColladaTriangles(
-    @field:ElementList(name = "p", required = false)
-    val indices: List<Int>
-)
+class Float_Array {
+    @SerializedName("content")
+    val content: String? = null
+}
+
+
+
+class ColladaTriangles {
+    @SerializedName("p")
+    val indices: String? = null
+
+    fun getAsList(): List<Int> {
+        return indices?.split(" ")?.filter { it.isNotBlank() }?.map { it.toInt() } ?: emptyList()
+    }
+}

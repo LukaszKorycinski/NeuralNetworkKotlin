@@ -6,6 +6,8 @@ import android.opengl.GLES20
 import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.ext.distance
 import com.example.neuralnetworkkotlin.geometry.f3d.collada.Collada
+import com.example.neuralnetworkkotlin.geometry.f3d.collada.ColladaFile
+import com.example.neuralnetworkkotlin.geometry.f3d.collada.ColladaSource
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.google.gson.Gson
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
@@ -86,9 +88,9 @@ data class File3d(
     }
 }
 
-enum class MODELS_3D(val index: Int, val fileName: String){
-    DRAGON_MODEL(0, "dragon.txt"),
-    DRAGON2_MODEL(1, "dragon.txt"),
+enum class MODELS_3D(val index: Int, val rawResId: Int){
+    DRAGON_MODEL(0, R.raw.kwadrat),
+    DRAGON2_MODEL(1, R.raw.kwadrat),
 }
 
 class F3d(val appContext: Context) {
@@ -126,85 +128,21 @@ class F3d(val appContext: Context) {
         }
 
     init {
-        val stringBuilder = StringBuilder()
+        files.map { file ->
 
-        try {
-            // Otwórz plik w folderze "assets"
-            val inputStream = appContext.assets.open("dragon.dae")
-            val reader = BufferedReader(InputStreamReader(inputStream))
+            val xmlFileInputStream = appContext.resources.openRawResource(file.fileName.rawResId)
+            val xmlFileString = readTextFile(xmlFileInputStream)
 
-            // Odczytaj plik wiersz po wierszu
-            var line: String? = reader.readLine()
-            while (line != null) {
-                stringBuilder.append(line).append("\n")
-                line = reader.readLine()
-            }
+            val jSonFile = xmlToJson(xmlFileString)
 
-            // Zamknij strumień
-            reader.close()
-            inputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+            val colladaModel = Gson().fromJson(jSonFile!!.toString(), ColladaFile::class.java)
 
-        val xmlToParse = stringBuilder.toString()
+            val vertices: MutableList<Vector3f> = colladaModel.getVertex().toMutableList()
+            val textCoords: MutableList<Vector2f> = colladaModel.getTexcoords().toMutableList()
+            val indices: MutableList<Int> = colladaModel.getIndices().toMutableList()
 
-        val serializer: Serializer = Persister()
-        val dataFetch = serializer.read(Collada::class.java, xmlToParse)
-
-
-
-
-        val xmlFileInputStream = appContext.resources.openRawResource(R.raw.dragon)
-        val xmlFileString = readTextFile(xmlFileInputStream)
-
-        val jSonFile = xmlToJson(xmlFileString)
-
-        val colladaModel = Gson().fromJson(jSonFile!!.toString(), Collada::class.java)
-
-
-
-
-
-
-        try {
-//            files.map { file ->
-//                val vertices: MutableList<Vector3f> = mutableListOf()
-//                val textCoords: MutableList<Vector2f> = mutableListOf()
-//                val indices: MutableList<Int> = mutableListOf()
-//
-//                val inputStream = DataInputStream(appContext.assets.open(file.fileName.fileName))
-//                val reader = BufferedReader(InputStreamReader(inputStream))
-//                val fileContent = reader.readLine().split(" ")
-//                reader.close()
-//                inputStream.close()
-//
-//                fileIterator = 0
-//
-//                val qty: Int = fileContent[fileIterator].toInt()
-//                Timber.e(qty.toString())
-//                for (j in 0 until qty) {
-//                    vertices.add(Vector3f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
-//                    Timber.e(vertices.last().toString())
-//                }
-//
-//                for (j in 0 until qty) {
-//                    textCoords.add(Vector2f(fileContent[fileIterator].toFloat(), fileContent[fileIterator].toFloat()))
-//                    Timber.e(textCoords.last().toString())
-//                }
-//
-//                val qtyIndexes: Int = fileContent[fileIterator].toInt()
-//                Timber.e(qty.toString())
-//                for (j in 0 until qtyIndexes) {
-//                    indices.add(fileContent[fileIterator].toInt())
-//                }
-//
-//                file.generateIndicesObject(vertices, textCoords, indices)
-//                file
-//            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Timber.e(e)
+            file.generateIndicesObject(vertices, textCoords, indices)
+            file
         }
     }
 
