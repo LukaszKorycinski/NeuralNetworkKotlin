@@ -6,15 +6,14 @@ import javax.vecmath.Vector3f
 
 class ControlHelper {
 
+    companion object{
+        var modeSwitcher = false
+    }
+
     var up = false
     var down = false
     var right = false
     var left = false
-    var mode = true
-
-    fun switchMode(isChecked: Boolean) {
-        this.mode = isChecked
-    }
 
     fun upKey(action: MotionEvent){
         when(action.action){

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <string name="vs_basic">
+
+        uniform mat4 uMVPMatrix;
+        attribute vec3 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 texCoord;
+
+        void main() {
+
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+
+            texCoord = a_TexCoordinate;
+        }
+    </string>
+
+    <string name="ps_basic"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec4 color = texture2D(u_Texture, texCoord);
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+</resources>

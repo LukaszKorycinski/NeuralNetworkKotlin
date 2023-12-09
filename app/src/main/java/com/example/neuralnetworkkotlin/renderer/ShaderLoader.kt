@@ -6,19 +6,55 @@ import android.util.Log
 import com.example.neuralnetworkkotlin.R
 
 
+
+enum class Shaders {
+    BACKGROUND,
+    FOG,
+    SKY,
+    BASIC,
+    BASIC_ANIM,
+    TERRAIN,
+    SEED,
+    GRASS,
+    CREATURES,
+    EYES,
+    FONT,
+    PARTICLES
+}
+
 class ShaderLoader(context : Context){
-    var shaderProgramBackground: Int
-    var shaderProgramFog: Int
-    var shaderProgramSky: Int
-    var shaderProgramBasic: Int
-    var shaderProgramBasicAnim: Int
-    var shaderProgramTerrain: Int
-    var shaderProgramSeed: Int
-    var shaderProgramGrass: Int
-    var shaderProgramCreatures: Int
-    var shaderProgramEyes: Int
-    var shaderProgramFont: Int
-    var shaderProgramParticles: Int
+
+    companion object{
+        var shaderProgramBackground: Int = 0
+        var shaderProgramFog: Int = 0
+        var shaderProgramSky: Int = 0
+        var shaderProgramBasic: Int = 0
+        var shaderProgramBasicAnim: Int = 0
+        var shaderProgramTerrain: Int = 0
+        var shaderProgramSeed: Int = 0
+        var shaderProgramGrass: Int = 0
+        var shaderProgramCreatures: Int = 0
+        var shaderProgramEyes: Int = 0
+        var shaderProgramFont: Int = 0
+        var shaderProgramParticles: Int = 0
+
+        fun getShaderProgram(shader: Shaders) : Int{
+            return when (shader) {
+                Shaders.BACKGROUND -> shaderProgramBackground
+                Shaders.FOG -> shaderProgramFog
+                Shaders.SKY -> shaderProgramSky
+                Shaders.BASIC -> shaderProgramBasic
+                Shaders.BASIC_ANIM -> shaderProgramBasicAnim
+                Shaders.TERRAIN -> shaderProgramTerrain
+                Shaders.SEED -> shaderProgramSeed
+                Shaders.GRASS -> shaderProgramGrass
+                Shaders.CREATURES -> shaderProgramCreatures
+                Shaders.EYES -> shaderProgramEyes
+                Shaders.FONT -> shaderProgramFont
+                Shaders.PARTICLES -> shaderProgramParticles
+            }
+        }
+    }
 
     init {
         val vertexParticles: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_basic, context)

@@ -2,11 +2,17 @@ package com.example.neuralnetworkkotlin.geometry
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.ext.Vector2f
 import com.example.neuralnetworkkotlin.ext.readTextFile
 import com.example.neuralnetworkkotlin.ext.xmlToJson
 import com.example.neuralnetworkkotlin.geometry.f3d.collada.ColladaFile
 import com.example.neuralnetworkkotlin.helpers.intIterator
+import com.example.neuralnetworkkotlin.renderer.ShaderLoader
+import com.example.neuralnetworkkotlin.renderer.Shaders
+import com.example.neuralnetworkkotlin.renderer.TEXTURES
+import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.google.gson.Gson
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -15,9 +21,9 @@ import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
-enum class MODELS_3D(val index: Int, val rawResId: Int){
-    DRAGON_MODEL(0, R.raw.dragon),
-    DRAGON2_MODEL(1, R.raw.dragon),
+enum class MODELS_3D(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES) {
+    DRAGON_MODEL(0, R.raw.dragon, Shaders.BASIC, TEXTURES.DRAGON),
+    COW_MODEL(1, R.raw.cow, Shaders.BASIC, TEXTURES.COWS_TEXTURE),
 }
 
 data class File3d(
@@ -31,14 +37,14 @@ data class File3d(
 
     fun generateIndicesObject(vertices: MutableList<Vector3f>, textCoords: MutableList<Vector2f>, indices: MutableList<Int>) {
         val coordsFloatArray = FloatArray(vertices.size * 3)
-        val texCoordsFloatArray = FloatArray(vertices.size * 2)
+        val texCoordsFloatArray = FloatArray(textCoords.size * 2)
         val indicesShortArray = ShortArray(indices.size)
 
         intIterator = 0
         vertices.forEach { vertice ->
             coordsFloatArray[intIterator] = -vertice.x
-            coordsFloatArray[intIterator] = vertice.y
-            coordsFloatArray[intIterator] = vertice.z
+            coordsFloatArray[intIterator] =  vertice.y
+            coordsFloatArray[intIterator] = -vertice.z
         }
         val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
         vbb.order(ByteOrder.nativeOrder())
@@ -69,25 +75,30 @@ data class File3d(
     }
 }
 
-class F3d(val appContext: Context) {
-    val files = mutableListOf(File3d(MODELS_3D.DRAGON_MODEL), File3d(MODELS_3D.DRAGON2_MODEL))
+class F3d(val appContext: Context, val textures: TexturesLoader) {
+    val files = mutableListOf(File3d(MODELS_3D.DRAGON_MODEL), File3d(MODELS_3D.COW_MODEL))
 
-    fun draw(mvpMatrix: FloatArray, id: MODELS_3D, texture: Int, shaderProgram: Int){
+    fun draw(mvpMatrix: FloatArray, id: MODELS_3D, position: Vector2f = Vector2f(0f)) {
 
-        GLES20.glUseProgram(shaderProgram)
-        val propertyHandler = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix")
-        GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
+        Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
 
-        val texHandler = GLES20.glGetUniformLocation(shaderProgram, "u_Texture")
+        GLES20.glUseProgram(ShaderLoader.getShaderProgram(files[id.index].fileName.shader))
+        val iVPMatrix = GLES20.glGetUniformLocation(ShaderLoader.getShaderProgram(files[id.index].fileName.shader), "uMVPMatrix") //, iVMatrix;
+        Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
+        GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
+
+        val texHandler = GLES20.glGetUniformLocation(ShaderLoader.getShaderProgram(files[id.index].fileName.shader), "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[files[id.index].fileName.texture.id])
 
-        val mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
+        val mPositionHandle = GLES20.glGetAttribLocation(ShaderLoader.getShaderProgram(files[id.index].fileName.shader), "vPosition")
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, files[id.index].vertexBuffer)
 
-        val mTexCoordHandle = GLES20.glGetAttribLocation(shaderProgram, "a_TexCoordinate")
+        val mTexCoordHandle = GLES20.glGetAttribLocation(ShaderLoader.getShaderProgram(files[id.index].fileName.shader), "a_TexCoordinate")
         GLES20.glEnableVertexAttribArray(mTexCoordHandle)
         GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0, files[id.index].texBuffer)
 

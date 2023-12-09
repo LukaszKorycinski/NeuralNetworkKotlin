@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.f3d.collada
 
 import com.google.gson.annotations.SerializedName
+import java.util.ArrayList
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
@@ -66,8 +67,8 @@ class Collada {
     @SerializedName("library_animations")
     var libraryAnimations: LibraryAnimations? = null
 
-    @SerializedName("library_visual_scenes")
-    var libraryVisualScenes: LibraryVisualScenes? = null
+//    @SerializedName("library_visual_scenes")
+//    var libraryVisualScenes: LibraryVisualScenes? = null
 }
 
 class LibraryVisualScenes {
@@ -131,9 +132,30 @@ class ColladaMesh {
     @SerializedName("source")
     val sources: List<ColladaSource>? = null
 
+    @SerializedName("polylist")
+    var polylist: Polylist? = null
+
     //val vertices: ColladaVertices,
     @SerializedName("triangles")
     val triangles: ColladaTriangles? = null
+}
+
+class Polylist {
+
+    @SerializedName("p")
+    var polylist: String? = null
+
+    val asInteger: ArrayList<Int>
+        get() {
+            val w = ArrayList<Int>()
+
+            val parts = polylist!!.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            for (number in parts)
+                w.add(Integer.parseInt(number))
+
+            return w
+        }
+
 }
 
 class ColladaSource {
@@ -161,6 +183,17 @@ class FloatArray {
 class ColladaTriangles {
     @SerializedName("p")
     val indices: String? = null
+
+    val asInteger: ArrayList<Int>
+        get() {
+            val w = ArrayList<Int>()
+
+            val parts = indices?.split(" ".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray() ?: emptyArray()
+            for (number in parts)
+                w.add(Integer.parseInt(number))
+
+            return w
+        }
 
     fun getAsList(): List<Int> {
         return indices?.split(" ")?.filter { it.isNotBlank() }?.map { it.toInt() } ?: emptyList()

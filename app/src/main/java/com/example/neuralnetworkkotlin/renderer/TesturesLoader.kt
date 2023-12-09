@@ -7,7 +7,7 @@ import android.opengl.GLUtils
 import com.example.neuralnetworkkotlin.R
 
 
-enum class TEXTURES(val id: Int, val resId: Int){
+enum class TEXTURES(val id: Int, val resId: Int) {
     CHAMP_GRADIENT(0, R.drawable.champ_gradient),
     DRAGON(1, R.drawable.dragon),
     SMOKE(2, R.drawable.smoke),
@@ -22,16 +22,15 @@ enum class TEXTURES(val id: Int, val resId: Int){
     TERRAIN(11, R.drawable.terrain),
     FOG_BACKGROUND(12, R.drawable.fog_background),
     SKY(13, R.drawable.sky),
-    CHAMP(14, R.drawable.champ),
+    COWS_TEXTURE(14, R.drawable.cows_texture),
 }
 
 
 class TexturesLoader(var context: Context) {
 
     companion object {
-        const val TEXTURES_QTY = 14
+        val TEXTURES_QTY = TEXTURES.values().size
     }
-
 
     val textureHandle = IntArray(TEXTURES_QTY + 1)
 
@@ -58,7 +57,7 @@ class TexturesLoader(var context: Context) {
                 GLES20.GL_NEAREST
             )
 
-            if(texture == TEXTURES.SKY){
+            if (texture == TEXTURES.SKY) {
                 GLES20.glTexParameteri(
                     GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_S,
@@ -69,7 +68,7 @@ class TexturesLoader(var context: Context) {
                     GLES20.GL_TEXTURE_WRAP_T,
                     GLES20.GL_MIRRORED_REPEAT
                 )
-            }else{
+            } else {
                 GLES20.glTexParameteri(
                     GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_S,

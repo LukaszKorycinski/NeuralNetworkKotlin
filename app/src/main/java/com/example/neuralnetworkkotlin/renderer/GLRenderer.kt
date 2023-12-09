@@ -9,11 +9,14 @@ import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.F3d
 import com.example.neuralnetworkkotlin.geometry.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.Terrain
+import com.example.neuralnetworkkotlin.geometry.f3d.F3da
+import com.example.neuralnetworkkotlin.geometry.f3d.MODELS_3DA
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import javax.vecmath.Vector2f
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
@@ -25,10 +28,14 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
-    val f3d = F3d(context)
+    val f3d = F3d(context, textures)
+    val f3da = F3da(context, textures)
+
+
+
     lateinit var shaderLoader: ShaderLoader
 
-    fun switchMode(isChecked: Boolean) { controlHelper.switchMode(isChecked) }
+    fun switchMode(isChecked: Boolean) { ControlHelper.modeSwitcher = isChecked }
     fun upKey(action: MotionEvent) { controlHelper.upKey(action) }
     fun downKey(action: MotionEvent) { controlHelper.downKey(action) }
     fun leftKey(action: MotionEvent) { controlHelper.leftKey(action) }
@@ -50,6 +57,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
+        GLES20.glDepthMask( true )
     }
 
     val coli = Collision()
@@ -74,11 +82,15 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         setUpFrame()
 
-        terrain.drawTerrain(camera.viewProjectionMatrix, textures, shaderLoader.shaderProgramTerrain)
+        terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
-        f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL, textures.textureHandle[TEXTURES.DRAGON.id], shaderLoader.shaderProgramBasic)
+        f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
 
-        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, shaderLoader.shaderProgramSky)
+        //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL )
+        f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
+
+
+        backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, ShaderLoader.shaderProgramSky)
     }
 
 
@@ -97,7 +109,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         camera.setUpFrame(controlHelper.updatePosition())
 
         val texturesUniformHandle = GLES20.glGetUniformLocation(
-            shaderLoader.shaderProgramBackground,
+            ShaderLoader.shaderProgramBackground,
             "u_Texture"
         )
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
