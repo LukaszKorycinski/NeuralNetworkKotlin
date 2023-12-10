@@ -3,16 +3,18 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdk 31
+    compileSdk 33
     defaultConfig {
         applicationId "com.example.neuralnetworkkotlin"
-        minSdkVersion 24
-        targetSdkVersion 30
+        minSdkVersion 26
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
-
+    packagingOptions {
+        pickFirst  '**'
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -20,30 +22,39 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-
-
+    ndkVersion '26.1.10909125'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+
+    //implementation "io.github.kotlin-graphics:kotlin-unsigned:3.3.32"
+    //implementation 'com.github.kotlin-graphics:kool:0.9.77'
+    implementation "kotlin.graphics:glm:0.9.9.1-11"
+    implementation "kotlin.graphics:gli:0.8.3.0-20"
+    //implementation 'com.github.kotlin-graphics.uno-sdk:uno:0.7.20'
+    implementation("kotlin.graphics:uno:0.7.21")
+
+    //implementation 'io.github.oshai:kotlin-logging-jvm:5.1.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4"
     implementation group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     implementation 'javax.vecmath:vecmath:1.5.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
+import com.example.neuralnetworkkotlin.assimp.Importer
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.F3d
 import com.example.neuralnetworkkotlin.geometry.MODELS_3D
@@ -17,6 +18,7 @@ import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import javax.vecmath.Vector2f
+
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
@@ -55,10 +57,17 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
+
+        val scene = Importer().readFile("raw/dragon.dae")
+
+
+
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
         GLES20.glDepthMask( true )
     }
+
+
 
     val coli = Collision()
 

@@ -1,26 +1,24 @@
 package com.example.neuralnetworkkotlin.activity
 
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
-import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.neuralnetworkkotlin.R
-import com.example.neuralnetworkkotlin.ext.observeNonNull
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.activity_main.down
+import kotlinx.android.synthetic.main.activity_main.fps
+import kotlinx.android.synthetic.main.activity_main.glSurfaceView
+import kotlinx.android.synthetic.main.activity_main.left
+import kotlinx.android.synthetic.main.activity_main.right
+import kotlinx.android.synthetic.main.activity_main.switchMode
+import kotlinx.android.synthetic.main.activity_main.up
 
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var zoomGestureListener: ScaleGestureDetector
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
 
         zoomGestureListener.onTouchEvent(event)
 
@@ -34,17 +32,17 @@ class MainActivity : AppCompatActivity() {
 
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                detector?.scaleFactor?.let{
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                detector.scaleFactor.let{
                     glSurfaceView.onZoom(it)
                 }
 
                 return super.onScale(detector)
             }
 
-            override fun onScaleEnd(detector: ScaleGestureDetector?) {
+            override fun onScaleEnd(detector: ScaleGestureDetector) {
 
-                detector?.scaleFactor?.let{
+                detector.scaleFactor.let{
                     glSurfaceView.onZoomEnd(it)
                 }
                 super.onScaleEnd(detector)

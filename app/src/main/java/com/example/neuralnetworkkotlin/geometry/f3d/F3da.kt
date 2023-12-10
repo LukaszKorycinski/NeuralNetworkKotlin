@@ -67,18 +67,15 @@ class File3da(
         boneIndicesIN: java.util.ArrayList<Float>
     ) {
         bonesIndices = boneIndicesIN
-        val coordsFloatArray = FloatArray(vertices.size * 4)
-        val texCoordsFloatArray = FloatArray(vertices.size * 2)
+        val coordsFloatArray = FloatArray(vertices.size * 3)
+        val texCoordsFloatArray = FloatArray(vertices.size * 3)
         val indicesShortArray = ShortArray(indices.size)
 
         intIterator = 0
-        var boneIterator = 0
         vertices.forEach { vertice ->
             coordsFloatArray[intIterator] = -vertice.x
             coordsFloatArray[intIterator] = vertice.y
             coordsFloatArray[intIterator] = -vertice.z
-            coordsFloatArray[intIterator] = bonesIndices[boneIterator]
-            boneIterator++
         }
         val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
         vbb.order(ByteOrder.nativeOrder())
@@ -87,9 +84,12 @@ class File3da(
         vertexBuffer?.position(0)
 
         intIterator = 0
+        var boneIterator = 0
         textCoords.forEach { textCoord ->
             texCoordsFloatArray[intIterator] = textCoord.x
             texCoordsFloatArray[intIterator] = 1f - textCoord.y
+            texCoordsFloatArray[intIterator] = bonesIndices[boneIterator]
+            boneIterator++
         }
         val tcbb = ByteBuffer.allocateDirect(texCoordsFloatArray.size * 4)
         tcbb.order(ByteOrder.nativeOrder())
@@ -239,7 +239,7 @@ class F3da(val appContext: Context, val textures: TexturesLoader) {
         GLES20.glEnableVertexAttribArray(mPositionHandle)
         GLES20.glVertexAttribPointer(
             mPositionHandle,
-            4,
+            3,
             GLES20.GL_FLOAT,
             false,
             0,
@@ -253,7 +253,7 @@ class F3da(val appContext: Context, val textures: TexturesLoader) {
         GLES20.glEnableVertexAttribArray(mTexCoordHandle)
         GLES20.glVertexAttribPointer(
             mTexCoordHandle,
-            2,
+            3,
             GLES20.GL_FLOAT,
             false,
             0,
