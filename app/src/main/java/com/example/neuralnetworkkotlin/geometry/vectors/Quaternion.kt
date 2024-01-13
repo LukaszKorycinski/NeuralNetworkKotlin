@@ -1,25 +1,17 @@
 package com.example.neuralnetworkkotlin.geometry.vectors
 
+import com.example.neuralnetworkkotlin.assimp.AiQuaternion
 import javax.vecmath.Matrix4f
 import kotlin.math.sqrt
 
 
 class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
-    /**
-     * Creates a quaternion and normalizes it.
-     *
-     * @param x
-     * @param y
-     * @param z
-     * @param w
-     */
+    constructor(aiQuaternion: AiQuaternion) : this(aiQuaternion.x, aiQuaternion.y, aiQuaternion.z, aiQuaternion.w)
+
     init {
         normalize()
     }
 
-    /**
-     * Normalizes the quaternion.
-     */
     fun normalize() {
         val mag =
             sqrt((w * w + x * x + y * y + z * z).toDouble()).toFloat()
@@ -29,20 +21,39 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
         z /= mag
     }
 
-    /**
-     * Converts the quaternion to a 4x4 matrix representing the exact same
-     * rotation as this quaternion. (The rotation is only contained in the
-     * top-left 3x3 part, but a 4x4 matrix is returned here for convenience
-     * seeing as it will be multiplied with other 4x4 matrices).
-     *
-     * More detailed explanation here:
-     * http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/
-     *
-     * @return The rotation matrix which represents the exact same rotation as
-     * this quaternion.
-     */
-    fun toRotationMatrix(): Matrix4f {
-        val matrix = Matrix4f()
+//    fun toRotationMatrix(): Matrix4f {
+//        val matrix = Matrix4f()
+//        val xy = x * y
+//        val xz = x * z
+//        val xw = x * w
+//        val yz = y * z
+//        val yw = y * w
+//        val zw = z * w
+//        val xSquared = x * x
+//        val ySquared = y * y
+//        val zSquared = z * z
+//        matrix.m00 = 1 - 2 * (ySquared + zSquared)
+//        matrix.m01 = 2 * (xy - zw)
+//        matrix.m02 = 2 * (xz + yw)
+//        matrix.m03 = 0f
+//        matrix.m10 = 2 * (xy + zw)
+//        matrix.m11 = 1 - 2 * (xSquared + zSquared)
+//        matrix.m12 = 2 * (yz - xw)
+//        matrix.m13 = 0f
+//        matrix.m20 = 2 * (xz - yw)
+//        matrix.m21 = 2 * (yz + xw)
+//        matrix.m22 = 1 - 2 * (xSquared + ySquared)
+//        matrix.m23 = 0f
+//        matrix.m30 = 0f
+//        matrix.m31 = 0f
+//        matrix.m32 = 0f
+//        matrix.m33 = 1f
+//        return matrix
+//    }
+
+    fun toRotationMatrix(): FloatArray{
+        val rotationMatrix = FloatArray(16)
+
         val xy = x * y
         val xz = x * z
         val xw = x * w
@@ -52,37 +63,27 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
         val xSquared = x * x
         val ySquared = y * y
         val zSquared = z * z
-        matrix.m00 = 1 - 2 * (ySquared + zSquared)
-        matrix.m01 = 2 * (xy - zw)
-        matrix.m02 = 2 * (xz + yw)
-        matrix.m03 = 0f
-        matrix.m10 = 2 * (xy + zw)
-        matrix.m11 = 1 - 2 * (xSquared + zSquared)
-        matrix.m12 = 2 * (yz - xw)
-        matrix.m13 = 0f
-        matrix.m20 = 2 * (xz - yw)
-        matrix.m21 = 2 * (yz + xw)
-        matrix.m22 = 1 - 2 * (xSquared + ySquared)
-        matrix.m23 = 0f
-        matrix.m30 = 0f
-        matrix.m31 = 0f
-        matrix.m32 = 0f
-        matrix.m33 = 1f
-        return matrix
+        rotationMatrix[0] = 1 - 2 * (ySquared + zSquared)
+        rotationMatrix[1] = 2 * (xy - zw)
+        rotationMatrix[2] = 2 * (xz + yw)
+        rotationMatrix[3] = 0f
+        rotationMatrix[4] = 2 * (xy + zw)
+        rotationMatrix[5] = 1 - 2 * (xSquared + zSquared)
+        rotationMatrix[6] = 2 * (yz - xw)
+        rotationMatrix[7] = 0f
+        rotationMatrix[8] = 2 * (xz - yw)
+        rotationMatrix[9] = 2 * (yz + xw)
+        rotationMatrix[10] = 1 - 2 * (xSquared + ySquared)
+        rotationMatrix[11] = 0f
+        rotationMatrix[12] = 0f
+        rotationMatrix[13] = 0f
+        rotationMatrix[14] = 0f
+        rotationMatrix[15] = 1f
+        return rotationMatrix
     }
 
+
     companion object {
-        /**
-         * Extracts the rotation part of a transformation matrix and converts it to
-         * a quaternion using the magic of maths.
-         *
-         * More detailed explanation here:
-         * http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-         *
-         * @param matrix
-         * - the transformation matrix containing the rotation which this
-         * quaternion shall represent.
-         */
         fun fromMatrix(matrix: Matrix4f): Quaternion {
             val w: Float
             val x: Float
@@ -120,23 +121,6 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
             return Quaternion(x, y, z, w)
         }
 
-        /**
-         * Interpolates between two quaternion rotations and returns the resulting
-         * quaternion rotation. The interpolation method here is "nlerp", or
-         * "normalized-lerp". Another mnethod that could be used is "slerp", and you
-         * can see a comparison of the methods here:
-         * https://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
-         *
-         * and here:
-         * http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-         *
-         * @param a
-         * @param b
-         * @param blend
-         * - a value between 0 and 1 indicating how far to interpolate
-         * between the two quaternions.
-         * @return The resulting interpolated rotation in quaternion format.
-         */
         fun interpolate(a: Quaternion, b: Quaternion, blend: Float): Quaternion {
             val result = Quaternion(0f, 0f, 0f, 1f)
             val dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z

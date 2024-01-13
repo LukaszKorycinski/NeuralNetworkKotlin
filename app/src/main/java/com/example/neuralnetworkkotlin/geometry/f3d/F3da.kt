@@ -4,6 +4,8 @@ import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.assimp.Importer
+import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
 import com.example.neuralnetworkkotlin.ext.Vector2f
 import com.example.neuralnetworkkotlin.ext.readTextFile
 import com.example.neuralnetworkkotlin.ext.xmlToJson

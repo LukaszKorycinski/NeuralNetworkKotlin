@@ -42,6 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.example.neuralnetworkkotlin.assimp
 
+import android.content.Context
 import com.example.neuralnetworkkotlin.assimp.format.ProgressHandler
 import com.example.neuralnetworkkotlin.assimp.postProcess.OptimizeMeshes
 import com.example.neuralnetworkkotlin.assimp.postProcess.ValidateDSProcess
@@ -52,6 +53,8 @@ import com.example.neuralnetworkkotlin.assimp.wo
 import glm_.i
 import kool.BYTES
 import kool.rem
+import java.io.File
+import java.io.IOException
 import java.net.URI
 import java.net.URL
 import java.nio.ByteBuffer
@@ -233,6 +236,7 @@ constructor() {
     @JvmOverloads
     fun readFile(path: Path, flags: AiPostProcessStepsFlags = 0) = readFile(path.toAbsolutePath().toString(), flags)
     fun readFile(file: String, flags: AiPostProcessStepsFlags = 0) = readFile(file, ioHandler, flags)
+
 
     /** Reads the given file and returns its contents if successful.
      *
@@ -791,3 +795,14 @@ constructor() {
     }
 }
 
+@Throws(IOException::class)
+fun getFileFromAssets(context: Context, fileName: String): File = File(context.cacheDir, fileName)
+    .also {
+        if (!it.exists()) {
+            it.outputStream().use { cache ->
+                context.assets.open(fileName).use { inputStream ->
+                    inputStream.copyTo(cache)
+                }
+            }
+        }
+    }

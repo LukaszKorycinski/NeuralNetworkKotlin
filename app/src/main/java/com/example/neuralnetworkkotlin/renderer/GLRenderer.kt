@@ -6,9 +6,14 @@ import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
 import com.example.neuralnetworkkotlin.assimp.Importer
+import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
+import com.example.neuralnetworkkotlin.geometry.AssimpBridge
+import com.example.neuralnetworkkotlin.geometry.AssimpBridgeAnim
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.F3d
 import com.example.neuralnetworkkotlin.geometry.MODELS_3D
+import com.example.neuralnetworkkotlin.geometry.MODELS_ANIM_ASSIMP
+import com.example.neuralnetworkkotlin.geometry.MODELS_ASSIMP
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.f3d.F3da
 import com.example.neuralnetworkkotlin.geometry.f3d.MODELS_3DA
@@ -32,7 +37,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var textures = TexturesLoader(context)
     val f3d = F3d(context, textures)
     val f3da = F3da(context, textures)
-
+    val assimpBridge = AssimpBridge(context, textures)
+    val assimpBridgeAnim = AssimpBridgeAnim(context, textures)
 
 
     lateinit var shaderLoader: ShaderLoader
@@ -56,11 +62,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
-
-
-        val scene = Importer().readFile("raw/dragon.dae")
-
-
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
@@ -93,7 +94,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
-        f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
+        //f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
+
+        //assimpBridge.draw(camera.viewProjectionMatrix, MODELS_ASSIMP.DRAGON_MODEL)
+        assimpBridgeAnim.draw(camera.viewProjectionMatrix, MODELS_ANIM_ASSIMP.DRAGON_MODEL)
 
         //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL )
         f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
