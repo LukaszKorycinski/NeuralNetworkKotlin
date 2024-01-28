@@ -331,7 +331,7 @@ class PretransformVertices : BaseProcess() {
     fun AiNode.countNodes(): Int {
         var iRet = 1
         for (i in 0 until numChildren)
-            iRet += children[i].countNodes()
+            iRet += children!![i].countNodes()
         return iRet
     }
 
@@ -358,7 +358,7 @@ class PretransformVertices : BaseProcess() {
             }
         }
         for (i in 0 until node.numChildren)
-            countVerticesAndFaces(scene, node.children[i], iMat, iVFormat).let {
+            countVerticesAndFaces(scene, node.children!![i], iMat, iVFormat).let {
                 iFaces += it.first
                 iVertices += it.second
             }
@@ -481,7 +481,7 @@ class PretransformVertices : BaseProcess() {
 
         // append all children of us
         for (i in 0 until node.numChildren)
-            collectData(scene, node.children[i], iMat, iVFormat, meshOut, aiCurrent, numRefs)
+            collectData(scene, node.children!![i], iMat, iVFormat, meshOut, aiCurrent, numRefs)
     }
 
     /** Get a list of all vertex formats that occur for a given material index
@@ -501,7 +501,7 @@ class PretransformVertices : BaseProcess() {
         }
 
         for (i in 0 until node.numChildren)
-            computeAbsoluteTransform(node.children[i])
+            computeAbsoluteTransform(node.children!![i])
     }
 
     // Simple routine to build meshes in worldspace, no further optimization
@@ -553,7 +553,7 @@ class PretransformVertices : BaseProcess() {
 
         // call children
         for (i in 0 until node.numChildren)
-            buildWCSMeshes(out, `in`, numIn, node.children[i])
+            buildWCSMeshes(out, `in`, numIn, node.children!![i])
     }
 
     /** Apply the node transformation to a mesh */
@@ -592,7 +592,7 @@ class PretransformVertices : BaseProcess() {
 
         // call children
         for (i in 0 until nd.numChildren)
-            makeIdentityTransform(nd.children[i])
+            makeIdentityTransform(nd.children!![i])
     }
 
 
@@ -603,6 +603,6 @@ class PretransformVertices : BaseProcess() {
 
         // call children
         for (i in 0 until nd.numChildren)
-            buildMeshRefCountArray(nd.children[i], refs)
+            buildMeshRefCountArray(nd.children!![i], refs)
     }
 }

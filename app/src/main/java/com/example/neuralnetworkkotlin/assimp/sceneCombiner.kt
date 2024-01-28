@@ -632,7 +632,7 @@ object SceneCombiner {
         prefixString(node::name, prefix)
         // Process all children recursively
         for (i in 0 until node.numChildren)
-            addNodePrefixes(node.children[i], prefix)
+            addNodePrefixes(node.children!![i], prefix)
     }
 
     /** Add an offset to all mesh indices in a node graph
@@ -644,7 +644,7 @@ object SceneCombiner {
         for (i in 0 until node.numMeshes)
             node.meshes[i] += offset
         for (i in 0 until node.numChildren)
-            offsetNodeMeshIndices(node.children[i], offset)
+            offsetNodeMeshIndices(node.children!![i], offset)
     }
 
     /** Attach a list of node graphs to well-defined nodes in a master graph. This is a helper for MergeScenes()
@@ -660,14 +660,14 @@ object SceneCombiner {
 
     fun attachToGraph(attach: AiNode, srcList: ArrayList<NodeAttachmentInfo>) {
         for (cnt in 0 until attach.numChildren)
-            attachToGraph(attach.children[cnt], srcList)
+            attachToGraph(attach.children!![cnt], srcList)
         var cnt = 0
         srcList.filter { it.attachToNode === attach && !it.resolved }.map { ++cnt }
         if (cnt != 0) {
             val n = ArrayList<AiNode>(cnt + attach.numChildren)
             if (attach.numChildren != 0)
                 for (i in 0 until attach.numChildren)
-                    n.add(attach.children[i])   // TODO addAll?
+                    n.add(attach.children!![i])   // TODO addAll?
             attach.children = n
             attach.numChildren += cnt
             for (att in srcList) {
@@ -766,7 +766,7 @@ object SceneCombiner {
             }
         // Process all children recursively
         for (i in 0 until node.numChildren)
-            addNodePrefixesChecked(node.children[i], prefix, input, cur)
+            addNodePrefixesChecked(node.children!![i], prefix, input, cur)
     }
 
     /** Add node identifiers to a hashing set   */
@@ -775,7 +775,7 @@ object SceneCombiner {
             assigned so its absolutely safe to duplicate them.         */
         if (node.name.isNotEmpty()) hashes.add(superFastHash(node.name))
         // Process all children recursively
-        for (i in 0 until node.numChildren) addNodeHashes(node.children[i], hashes)
+        for (i in 0 until node.numChildren) addNodeHashes(node.children!![i], hashes)
     }
 
     /** Search for duplicate names */

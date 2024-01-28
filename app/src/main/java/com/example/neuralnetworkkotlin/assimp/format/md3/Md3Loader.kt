@@ -728,7 +728,7 @@ class Md3Importer : BaseImporter() {
     fun removeSingleNodeFromList(nd: AiNode?) {
         if (nd == null || nd.numChildren != 0 || nd.parent == null) return
         val par = nd.parent!!
-        if (par.children.remove(nd)) --par.numChildren
+        if (par.children!!.remove(nd)) --par.numChildren
     }
 
     /** Try to read the skin for a MD3 file

@@ -244,8 +244,8 @@ class Converter(val out: AiScene, val doc: Document) {
             }
 
             if (nodes.isNotEmpty()) {
-                parent.children.clear()
-                parent.children.addAll(nodes)
+                parent.children!!.clear()
+                parent.children!!.addAll(nodes)
                 parent.numChildren = nodes.size
             }
         } catch (exc: Exception) {

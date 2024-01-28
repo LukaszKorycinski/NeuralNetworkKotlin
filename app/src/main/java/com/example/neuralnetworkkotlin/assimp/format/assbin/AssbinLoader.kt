@@ -131,7 +131,7 @@ class AssbinLoader : BaseImporter() {
             node.meshes = IntArray(node.numMeshes, { int(be) })
 
         for (i in 0 until node.numChildren)
-            node.children.add(AiNode().also { readNode(it, node) })
+            node.children!!.add(AiNode().also { readNode(it, node) })
     }
 
     private fun InputStream.readMesh(mesh: AiMesh) {

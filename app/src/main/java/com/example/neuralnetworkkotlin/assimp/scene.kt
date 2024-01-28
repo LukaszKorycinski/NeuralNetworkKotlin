@@ -54,7 +54,7 @@ data class AiNode(
         var numChildren: Int = 0,
 
         /** The child nodes of this node. NULL if numChildren is 0. */
-        var children: MutableList<AiNode> = mutableListOf(),
+        var children: MutableList<AiNode>? = null,
 
         /** The number of meshes of this node. */
         var numMeshes: Int = 0,
@@ -70,11 +70,16 @@ data class AiNode(
 ) {
 
     constructor(other: AiNode) : this(other.name, AiMatrix4x4(other.transformation), other.parent, other.numChildren,
-            MutableList(other.children.size, {other.children[it]}), other.numMeshes, other.meshes.clone()) // TODO metadata
+            other.children, other.numMeshes, other.meshes.clone()) // TODO metadata
+
+
+    override fun toString(): String {
+        return "AiNode $name"
+    }
 
     fun findNode(name: String): AiNode? {
         if(this.name == name) return this
-        return children.firstOrNull { it.findNode(name) != null }
+        return children?.firstOrNull { it.findNode(name) != null }
     }
 
     override fun equals(other: Any?): Boolean {

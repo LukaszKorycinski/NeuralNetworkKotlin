@@ -125,7 +125,7 @@ class ObjFileImporter : BaseImporter() {
         pChild.parent = pParent
 
         pParent.numChildren++
-        pParent.children.add(pChild)
+        pParent.children!!.add(pChild)
     }
 
     /**  Create topology data   */

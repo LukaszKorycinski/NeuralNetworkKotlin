@@ -169,16 +169,16 @@ class Md5Importer : BaseImporter() {
         scene.rootNode = AiNode("<MD5_Root>").apply {
             numChildren = 2
 
-            children.add(AiNode().apply { name = "<MD5_Mesh>" })
+            children!!.add(AiNode().apply { name = "<MD5_Mesh>" })
 
             // build the hierarchy from the MD5MESH file
-            children.add(AiNode().apply {
+            children!!.add(AiNode().apply {
                 name = "<MD5_Hierarchy>"
                 attachChilds_Mesh(-1, this, meshParser.joints)
             })
         }
-        scene.rootNode.children[0].parent = scene.rootNode
-        scene.rootNode.children[1].parent = scene.rootNode
+        scene.rootNode.children!![0].parent = scene.rootNode
+        scene.rootNode.children!![1].parent = scene.rootNode
 
         // FIX: MD5 files exported from Blender can have empty meshes
         scene.numMaterials = meshParser.meshes.filter { it.faces.isNotEmpty() && it.vertices.isNotEmpty() }.count()
@@ -187,7 +187,7 @@ class Md5Importer : BaseImporter() {
         scene.numMeshes = scene.numMaterials
 
         //  storage for node mesh indices
-        with(scene.rootNode.children[0]) {
+        with(scene.rootNode.children!![0]) {
             numMeshes = scene.numMeshes
             meshes = IntArray(numMeshes, { it })
         }
@@ -450,7 +450,7 @@ class Md5Importer : BaseImporter() {
                 if (parentId != i && b.parentIndex == parentId) {
                     val pc = AiNode()
                     // setup a new node
-                    parent.children.add(pc.apply { name = b.name })
+                    parent.children!!.add(pc.apply { name = b.name })
                     pc.parent = parent
 
                     // get the transformation matrix from rotation and translational components

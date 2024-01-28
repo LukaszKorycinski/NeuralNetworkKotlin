@@ -152,14 +152,14 @@ class ColladaLoader : BaseImporter() {
 
         for (a in 0 until pNode.mChildren.size)
             with(buildHierarchy(pParser, pNode.mChildren[a])) {
-                node.children.add(this)
+                node.children!!.add(this)
                 parent = node
             }
 
         // ... and finally the resolved node instances
         for (a in 0 until instances.size) {
-            node.children[pNode.mChildren.size + a] = buildHierarchy(pParser, instances[a])
-            node.children[pNode.mChildren.size + a].parent = node
+            node.children!![pNode.mChildren.size + a] = buildHierarchy(pParser, instances[a])
+            node.children!![pNode.mChildren.size + a].parent = node
         }
 
         // construct meshes
@@ -1258,7 +1258,7 @@ class ColladaLoader : BaseImporter() {
     /** Collects all nodes into the given array */
     fun collectNodes(pNode: AiNode, poNodes: ArrayList<AiNode>) {
         poNodes += pNode
-        pNode.children.forEach { collectNodes(it, poNodes) }
+        pNode.children?.forEach { collectNodes(it, poNodes) }
     }
 
     class MorphTimeValues(var time: Float = 0f, key: Key) {

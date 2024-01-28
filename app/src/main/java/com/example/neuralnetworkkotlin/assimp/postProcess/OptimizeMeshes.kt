@@ -84,7 +84,7 @@ class OptimizeMeshes : BaseProcess(){
             ++meshes[ pNode.meshes[ i ] ].instance_cnt
         }
         for(i in 0 until pNode.numChildren) {
-            findInstancedMeshes(pNode.children[i])
+            findInstancedMeshes(pNode.children!![i])
         }
     }
 
@@ -136,7 +136,7 @@ class OptimizeMeshes : BaseProcess(){
 
 
         for(i in 0 until pNode.numChildren) {
-            processNode(pNode.children[i])
+            processNode(pNode.children!![i])
         }
     }
 

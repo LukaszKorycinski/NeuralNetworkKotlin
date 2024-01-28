@@ -67,13 +67,66 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
 
         val outputMatricse: ArrayList<FloatArray> = arrayListOf()
 
-        scene?.animations?.first()?.channels?.subList(0,1)?.forEachIndexed{ index, animation ->
+        scene?.animations?.first()?.channels?.subList(0,2)?.forEachIndexed{ index, animation ->
 
-            val boneIdentityMatrix = scene.meshes[index].bones.first().offsetMatrix.toFloatArray()
+            val boneIdentityMatrix = scene.meshes.first().bones.first().offsetMatrix.toFloatArray()
+
+
+
+            //czyli jesli kosc jet childem to powinna miec matrix parenta
+//            animation?.nodeName // nazwa obecnej kosci
+
+
+            val parent = scene.rootNode.children?.first()?.children?.firstOrNull { it.children?.firstNotNullOf { it.name == animation?.nodeName } != null   }// find parenta
+
+
+
+
+
+            val parentMatrices = parent?.let {
+                //teraz mam parenta, ale muszę znaleźć jego animację
+
+                scene.animations.first().channels.firstOrNull { it?.nodeName == parent.name }//to są animacje parenta, obie klatki
+            }
+
+
+//            scene.rootNode.children?.first()?.name //Armature
+//            scene.rootNode.children?.first()?.children?.first()?.name //Armature_bottom
+//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.name //Armature_top
+//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.children //empty
+//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.parent?.name //Armature_bottom
+
+
+
+
+            val translationMatrixParent = FloatArray(16)
+            Matrix.setIdentityM(translationMatrixParent, 0)
+
+            var rotationMatrixParent = FloatArray(16)
+            Matrix.setIdentityM(rotationMatrixParent, 0)
+
+            parentMatrices?.let {
+                Matrix.translateM(
+                    translationMatrixParent,
+                    0,
+                    parentMatrices.positionKeys.get(frame).value.x ?: 0.0f,
+                    parentMatrices.positionKeys.get(frame).value.y ?: 0.0f,
+                    parentMatrices.positionKeys.get(frame).value.z ?: 0.0f,
+                )
+
+                parentMatrices.rotationKeys.get(frame).value.let{
+                    Quaternion(it).toRotationMatrix()
+                }.let{
+                    rotationMatrixParent = it
+                }
+            }
+
+
 
 
             val translationMatrix = FloatArray(16)
             Matrix.setIdentityM(translationMatrix, 0)
+
             Matrix.translateM(
                 translationMatrix,
                 0,
@@ -85,6 +138,9 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
             val rotationMatrix = animation?.rotationKeys?.get(frame)?.value?.let{
                 Quaternion(it).toRotationMatrix()
             }
+
+            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrix, 0, rotationMatrixParent, 0)
+            Matrix.multiplyMM(translationMatrix, 0, translationMatrix, 0, translationMatrixParent, 0)
 
 //        val scaleMatrix = InterpolateScaling(animationTime);
             val tmpMatrix = FloatArray(16)

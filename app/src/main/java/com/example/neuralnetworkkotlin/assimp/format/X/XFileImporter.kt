@@ -363,7 +363,7 @@ class XFileImporter : BaseImporter() {
             node.children = ArrayList<AiNode>(MutableList(node.numChildren, {AiNode()}))
 
             for (a in 0 until pNode.mChildren.size())
-                node.children[a] = CreateNodes(pScene, node, pNode.mChildren[a])
+                node.children!![a] = CreateNodes(pScene, node, pNode.mChildren[a])
         }
 
         return node

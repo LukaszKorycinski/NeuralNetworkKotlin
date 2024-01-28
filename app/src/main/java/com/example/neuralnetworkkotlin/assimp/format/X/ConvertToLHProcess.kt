@@ -50,7 +50,7 @@ object MakeLeftHandedProcess {
 
         // continue for all children
         for (a in 0 until pNode.numChildren) {
-            ProcessNode(pNode.children[a], pParentGlobalRotation * pNode.transformation)
+            ProcessNode(pNode.children!![a], pParentGlobalRotation * pNode.transformation)
         }
     }
 

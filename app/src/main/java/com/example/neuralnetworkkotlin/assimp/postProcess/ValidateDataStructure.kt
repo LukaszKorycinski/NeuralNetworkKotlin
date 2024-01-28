@@ -456,10 +456,10 @@ class ValidateDSProcess : BaseProcess() {
             }
         }
         if (node.numChildren > 0) {
-            if (node.children.isEmpty())
+            if (node.children!!.isEmpty())
                 reportError("AiNode.children is empty (AiNode.numChildren is ${node.numChildren})")
             for (i in 0 until node.numChildren)
-                validate(node.children[i])
+                validate(node.children!![i])
         }
     }
 
@@ -540,5 +540,5 @@ class ValidateDSProcess : BaseProcess() {
     }
 
     fun hasNameMatch(sIn: String, node: AiNode): Int =
-            (if (node.name == sIn) 1 else 0) + (0 until node.numChildren).sumBy { hasNameMatch(sIn, node.children[it]) }
+            (if (node.name == sIn) 1 else 0) + (0 until node.numChildren).sumBy { hasNameMatch(sIn, node.children!![it]) }
 }

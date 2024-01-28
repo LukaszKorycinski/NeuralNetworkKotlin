@@ -113,7 +113,7 @@ object MakeLeftHandedProcess : BaseProcess() {
         }
         // continue for all children
         for (a in 0 until numChildren)
-            children[a] process parentGlobalRotation * transformation
+            children!![a] process parentGlobalRotation * transformation
     }
 
     /** Converts a single mesh to left handed coordinates.

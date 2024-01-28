@@ -786,7 +786,7 @@ constructor() {
         scene.set(scene() + AiNode.size)
         scene.set(scene() + Int.BYTES * node.numMeshes)
         for (i in 0 until node.numChildren)
-            addNodeWeight(scene, node.children[i])
+            addNodeWeight(scene, node.children!![i])
     }
 
     companion object {

@@ -68,7 +68,7 @@ class AssxmlExporter {
                         prefix,node.numChildren))
 
                 for (i in 0 until  node.numChildren) {
-                    WriteNode(node.children[i],io,depth+2)
+                    WriteNode(node.children!![i],io,depth+2)
                 }
                 ioprintf(io,"%s\t</NodeList>\n".format(prefix))
             }

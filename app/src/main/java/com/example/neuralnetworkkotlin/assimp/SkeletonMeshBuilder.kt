@@ -102,7 +102,7 @@ constructor(scene: AiScene, root: AiNode? = null, val knobsOnly: Boolean = false
         // If the node has children, we build little pointers to each of them
             for (a in 0 until node.numChildren) {
                 // find a suitable coordinate system
-                val childTransform = node.children[a].transformation
+                val childTransform = node.children!![a].transformation
                 val childpos = AiVector3D(childTransform.a3, childTransform.b3, childTransform.c3)
                 val distanceToChild = childpos.length()
                 if (distanceToChild < 0.0001f) continue
@@ -197,7 +197,7 @@ constructor(scene: AiScene, root: AiNode? = null, val knobsOnly: Boolean = false
                 vertices[a] = boneToMeshTransform * vertices[a]
         }
         // and finally recurse into the children list
-        node.children.forEach(this::createGeometry)
+        node.children!!.forEach(this::createGeometry)
     }
 
     /** Creates the mesh from the internally accumulated stuff and returns it.     */
