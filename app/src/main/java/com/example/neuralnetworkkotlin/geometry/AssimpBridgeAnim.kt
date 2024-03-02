@@ -30,6 +30,8 @@ enum class MODELS_ANIM_ASSIMP(
     DRAGON_MODEL2(1, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.DRAGON),
 }
 
+
+
 class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
     val files = mutableListOf(
         AssimpAnimFile(
@@ -55,12 +57,12 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
 
     fun interpolateSkeletons(id: MODELS_ANIM_ASSIMP): FloatArray {
 
-        if (System.currentTimeMillis() % 1000 < 500)
-            frame = 0
+        frame = if (System.currentTimeMillis() % 1000 < 500)
+            0
         else
-            frame = 1
+            1
 
-        var currMatrixes = FloatArray(16 * files[id.index].bonesQty)
+        val currMatrixes = FloatArray(16 * files[id.index].bonesQty)
         val scene = files[id.index].scene
 
         //val offsetMatricesList = scene?.meshes?.first()?.bones?.map { it.offsetMatrix }
@@ -69,9 +71,9 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
 
         scene?.animations?.first()?.channels?.subList(0,2)?.forEachIndexed{ index, animation ->
 
-            val boneIdentityMatrix = scene.meshes.first().bones.first().offsetMatrix.toFloatArray()
+            //val boneIdentityMatrix = scene.meshes.first().bones.first().offsetMatrix.toFloatArray()
 
-
+            val boneIdentityMatrices = scene.meshes.first().bones.map { it.offsetMatrix }
 
             //czyli jesli kosc jet childem to powinna miec matrix parenta
 //            animation?.nodeName // nazwa obecnej kosci
@@ -121,7 +123,9 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
                 }
             }
 
-
+            val boneIdentityMatrixParent = boneIdentityMatrices[0]
+            Matrix.multiplyMM(rotationMatrixParent, 0, rotationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
+            Matrix.multiplyMM(translationMatrixParent, 0, translationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
 
 
             val translationMatrix = FloatArray(16)
@@ -139,17 +143,27 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
                 Quaternion(it).toRotationMatrix()
             }
 
-            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrix, 0, rotationMatrixParent, 0)
-            Matrix.multiplyMM(translationMatrix, 0, translationMatrix, 0, translationMatrixParent, 0)
+
+
+            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrixParent, 0, rotationMatrix, 0)
+            Matrix.multiplyMM(translationMatrix, 0, translationMatrixParent, 0, translationMatrix, 0)
+//            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrix, 0, rotationMatrixParent, 0)
+//            Matrix.multiplyMM(translationMatrix, 0, translationMatrix, 0, translationMatrixParent, 0)
+
+
+
+
 
 //        val scaleMatrix = InterpolateScaling(animationTime);
             val tmpMatrix = FloatArray(16)
 
 
             Matrix.setIdentityM(tmpMatrix, 0)
-            Matrix.multiplyMM(tmpMatrix, 0, translationMatrix, 0, rotationMatrix, 0)
 
-            Matrix.multiplyMM(tmpMatrix, 0, boneIdentityMatrix, 0, tmpMatrix, 0)
+            Matrix.multiplyMM(tmpMatrix, 0, rotationMatrix, 0, translationMatrix, 0)
+//            Matrix.multiplyMM(tmpMatrix, 0, translationMatrix, 0, rotationMatrix, 0)
+
+            Matrix.multiplyMM(tmpMatrix, 0, tmpMatrix, 0, boneIdentityMatrices[index].toFloatArray(), 0)
 
             outputMatricse.add(tmpMatrix)
         }
