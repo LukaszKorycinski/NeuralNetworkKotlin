@@ -80,8 +80,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun creatureKey(action: MotionEvent) {
         when (action.action) {
             MotionEvent.ACTION_DOWN -> {
-                //addRandomCreature()
-                onCreatureAdded()
+                addRandomCreature()
+                //onCreatureAdded()
             }
         }
     }
@@ -175,13 +175,13 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     }
 
-    val coli = Collision()
+    private val coli = Collision()
 
-    var time = System.currentTimeMillis()
+    private var time = System.currentTimeMillis()
     var fps = MutableLiveData<Int>()
     var log = MutableLiveData<String>()
 
-    var fpsCounter = 0
+    private var fpsCounter = 0
 
     override fun onDrawFrame(unused: GL10) {
 
@@ -196,7 +196,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val logString = "Qty "+creatures.creaturesList.size +
                     "\nYoungest " + creatures.creaturesList.sortedBy { it.generation }.lastOrNull()?.generation +
                     "\nOldest " + creatures.creaturesList.sortedByDescending { it.generation }.lastOrNull()?.generation +
-                    "\nBiggest " + creatures.creaturesList.maxOf { it.size } +
+                    "\nBiggest " + (if(creatures.creaturesList.isNotEmpty()) creatures.creaturesList.maxOf { it.size } else "") +
                     "\nenergyFromEatCompensator " + creatures.energyFromEatCompensator
 
             log.postValue(logString)

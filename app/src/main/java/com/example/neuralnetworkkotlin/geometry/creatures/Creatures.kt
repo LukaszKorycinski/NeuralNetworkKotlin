@@ -50,7 +50,7 @@ class Creatures(val collidor: Collidor) {
     ): List<Particle> {
         //sinusInput = sin(wave)
         var particlesToAdd: List<Particle> = emptyList()
-        val eatedCreaturesIds: ArrayList<Int> = arrayListOf();
+        //val eatedCreaturesIds: ArrayList<Int> = arrayListOf();
         creaturesList.forEach { creature ->
 //            if(creature.genome.eatMeat){
 //                val idsToDelete = aiMeatEater(creature,
@@ -77,9 +77,9 @@ class Creatures(val collidor: Collidor) {
                 move(creature)
         }
 
-        particlesToAdd = eatedCreaturesIds.map { id ->
-            Particle(creaturesList.first { it.id == id }.pos, 0.0f)
-        }
+//        particlesToAdd = eatedCreaturesIds.map { id ->
+//            Particle(creaturesList.first { it.id == id }.pos, 0.0f)
+//        }
 
 
         creaturesList =
@@ -87,9 +87,9 @@ class Creatures(val collidor: Collidor) {
                 .filter { it.size > 0.2f }
                 .filter { it.size < 2.0f }
                 .filter { it.pos.y > -5.0f }
-                .filter {
+                /*.filter {
                     !eatedCreaturesIds.contains(it.id)
-            } as ArrayList<CreaturesData>
+            }*/ as ArrayList<CreaturesData>
 
         if (creaturesListToAdd.isNotEmpty()) {
 
@@ -98,7 +98,7 @@ class Creatures(val collidor: Collidor) {
                 it
             }
 
-            creaturesList.addAll(creaturesListToAdd)
+            creaturesList.addAll(tmpList)
             creaturesListToAdd.clear()
         }
 

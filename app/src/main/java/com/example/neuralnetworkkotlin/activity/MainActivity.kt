@@ -58,9 +58,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        guiSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            gui.visibility = if(isChecked) android.view.View.VISIBLE else android.view.View.GONE
+        }
 
         switchMode.isChecked=true
-
         switchMode.setOnCheckedChangeListener { buttonView, isChecked ->
             glSurfaceView.switchMode(switchMode.isChecked)
         }
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         switchEyes.setOnCheckedChangeListener { buttonView, isChecked ->
             glSurfaceView.switchEyes(switchEyes.isChecked)
         }
-
 
         up.setOnTouchListener { view, motionEvent ->
             glSurfaceView.upKey(motionEvent)
