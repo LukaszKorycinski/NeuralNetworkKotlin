@@ -23,6 +23,7 @@ android {
         }
     }
     ndkVersion '26.1.10909125'
+    namespace 'com.example.neuralnetworkkotlin'
 }
 
 dependencies {

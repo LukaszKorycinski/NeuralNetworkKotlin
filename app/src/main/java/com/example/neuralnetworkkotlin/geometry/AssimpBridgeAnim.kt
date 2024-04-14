@@ -14,6 +14,7 @@ import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.Shaders
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -57,10 +58,7 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
 
     fun interpolateSkeletons(id: MODELS_ANIM_ASSIMP): FloatArray {
 
-        frame = if (System.currentTimeMillis() % 1000 < 500)
-            0
-        else
-            1
+        frame = if (System.currentTimeMillis() % 1000 < 500) 0 else 1
 
         val currMatrixes = FloatArray(16 * files[id.index].bonesQty)
         val scene = files[id.index].scene
@@ -70,36 +68,42 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
         val outputMatricse: ArrayList<FloatArray> = arrayListOf()
 
         scene?.animations?.first()?.channels?.subList(0,2)?.forEachIndexed{ index, animation ->
-
             //val boneIdentityMatrix = scene.meshes.first().bones.first().offsetMatrix.toFloatArray()
-
             val boneIdentityMatrices = scene.meshes.first().bones.map { it.offsetMatrix }
 
             //czyli jesli kosc jet childem to powinna miec matrix parenta
 //            animation?.nodeName // nazwa obecnej kosci
-
-
-            val parent = scene.rootNode.children?.first()?.children?.firstOrNull { it.children?.firstNotNullOf { it.name == animation?.nodeName } != null   }// find parenta
-
-
-
+            Timber.e("START parent: ${animation?.nodeName}")
+            val parent =
+                scene
+                    .rootNode
+                    .children
+                    ?.first()
+                    ?.children
+                    ?.firstOrNull { children ->
+                        Timber.e("children1L ${children.name}")
+                        children
+                            .children
+                            ?.firstNotNullOf { children2 ->
+                                Timber.e("children2 ${children2.name}")
+                                children2.name == animation?.nodeName
+                            } != null
+                    }// find parenta
+            Timber.e("znalazlo: ${parent?.name}, ktory ma dzieci:${parent?.children?.joinToString { it.name }}")
+            Timber.e("END")
+            //BŁĄD: jak nie ma parenta, to pod tą zmienną jest animation (aktualna kość)
 
 
             val parentMatrices = parent?.let {
                 //teraz mam parenta, ale muszę znaleźć jego animację
-
                 scene.animations.first().channels.firstOrNull { it?.nodeName == parent.name }//to są animacje parenta, obie klatki
             }
-
 
 //            scene.rootNode.children?.first()?.name //Armature
 //            scene.rootNode.children?.first()?.children?.first()?.name //Armature_bottom
 //            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.name //Armature_top
 //            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.children //empty
 //            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.parent?.name //Armature_bottom
-
-
-
 
             val translationMatrixParent = FloatArray(16)
             Matrix.setIdentityM(translationMatrixParent, 0)
@@ -111,22 +115,21 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
                 Matrix.translateM(
                     translationMatrixParent,
                     0,
-                    parentMatrices.positionKeys.get(frame).value.x ?: 0.0f,
-                    parentMatrices.positionKeys.get(frame).value.y ?: 0.0f,
-                    parentMatrices.positionKeys.get(frame).value.z ?: 0.0f,
+                    parentMatrices.positionKeys.get(frame).value.x,
+                    parentMatrices.positionKeys.get(frame).value.y,
+                    parentMatrices.positionKeys.get(frame).value.z,
                 )
-
                 parentMatrices.rotationKeys.get(frame).value.let{
+                    //it.toMat4().toFloatArray()//Dla dolnej to sie nie powinno wywołać, a mimo to robi właśnie dla dolejnej różnicę którego rzutowania do mat użyję!!!
                     Quaternion(it).toRotationMatrix()
                 }.let{
                     rotationMatrixParent = it
                 }
             }
 
-            val boneIdentityMatrixParent = boneIdentityMatrices[0]
-            Matrix.multiplyMM(rotationMatrixParent, 0, rotationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
-            Matrix.multiplyMM(translationMatrixParent, 0, translationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
-
+            //val boneIdentityMatrixParent = boneIdentityMatrices[0]//cooooooo????? aha, to chyba nic nie robi
+            //Matrix.multiplyMM(rotationMatrixParent, 0, rotationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
+            //Matrix.multiplyMM(translationMatrixParent, 0, translationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
 
             val translationMatrix = FloatArray(16)
             Matrix.setIdentityM(translationMatrix, 0)

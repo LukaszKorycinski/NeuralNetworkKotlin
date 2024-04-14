@@ -76,7 +76,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var fps = MutableLiveData<Int>()
     var log = MutableLiveData<String>()
 
-    var fpsCounter = 0
+    private var fpsCounter = 0
 
     override fun onDrawFrame(unused: GL10) {
 
