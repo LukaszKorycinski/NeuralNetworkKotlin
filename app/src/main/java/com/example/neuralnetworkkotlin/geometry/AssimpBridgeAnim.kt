@@ -73,7 +73,7 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
 
             //czyli jesli kosc jet childem to powinna miec matrix parenta
 //            animation?.nodeName // nazwa obecnej kosci
-            Timber.e("START parent: ${animation?.nodeName}")
+            Timber.e("START current: ${animation?.nodeName}")
             val parent =
                 scene
                     .rootNode
@@ -84,7 +84,7 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
                         Timber.e("children1L ${children.name}")
                         children
                             .children
-                            ?.firstNotNullOf { children2 ->
+                            ?.firstOrNull { children2 ->
                                 Timber.e("children2 ${children2.name}")
                                 children2.name == animation?.nodeName
                             } != null
