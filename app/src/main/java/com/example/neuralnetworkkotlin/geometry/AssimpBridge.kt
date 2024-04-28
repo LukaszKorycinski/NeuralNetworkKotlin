@@ -7,7 +7,6 @@ import com.example.neuralnetworkkotlin.assimp.AiScene
 import com.example.neuralnetworkkotlin.assimp.Importer
 import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
 import com.example.neuralnetworkkotlin.ext.Vector2f
-import com.example.neuralnetworkkotlin.geometry.f3d.MODELS_3DA
 import com.example.neuralnetworkkotlin.helpers.intIterator
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.Shaders

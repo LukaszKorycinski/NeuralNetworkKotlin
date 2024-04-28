@@ -7,8 +7,11 @@ import com.example.neuralnetworkkotlin.assimp.AiScene
 import com.example.neuralnetworkkotlin.assimp.Importer
 import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
 import com.example.neuralnetworkkotlin.ext.Vector2f
-import com.example.neuralnetworkkotlin.geometry.f3d.MODELS_3DA
+import com.example.neuralnetworkkotlin.ext.flip
+import com.example.neuralnetworkkotlin.ext.times
+import com.example.neuralnetworkkotlin.ext.translate
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
+import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.intIterator
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.Shaders
@@ -17,8 +20,6 @@ import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.FloatBuffer
-import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
 
 enum class MODELS_ANIM_ASSIMP(
@@ -28,9 +29,8 @@ enum class MODELS_ANIM_ASSIMP(
     val texture: TEXTURES
 ) {
     DRAGON_MODEL(0, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.TERRAINTEXTURE),
-    DRAGON_MODEL2(1, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.DRAGON),
+    DRAGON_MODEL2(1, "test.dae", Shaders.BASIC_ANIM, TEXTURES.DRAGON),
 }
-
 
 
 class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
@@ -51,6 +51,7 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
                     assimpAnimFile.file.assetFilePath
                 ).absolutePath
             )
+            Timber.e("BONES: ${assimpAnimFile.bonesQty}")
         }
     }
 
@@ -63,125 +64,72 @@ class AssimpBridgeAnim(val context: Context, val textures: TexturesLoader) {
         val currMatrixes = FloatArray(16 * files[id.index].bonesQty)
         val scene = files[id.index].scene
 
-        //val offsetMatricesList = scene?.meshes?.first()?.bones?.map { it.offsetMatrix }
-
         val outputMatricse: ArrayList<FloatArray> = arrayListOf()
 
-        scene?.animations?.first()?.channels?.subList(0,2)?.forEachIndexed{ index, animation ->
-            //val boneIdentityMatrix = scene.meshes.first().bones.first().offsetMatrix.toFloatArray()
-            val boneIdentityMatrices = scene.meshes.first().bones.map { it.offsetMatrix }
+        scene?.animations?.first()?.channels?.subList(0, 2)?.forEachIndexed { index, animation ->
+            val boneOffsetMatrix = scene.meshes.first().bones[index].offsetMatrix
+            val globalInverseTransform = scene.rootNode.transformation.inverse().toFloatArray()
 
-            //czyli jesli kosc jet childem to powinna miec matrix parenta
-//            animation?.nodeName // nazwa obecnej kosci
             Timber.e("START current: ${animation?.nodeName}")
-            val parent =
-                scene
-                    .rootNode
-                    .children
-                    ?.first()
-                    ?.children
-                    ?.firstOrNull { children ->
-                        Timber.e("children1L ${children.name}")
-                        children
-                            .children
+            val parent = scene.rootNode.children?.first()?.children?.firstOrNull { children ->
+                        Timber.e("sprawdzam z top hierarchi ${children.name}")
+                        children.children
                             ?.firstOrNull { children2 ->
-                                Timber.e("children2 ${children2.name}")
+                                Timber.e("sprawdzam jego childy ${children2.name}")
                                 children2.name == animation?.nodeName
                             } != null
                     }// find parenta
             Timber.e("znalazlo: ${parent?.name}, ktory ma dzieci:${parent?.children?.joinToString { it.name }}")
             Timber.e("END")
-            //BŁĄD: jak nie ma parenta, to pod tą zmienną jest animation (aktualna kość)
 
-
-            val parentMatrices = parent?.let {
-                //teraz mam parenta, ale muszę znaleźć jego animację
+            val parentAnimation = parent?.let {
                 scene.animations.first().channels.firstOrNull { it?.nodeName == parent.name }//to są animacje parenta, obie klatki
             }
+            val boneOffsetMatrixParent = parent?.let {
+                scene.meshes.first().bones.firstOrNull { it.name == parent.name }?.offsetMatrix?.toFloatArray()
+            } ?: getIdentityMatrix()
 
-//            scene.rootNode.children?.first()?.name //Armature
-//            scene.rootNode.children?.first()?.children?.first()?.name //Armature_bottom
-//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.name //Armature_top
-//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.children //empty
-//            scene.rootNode.children?.first()?.children?.first()?.children?.get(0)?.parent?.name //Armature_bottom
+            var translationMatrixParent = getIdentityMatrix()
+            var rotationMatrixParent = getIdentityMatrix()
 
-            val translationMatrixParent = FloatArray(16)
-            Matrix.setIdentityM(translationMatrixParent, 0)
-
-            var rotationMatrixParent = FloatArray(16)
-            Matrix.setIdentityM(rotationMatrixParent, 0)
-
-            parentMatrices?.let {
-                Matrix.translateM(
-                    translationMatrixParent,
-                    0,
-                    parentMatrices.positionKeys.get(frame).value.x,
-                    parentMatrices.positionKeys.get(frame).value.y,
-                    parentMatrices.positionKeys.get(frame).value.z,
+            parentAnimation?.let {
+                translationMatrixParent = translationMatrixParent.translate(
+                    parentAnimation.positionKeys.get(frame).value.x,
+                    parentAnimation.positionKeys.get(frame).value.y,
+                    parentAnimation.positionKeys.get(frame).value.z,
                 )
-                parentMatrices.rotationKeys.get(frame).value.let{
-                    //it.toMat4().toFloatArray()//Dla dolnej to sie nie powinno wywołać, a mimo to robi właśnie dla dolejnej różnicę którego rzutowania do mat użyję!!!
+                parentAnimation.rotationKeys.get(frame).value.let {
                     Quaternion(it).toRotationMatrix()
-                }.let{
+                }.let {
                     rotationMatrixParent = it
                 }
             }
 
-            //val boneIdentityMatrixParent = boneIdentityMatrices[0]//cooooooo????? aha, to chyba nic nie robi
-            //Matrix.multiplyMM(rotationMatrixParent, 0, rotationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
-            //Matrix.multiplyMM(translationMatrixParent, 0, translationMatrixParent, 0, boneIdentityMatrixParent.toFloatArray(), 0)
-
-            val translationMatrix = FloatArray(16)
-            Matrix.setIdentityM(translationMatrix, 0)
-
-            Matrix.translateM(
-                translationMatrix,
-                0,
+            val translationMatrix = getIdentityMatrix().translate(
                 animation?.positionKeys?.get(frame)?.value?.x ?: 0.0f,
                 animation?.positionKeys?.get(frame)?.value?.y ?: 0.0f,
                 animation?.positionKeys?.get(frame)?.value?.z ?: 0.0f,
             )
 
-            val rotationMatrix = animation?.rotationKeys?.get(frame)?.value?.let{
+            val rotationMatrix = animation?.rotationKeys?.get(frame)?.value?.let {
                 Quaternion(it).toRotationMatrix()
-            }
+            } ?: getIdentityMatrix()
 
+            val rotationChildPArentMatrix=rotationMatrixParent*rotationMatrix
+            val translationChildParentMatrix=translationMatrixParent*translationMatrix
 
+            val boneLocalTransformMatrix = rotationChildPArentMatrix*translationChildParentMatrix
 
-            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrixParent, 0, rotationMatrix, 0)
-            Matrix.multiplyMM(translationMatrix, 0, translationMatrixParent, 0, translationMatrix, 0)
-//            Matrix.multiplyMM(rotationMatrix, 0, rotationMatrix, 0, rotationMatrixParent, 0)
-//            Matrix.multiplyMM(translationMatrix, 0, translationMatrix, 0, translationMatrixParent, 0)
+            val finalBoneMatrice = boneLocalTransformMatrix * boneOffsetMatrix.toFloatArray()
 
-
-
-
-
-//        val scaleMatrix = InterpolateScaling(animationTime);
-            val tmpMatrix = FloatArray(16)
-
-
-            Matrix.setIdentityM(tmpMatrix, 0)
-
-            Matrix.multiplyMM(tmpMatrix, 0, rotationMatrix, 0, translationMatrix, 0)
-//            Matrix.multiplyMM(tmpMatrix, 0, translationMatrix, 0, rotationMatrix, 0)
-
-            Matrix.multiplyMM(tmpMatrix, 0, tmpMatrix, 0, boneIdentityMatrices[index].toFloatArray(), 0)
-
-            outputMatricse.add(tmpMatrix)
+            outputMatricse.add(finalBoneMatrice)
         }
 
         outputMatricse.forEachIndexed { index, floats ->
             for (i in 0..15) {
-                currMatrixes[index*16 + i] = floats[i]
+                currMatrixes[index * 16 + i] = floats[i]
             }
         }
-
-
-//        var identMatrixes = FloatArray(16)
-//        Matrix.setIdentityM(identMatrixes, 0)
-//        return identMatrixes + identMatrixes
-
         return currMatrixes
     }
 

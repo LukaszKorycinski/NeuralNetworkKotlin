@@ -3,7 +3,7 @@
         <string name="vs_anim">
 
         uniform mat4 uMVPMatrix;
-        uniform mat4 bonesMatrices[2];
+        uniform mat4 bonesMatrices[5];
         attribute vec3 vPosition;
         attribute vec3 a_TexCoordinate;
         varying vec2 texCoord;

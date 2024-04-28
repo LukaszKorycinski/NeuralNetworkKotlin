@@ -5,24 +5,16 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
-import com.example.neuralnetworkkotlin.assimp.Importer
-import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
-import com.example.neuralnetworkkotlin.geometry.AssimpBridge
 import com.example.neuralnetworkkotlin.geometry.AssimpBridgeAnim
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.F3d
-import com.example.neuralnetworkkotlin.geometry.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.MODELS_ANIM_ASSIMP
-import com.example.neuralnetworkkotlin.geometry.MODELS_ASSIMP
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.f3d.F3da
-import com.example.neuralnetworkkotlin.geometry.f3d.MODELS_3DA
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import javax.vecmath.Vector2f
 
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
@@ -36,8 +28,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
     val f3d = F3d(context, textures)
-    val f3da = F3da(context, textures)
-    val assimpBridge = AssimpBridge(context, textures)
+    //val f3da = F3da(context, textures)
+    //val assimpBridge = AssimpBridge(context, textures)
     val assimpBridgeAnim = AssimpBridgeAnim(context, textures)
 
 
@@ -100,7 +92,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         assimpBridgeAnim.draw(camera.viewProjectionMatrix, MODELS_ANIM_ASSIMP.DRAGON_MODEL)
 
         //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL )
-        f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
+        //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
 
 
         backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, ShaderLoader.shaderProgramSky)

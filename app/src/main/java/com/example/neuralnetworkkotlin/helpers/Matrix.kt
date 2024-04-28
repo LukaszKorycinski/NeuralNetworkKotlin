@@ -23,3 +23,9 @@ fun mullEvery(framesMatrices: FloatArray, inv_bind_matrix: FloatArray): FloatArr
 
     return matrixesOut
 }
+
+fun getIdentityMatrix(): FloatArray {
+    val matrix = FloatArray(16)
+    Matrix.setIdentityM(matrix, 0)
+    return matrix
+}
