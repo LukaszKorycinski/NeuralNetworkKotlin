@@ -1,0 +1,191 @@
+package com.example.neuralnetworkkotlin.geometry.plain3d
+
+import android.content.Context
+import com.example.neuralnetworkkotlin.ext.readTextFile
+import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
+import com.example.neuralnetworkkotlin.helpers.intIterator
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
+
+class Loader(val context: Context) {
+    val vertices = mutableListOf<Vertex3d>()
+    val indices = mutableListOf<Int>()
+    var framesQty = 0
+    val bones = mutableListOf<Bone>()
+    lateinit var model3d: MODELS_3D
+
+    val buffers = Buffers()
+
+
+    fun fillBuffers() : Loader {
+        val coordsFloatArray = FloatArray(vertices.size * 3)
+        val texCoordsFloatArray = FloatArray(vertices.size * 2)
+        val indicesShortArray = ShortArray(indices.size)
+
+        intIterator = 0
+        vertices.forEach { vert ->
+            coordsFloatArray[intIterator] = vert.coord.x
+            coordsFloatArray[intIterator] = vert.coord.y
+            coordsFloatArray[intIterator] = vert.coord.z
+        }
+        val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
+        vbb.order(ByteOrder.nativeOrder())
+        buffers.vertexBuffer = vbb.asFloatBuffer()
+        buffers.vertexBuffer?.put(coordsFloatArray)
+        buffers.vertexBuffer?.position(0)
+
+        intIterator = 0
+        vertices.forEach { vert ->
+            texCoordsFloatArray[intIterator] = vert.texCoord.x
+            texCoordsFloatArray[intIterator] = vert.texCoord.y
+        }
+        val tcbb = ByteBuffer.allocateDirect(texCoordsFloatArray.size * 4)
+        tcbb.order(ByteOrder.nativeOrder())
+        buffers.texBuffer = tcbb.asFloatBuffer()
+        buffers.texBuffer?.put(texCoordsFloatArray)
+        buffers.texBuffer?.position(0)
+
+        buffers.indicesQty = indices.size
+        var index = 0
+        indices.forEach { indice ->
+            indicesShortArray[index] = indice.toShort()
+            index++
+        }
+
+        val ibb = ByteBuffer.allocateDirect(buffers.indicesQty * 2)
+        ibb.order(ByteOrder.nativeOrder())
+        buffers.indicesBuffer = ibb.asShortBuffer()
+        buffers.indicesBuffer?.put(indicesShortArray)
+        buffers.indicesBuffer?.position(0)
+        return this
+    }
+
+    fun loadModel(model: MODELS_3D) : Loader{
+        val file = context.resources.openRawResource(model.rawResId)
+        val fileString = removeTrash(String.readTextFile(file)).split(" ").filter { it.isNotEmpty() }
+
+        var iterator = 2
+
+        while (fileString[iterator] != "indices") {
+            val coord = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val texCoord = Vector2f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+
+            vertices.add(Vertex3d(coord, normal, texCoord))
+        }
+
+        iterator++
+        while (fileString[iterator] != "frames_qty:") {
+            indices.add(fileString[iterator++].toInt())
+        }
+
+        framesQty = fileString[++iterator].toInt()
+        iterator++
+
+        while ( bones.firstOrNull{ fileString[++iterator] == it.name } == null ) {
+            val boneName = fileString[++iterator]
+
+            val locX = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                locX.add(fileString[++iterator].toFloat())
+            }
+            val locZ = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                locZ.add(fileString[++iterator].toFloat())
+            }
+            val locY = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                locY.add(fileString[++iterator].toFloat())
+            }
+
+            val quatW = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                quatW.add(fileString[++iterator].toFloat())
+            }
+            val quatX = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                quatX.add(fileString[++iterator].toFloat())
+            }
+            val quatZ = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                quatZ.add(fileString[++iterator].toFloat())
+            }
+            val quatY = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                quatY.add(fileString[++iterator].toFloat())
+            }
+
+            val scaleX = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                scaleX.add(fileString[++iterator].toFloat())
+            }
+            val scaleZ = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                scaleZ.add(fileString[++iterator].toFloat())
+            }
+            val scaleY = mutableListOf<Float>()
+            for (i in 0 until framesQty) {
+                ++iterator
+                scaleY.add(fileString[++iterator].toFloat())
+            }
+
+            bones.add(
+                Bone(
+                    name = boneName,
+                    frames = (0 until framesQty).map { frameIndex ->
+                        Frame(
+                            LocRot(
+                                Vector3f(locX[frameIndex], locY[frameIndex], locZ[frameIndex]),
+                                Quaternion(x=quatX[frameIndex], y=quatY[frameIndex], z=quatZ[frameIndex], w=quatW[frameIndex])
+                            )
+                        )
+                    }
+                )
+            )
+        }
+
+        bones.forEach { bone ->
+
+            ++iterator//pos:
+            val posX = fileString[++iterator]
+            val posZ = fileString[++iterator]
+            val posY = fileString[++iterator]
+            ++iterator//quaternion:
+            val quatW = fileString[++iterator]
+            val quatX = fileString[++iterator]
+            val quatZ = fileString[++iterator]
+            val quatY = fileString[++iterator]
+
+            bone.offsetLocRot = LocRot(Vector3f(posX.toFloat(), posY.toFloat(), posZ.toFloat()), Quaternion(quatX.toFloat(), quatY.toFloat(), quatZ.toFloat(), quatW.toFloat()))
+
+            ++iterator//parent:
+            val parent: String? = fileString[++iterator]
+
+            ++iterator//next bone name
+
+            bone.parent = if( parent == "None") { null } else { parent }
+        }
+
+        model3d = model
+        return this
+    }
+
+
+    private fun removeTrash(string: String): String {
+        var stringOut = string.replace("\n".toRegex(), " ")
+        stringOut = stringOut.replace("\t".toRegex(), " ")
+
+        return stringOut
+    }
+}

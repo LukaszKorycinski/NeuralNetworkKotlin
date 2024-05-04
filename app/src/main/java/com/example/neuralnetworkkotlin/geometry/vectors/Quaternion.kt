@@ -7,6 +7,7 @@ import kotlin.math.sqrt
 
 class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
     constructor(aiQuaternion: AiQuaternion) : this(aiQuaternion.x, aiQuaternion.y, aiQuaternion.z, aiQuaternion.w)
+    constructor() : this(0f, 0f, 0f, 1f)
 
     init {
         normalize()

@@ -10,6 +10,8 @@ import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.F3d
 import com.example.neuralnetworkkotlin.geometry.MODELS_ANIM_ASSIMP
 import com.example.neuralnetworkkotlin.geometry.Terrain
+import com.example.neuralnetworkkotlin.geometry.plain3d.MODELS_3D
+import com.example.neuralnetworkkotlin.geometry.plain3d.Plain3df
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
@@ -30,8 +32,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     val f3d = F3d(context, textures)
     //val f3da = F3da(context, textures)
     //val assimpBridge = AssimpBridge(context, textures)
-    val assimpBridgeAnim = AssimpBridgeAnim(context, textures)
-
+    //val assimpBridgeAnim = AssimpBridgeAnim(context, textures)
+    val plain3df = Plain3df(context, textures)
 
     lateinit var shaderLoader: ShaderLoader
 
@@ -86,10 +88,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
+        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL)
+
         //f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
 
         //assimpBridge.draw(camera.viewProjectionMatrix, MODELS_ASSIMP.DRAGON_MODEL)
-        assimpBridgeAnim.draw(camera.viewProjectionMatrix, MODELS_ANIM_ASSIMP.DRAGON_MODEL)
+        //assimpBridgeAnim.draw(camera.viewProjectionMatrix, MODELS_ANIM_ASSIMP.DRAGON_MODEL)
 
         //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL )
         //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
