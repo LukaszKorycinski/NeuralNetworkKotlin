@@ -7,4 +7,5 @@ class Vertex3d (
     val coord: Vector3f,
     val normal: Vector3f,
     val texCoord: Vector2f,
+    val boneIndex: Int,
 )

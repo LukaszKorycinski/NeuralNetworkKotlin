@@ -7,7 +7,6 @@ import com.example.neuralnetworkkotlin.assimp.AiScene
 import com.example.neuralnetworkkotlin.assimp.Importer
 import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
 import com.example.neuralnetworkkotlin.ext.Vector2f
-import com.example.neuralnetworkkotlin.ext.flip
 import com.example.neuralnetworkkotlin.ext.times
 import com.example.neuralnetworkkotlin.ext.translate
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion

@@ -12,18 +12,12 @@ operator fun FloatArray.times(matrix: FloatArray):FloatArray{
 }
 
 fun FloatArray.translate(x:Float, y: Float, z:Float): FloatArray {
-    val matrix = this
-    Matrix.translateM(matrix, 0, x, y, z)
-    return matrix
+    Matrix.translateM(this, 0, x, y, z)
+    return this
 }
 
-fun AiMatrix4x4.flip(): FloatArray {
-    val matrix = AiMatrix4x4()
-
-    for (y in 0..3) {
-        for (x in 0..3) {
-            matrix[x][y] = this[y][x]
-        }
-    }
-    return matrix.toFloatArray()
+fun FloatArray.inverse(): FloatArray {
+    val matrix = FloatArray(16)
+    Matrix.invertM(matrix, 0, this, 0)
+    return matrix
 }

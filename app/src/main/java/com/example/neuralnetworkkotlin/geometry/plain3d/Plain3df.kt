@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.content.Context
 import com.example.neuralnetworkkotlin.ext.Vector2f
+import com.example.neuralnetworkkotlin.ext.inverse
 import com.example.neuralnetworkkotlin.ext.times
 import com.example.neuralnetworkkotlin.ext.translate
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
@@ -16,7 +17,7 @@ class Plain3df(val context: Context, val textures: TexturesLoader) {
 
     init {
         MODELS_3D.values().forEach { model ->
-            loadedModels.add(Loader(context).loadModel(model).fillBuffers())
+            loadedModels.add(Loader(context, LoaderType.ANIMATED).loadModel(model).fillBuffers())
         }
     }
 
@@ -30,20 +31,39 @@ class Plain3df(val context: Context, val textures: TexturesLoader) {
 
     private fun interpolateSkeletons(model: MODELS_3D): FloatArray {
         //mam zwrócić po 4x4 na każdą kość w danej klatce
-        val frame = 0
+        val frame = if (System.currentTimeMillis() % 1000 < 500) 0 else 1
 
         val currMatrixes = FloatArray(16 * loadedModels[model.index].bones.size)
 
         loadedModels[model.index].bones.forEachIndexed { index, bone ->
             var boneOffsetM = getIdentityMatrix()
-            boneOffsetM.translate(bone.offsetLocRot.loc.x, bone.offsetLocRot.loc.y, bone.offsetLocRot.loc.z)
+
+            boneOffsetM = boneOffsetM.translate(bone.offsetLocRot.loc.x, bone.offsetLocRot.loc.y, bone.offsetLocRot.loc.z)
             boneOffsetM = boneOffsetM * bone.offsetLocRot.quat.toRotationMatrix()
 
             var bonTransformMatrix = getIdentityMatrix()
-            bonTransformMatrix.translate(bone.frames[frame].locRot.loc.x, bone.frames[frame].locRot.loc.y, bone.frames[frame].locRot.loc.z)
+
+            //bonTransformMatrix = bonTransformMatrix.translate(bone.frames[frame].locRot.loc.x, bone.frames[frame].locRot.loc.y, bone.frames[frame].locRot.loc.z)
             bonTransformMatrix = bonTransformMatrix * bone.frames[frame].locRot.quat.toRotationMatrix()
 
-            val boneMatrixTotal = boneOffsetM * bonTransformMatrix
+            val boneMatrixTotal = bone.parent?.let { parentName ->
+
+                val parent = loadedModels[model.index].bones.first{it.name == parentName}
+
+                var boneOffsetMParent = getIdentityMatrix()
+
+                boneOffsetMParent = boneOffsetMParent.translate(parent.offsetLocRot.loc.x, parent.offsetLocRot.loc.y, parent.offsetLocRot.loc.z)
+                boneOffsetMParent = boneOffsetMParent * parent.offsetLocRot.quat.toRotationMatrix()
+
+                var bonTransformMatrixParent = getIdentityMatrix()
+
+                //bonTransformMatrixParent = bonTransformMatrixParent.translate(parent.frames[frame].locRot.loc.x, parent.frames[frame].locRot.loc.y, parent.frames[frame].locRot.loc.z)
+                bonTransformMatrixParent = bonTransformMatrixParent * parent.frames[frame].locRot.quat.toRotationMatrix()
+
+                boneOffsetMParent.inverse() * boneOffsetM.inverse() * bonTransformMatrixParent * bonTransformMatrix * boneOffsetMParent * boneOffsetM
+
+            } ?: run { boneOffsetM.inverse() * bonTransformMatrix * boneOffsetM }
+
 
             for (i in 0..15) {
                 currMatrixes[index * 16 + i] = boneMatrixTotal[i]

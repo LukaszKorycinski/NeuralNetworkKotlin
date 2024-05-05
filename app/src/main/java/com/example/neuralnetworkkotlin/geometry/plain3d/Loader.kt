@@ -9,7 +9,7 @@ import java.nio.ByteOrder
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
-class Loader(val context: Context) {
+class Loader(val context: Context, val type: LoaderType) {
     val vertices = mutableListOf<Vertex3d>()
     val indices = mutableListOf<Int>()
     var framesQty = 0
@@ -19,48 +19,6 @@ class Loader(val context: Context) {
     val buffers = Buffers()
 
 
-    fun fillBuffers() : Loader {
-        val coordsFloatArray = FloatArray(vertices.size * 3)
-        val texCoordsFloatArray = FloatArray(vertices.size * 2)
-        val indicesShortArray = ShortArray(indices.size)
-
-        intIterator = 0
-        vertices.forEach { vert ->
-            coordsFloatArray[intIterator] = vert.coord.x
-            coordsFloatArray[intIterator] = vert.coord.y
-            coordsFloatArray[intIterator] = vert.coord.z
-        }
-        val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
-        vbb.order(ByteOrder.nativeOrder())
-        buffers.vertexBuffer = vbb.asFloatBuffer()
-        buffers.vertexBuffer?.put(coordsFloatArray)
-        buffers.vertexBuffer?.position(0)
-
-        intIterator = 0
-        vertices.forEach { vert ->
-            texCoordsFloatArray[intIterator] = vert.texCoord.x
-            texCoordsFloatArray[intIterator] = vert.texCoord.y
-        }
-        val tcbb = ByteBuffer.allocateDirect(texCoordsFloatArray.size * 4)
-        tcbb.order(ByteOrder.nativeOrder())
-        buffers.texBuffer = tcbb.asFloatBuffer()
-        buffers.texBuffer?.put(texCoordsFloatArray)
-        buffers.texBuffer?.position(0)
-
-        buffers.indicesQty = indices.size
-        var index = 0
-        indices.forEach { indice ->
-            indicesShortArray[index] = indice.toShort()
-            index++
-        }
-
-        val ibb = ByteBuffer.allocateDirect(buffers.indicesQty * 2)
-        ibb.order(ByteOrder.nativeOrder())
-        buffers.indicesBuffer = ibb.asShortBuffer()
-        buffers.indicesBuffer?.put(indicesShortArray)
-        buffers.indicesBuffer?.position(0)
-        return this
-    }
 
     fun loadModel(model: MODELS_3D) : Loader{
         val file = context.resources.openRawResource(model.rawResId)
@@ -69,22 +27,25 @@ class Loader(val context: Context) {
         var iterator = 2
 
         while (fileString[iterator] != "indices") {
-            val coord = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val coord = Vector3f(-fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
             val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
             val texCoord = Vector2f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
 
-            vertices.add(Vertex3d(coord, normal, texCoord))
+            vertices.add(Vertex3d(coord, normal, texCoord, boneIndex = fileString[iterator++].toInt()))
         }
 
         iterator++
-        while (fileString[iterator] != "frames_qty:") {
+        while (fileString[iterator] != "bones_qty:") {
             indices.add(fileString[iterator++].toInt())
         }
 
-        framesQty = fileString[++iterator].toInt()
-        iterator++
+        framesQty = 2
+        val bonesQty = fileString[++iterator].toInt()
 
-        while ( bones.firstOrNull{ fileString[++iterator] == it.name } == null ) {
+
+        while ( bones.size<bonesQty ) {
+            iterator++
+
             val boneName = fileString[++iterator]
 
             val locX = mutableListOf<Float>()
@@ -156,7 +117,7 @@ class Loader(val context: Context) {
         }
 
         bones.forEach { bone ->
-
+            ++iterator//bone name
             ++iterator//pos:
             val posX = fileString[++iterator]
             val posZ = fileString[++iterator]
@@ -172,7 +133,7 @@ class Loader(val context: Context) {
             ++iterator//parent:
             val parent: String? = fileString[++iterator]
 
-            ++iterator//next bone name
+
 
             bone.parent = if( parent == "None") { null } else { parent }
         }
@@ -180,6 +141,53 @@ class Loader(val context: Context) {
         model3d = model
         return this
     }
+
+    fun fillBuffers() : Loader {
+        val coordsFloatArray = FloatArray(vertices.size * 3)
+        val texCoordsFloatArray = FloatArray(vertices.size * type.texCoordsNum)
+        val indicesShortArray = ShortArray(indices.size)
+
+        intIterator = 0
+        vertices.forEach { vert ->
+            coordsFloatArray[intIterator] = vert.coord.x
+            coordsFloatArray[intIterator] = vert.coord.y
+            coordsFloatArray[intIterator] = vert.coord.z
+        }
+        val vbb = ByteBuffer.allocateDirect(coordsFloatArray.size * 4)
+        vbb.order(ByteOrder.nativeOrder())
+        buffers.vertexBuffer = vbb.asFloatBuffer()
+        buffers.vertexBuffer?.put(coordsFloatArray)
+        buffers.vertexBuffer?.position(0)
+
+        intIterator = 0
+        vertices.forEach { vert ->
+            texCoordsFloatArray[intIterator] = vert.texCoord.x
+            texCoordsFloatArray[intIterator] = vert.texCoord.y
+            if (type == LoaderType.ANIMATED) {
+                texCoordsFloatArray[intIterator] = vert.boneIndex.toFloat()
+            }
+        }
+        val tcbb = ByteBuffer.allocateDirect(texCoordsFloatArray.size * 4)
+        tcbb.order(ByteOrder.nativeOrder())
+        buffers.texBuffer = tcbb.asFloatBuffer()
+        buffers.texBuffer?.put(texCoordsFloatArray)
+        buffers.texBuffer?.position(0)
+
+        buffers.indicesQty = indices.size
+        var index = 0
+        indices.forEach { indice ->
+            indicesShortArray[index] = indice.toShort()
+            index++
+        }
+
+        val ibb = ByteBuffer.allocateDirect(buffers.indicesQty * 2)
+        ibb.order(ByteOrder.nativeOrder())
+        buffers.indicesBuffer = ibb.asShortBuffer()
+        buffers.indicesBuffer?.put(indicesShortArray)
+        buffers.indicesBuffer?.position(0)
+        return this
+    }
+
 
 
     private fun removeTrash(string: String): String {
