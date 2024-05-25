@@ -7,11 +7,11 @@ import com.example.neuralnetworkkotlin.assimp.AiScene
 import com.example.neuralnetworkkotlin.assimp.Importer
 import com.example.neuralnetworkkotlin.assimp.getFileFromAssets
 import com.example.neuralnetworkkotlin.ext.Vector2f
-import com.example.neuralnetworkkotlin.ext.times
-import com.example.neuralnetworkkotlin.ext.translate
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
 import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.intIterator
+import com.example.neuralnetworkkotlin.helpers.times
+import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.Shaders
 import com.example.neuralnetworkkotlin.renderer.TEXTURES

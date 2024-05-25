@@ -29,3 +29,25 @@ fun getIdentityMatrix(): FloatArray {
     Matrix.setIdentityM(matrix, 0)
     return matrix
 }
+
+operator fun FloatArray.times(matrix: FloatArray):FloatArray{
+    val outMatrix = getIdentityMatrix()
+    Matrix.multiplyMM(outMatrix, 0, this, 0, matrix, 0)
+    return  outMatrix
+}
+
+fun FloatArray.translate(x:Float, y: Float, z:Float): FloatArray {
+    Matrix.translateM(this, 0, x, y, z)
+    return this
+}
+
+fun FloatArray.rotateZ(a:Float): FloatArray {
+    Matrix.rotateM(this, 0, a, 0f, 0f, 1f)
+    return this
+}
+
+fun FloatArray.invert(): FloatArray {
+    val matrix = FloatArray(16)
+    Matrix.invertM(matrix, 0, this, 0)
+    return matrix
+}

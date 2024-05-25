@@ -13,7 +13,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     SMOKE(2, R.drawable.smoke),
     B3(3, R.drawable.b3),
     STRING(4, R.drawable.string),
-    EGG(5, R.drawable.egg),
+    MEN(5, R.drawable.men),
     TERRAINTEXTURE3(6, R.drawable.terraintexture3),
     TERRAINTEXTURE2(7, R.drawable.terraintexture2),
     TERRAINTEXTURE(8, R.drawable.terraintexture),

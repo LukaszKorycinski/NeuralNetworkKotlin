@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.neuralnetworkkotlin.R
 import kotlinx.android.synthetic.main.activity_main.down
 import kotlinx.android.synthetic.main.activity_main.fps
+import kotlinx.android.synthetic.main.activity_main.frame
 import kotlinx.android.synthetic.main.activity_main.glSurfaceView
 import kotlinx.android.synthetic.main.activity_main.left
+import kotlinx.android.synthetic.main.activity_main.minus
+import kotlinx.android.synthetic.main.activity_main.plus
 import kotlinx.android.synthetic.main.activity_main.right
 import kotlinx.android.synthetic.main.activity_main.switchMode
 import kotlinx.android.synthetic.main.activity_main.up
@@ -55,6 +58,13 @@ class MainActivity : AppCompatActivity() {
         switchMode.setOnCheckedChangeListener { buttonView, isChecked ->
             glSurfaceView.switchMode(switchMode.isChecked)
         }
+
+        minus.setOnClickListener { glSurfaceView.previousFrame() }
+        plus.setOnClickListener { glSurfaceView.nextFrame() }
+        glSurfaceView.frame.observeForever {
+            frame.text = it.toString()
+        }
+
 
         up.setOnTouchListener { view, motionEvent ->
             glSurfaceView.upKey(motionEvent)

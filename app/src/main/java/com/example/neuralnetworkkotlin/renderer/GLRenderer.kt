@@ -45,6 +45,14 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun onZoom(zoom: Float) { controlHelper.onZoom(zoom) }
     fun onZoomEnd(zoom: Float) { controlHelper.onZoomEnd(zoom) }
 
+    fun nextFrame() {
+        plain3df.frameTest++
+        frame.postValue(plain3df.frameTest)
+    }
+    fun prievousFrame() {
+        plain3df.frameTest--
+        frame.postValue(plain3df.frameTest)
+    }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
 
@@ -68,6 +76,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     var time = System.currentTimeMillis()
     var fps = MutableLiveData<Int>()
+    var frame = MutableLiveData<Int>()
     var log = MutableLiveData<String>()
 
     private var fpsCounter = 0

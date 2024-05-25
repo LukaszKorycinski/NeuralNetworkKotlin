@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.neuralnetworkkotlin.ext.readTextFile
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
 import com.example.neuralnetworkkotlin.helpers.intIterator
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.vecmath.Vector2f
@@ -27,9 +28,9 @@ class Loader(val context: Context, val type: LoaderType) {
         var iterator = 2
 
         while (fileString[iterator] != "indices") {
-            val coord = Vector3f(-fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val coord = Vector3f(-fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
             val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
-            val texCoord = Vector2f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val texCoord = Vector2f(fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
 
             vertices.add(Vertex3d(coord, normal, texCoord, boneIndex = fileString[iterator++].toInt()))
         }
@@ -39,7 +40,7 @@ class Loader(val context: Context, val type: LoaderType) {
             indices.add(fileString[iterator++].toInt())
         }
 
-        framesQty = 2
+        framesQty = model.framesQty
         val bonesQty = fileString[++iterator].toInt()
 
 
@@ -117,18 +118,19 @@ class Loader(val context: Context, val type: LoaderType) {
         }
 
         bones.forEach { bone ->
-            ++iterator//bone name
+            //++iterator//bone name
+            Timber.d("bone name: ${bone.name} in file: ${fileString[++iterator]}")
             ++iterator//pos:
-            val posX = fileString[++iterator]
-            val posZ = fileString[++iterator]
-            val posY = fileString[++iterator]
+            val posX = fileString[++iterator].toFloat()
+            val posZ = fileString[++iterator].toFloat()
+            val posY = fileString[++iterator].toFloat()
             ++iterator//quaternion:
-            val quatW = fileString[++iterator]
-            val quatX = fileString[++iterator]
-            val quatZ = fileString[++iterator]
-            val quatY = fileString[++iterator]
+            val quatW = fileString[++iterator].toFloat()
+            val quatX = fileString[++iterator].toFloat()
+            val quatY = fileString[++iterator].toFloat()
+            val quatZ = fileString[++iterator].toFloat()
 
-            bone.offsetLocRot = LocRot(Vector3f(posX.toFloat(), posY.toFloat(), posZ.toFloat()), Quaternion(quatX.toFloat(), quatY.toFloat(), quatZ.toFloat(), quatW.toFloat()))
+            bone.offsetLocRot = LocRot(Vector3f(posX, posY, posZ), Quaternion(x=quatX, y=quatY, z=quatZ, w=quatW))
 
             ++iterator//parent:
             val parent: String? = fileString[++iterator]

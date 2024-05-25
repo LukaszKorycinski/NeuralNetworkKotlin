@@ -14,6 +14,7 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
 
     val renderer: GLRenderer
     var fps = MutableLiveData<Int>()
+    var frame = MutableLiveData<Int>()
 
     init {
 
@@ -22,6 +23,7 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
 
         renderer = GLRenderer(context)
         fps=renderer.fps
+        frame=renderer.frame
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
     }
@@ -37,6 +39,9 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
 
     fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
 
+    fun nextFrame() { renderer.nextFrame() }
+
+    fun previousFrame() { renderer.prievousFrame() }
 
     fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
 }

@@ -22,35 +22,46 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
         z /= mag
     }
 
-//    fun toRotationMatrix(): Matrix4f {
-//        val matrix = Matrix4f()
-//        val xy = x * y
-//        val xz = x * z
-//        val xw = x * w
-//        val yz = y * z
-//        val yw = y * w
-//        val zw = z * w
-//        val xSquared = x * x
-//        val ySquared = y * y
-//        val zSquared = z * z
-//        matrix.m00 = 1 - 2 * (ySquared + zSquared)
-//        matrix.m01 = 2 * (xy - zw)
-//        matrix.m02 = 2 * (xz + yw)
-//        matrix.m03 = 0f
-//        matrix.m10 = 2 * (xy + zw)
-//        matrix.m11 = 1 - 2 * (xSquared + zSquared)
-//        matrix.m12 = 2 * (yz - xw)
-//        matrix.m13 = 0f
-//        matrix.m20 = 2 * (xz - yw)
-//        matrix.m21 = 2 * (yz + xw)
-//        matrix.m22 = 1 - 2 * (xSquared + ySquared)
-//        matrix.m23 = 0f
-//        matrix.m30 = 0f
-//        matrix.m31 = 0f
-//        matrix.m32 = 0f
-//        matrix.m33 = 1f
-//        return matrix
-//    }
+    fun norm(): Float {
+        return w * w + x * x + y * y + z * z
+    }
+    fun toRotationMatrix4f(): FloatArray {
+        var norm: Float = norm()
+        // we explicitly test norm against one here, saving a division
+        // at the cost of a test and branch. Is it worth it?
+        var s: Float = if (norm == 1f){
+            2f
+        }else {
+            if (norm > 0f) {
+                (2f / norm)
+            } else
+                0f
+        }
+
+        // compute xs/ys/zs first to save 6 multiplications, since xs/ys/zs
+        // will be used 2-4 times each.
+        var xs: Float = x * s
+        var ys: Float = y * s
+        var zs: Float = z * s
+        var xx: Float = x * xs
+        var xy: Float = x * ys
+        var xz: Float = x * zs
+        var xw: Float = w * xs
+        var yy: Float = y * ys
+        var yz: Float = y * zs
+        var yw: Float = w * ys
+        var zz: Float = z * zs
+        var zw: Float = w * zs
+
+        // using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
+        val mat4 = Matrix4f( //
+            1 - (yy + zz), (xy - zw), (xz + yw), 0f,  //
+            (xy + zw), 1 - (xx + zz), (yz - xw), 0f,  //
+            (xz - yw), (yz + xw), 1 - (xx + yy), 0f,  //
+            0f, 0f, 0f, 1f)
+
+        return mat4.asFloatArray()
+    }
 
     fun toRotationMatrix(): FloatArray{
         val rotationMatrix = FloatArray(16)
@@ -141,5 +152,23 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
             return result
         }
     }
+}
+
+private fun Matrix4f.asFloatArrayReversed(): FloatArray {
+    return floatArrayOf(
+        m00, m10, m20, m30,
+        m01, m11, m21, m31,
+        m02, m12, m22, m32,
+        m03, m13, m23, m33
+    )
+}
+
+private fun Matrix4f.asFloatArray(): FloatArray {
+    return floatArrayOf(
+        m00, m01, m02, m03,
+        m10, m11, m12, m13,
+        m20, m21, m22, m23,
+        m30, m31, m32, m33
+    )
 }
 
