@@ -109,7 +109,7 @@ class Loader(val context: Context, val type: LoaderType) {
                         Frame(
                             LocRot(
                                 Vector3f(locX[frameIndex], locY[frameIndex], locZ[frameIndex]),
-                                Quaternion(x=quatX[frameIndex], y=quatY[frameIndex], z=quatZ[frameIndex], w=quatW[frameIndex])
+                                Quaternion(x=quatX[frameIndex], y=-quatY[frameIndex], z=quatZ[frameIndex], w=quatW[frameIndex])
                             )
                         )
                     }
@@ -127,8 +127,8 @@ class Loader(val context: Context, val type: LoaderType) {
             ++iterator//quaternion:
             val quatW = fileString[++iterator].toFloat()
             val quatX = fileString[++iterator].toFloat()
-            val quatY = fileString[++iterator].toFloat()
             val quatZ = fileString[++iterator].toFloat()
+            val quatY = fileString[++iterator].toFloat()
 
             bone.offsetLocRot = LocRot(Vector3f(posX, posY, posZ), Quaternion(x=quatX, y=quatY, z=quatZ, w=quatW))
 

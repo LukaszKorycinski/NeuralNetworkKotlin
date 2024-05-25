@@ -10,6 +10,8 @@ import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import javax.vecmath.Vector2f
+import kotlin.math.max
+import kotlin.math.min
 
 class Plain3df(val context: Context, val textures: TexturesLoader) {
 
@@ -34,7 +36,7 @@ class Plain3df(val context: Context, val textures: TexturesLoader) {
     private fun interpolateSkeletons(model: MODELS_3D): FloatArray {
         //mam zwrócić po 4x4 na każdą kość w danej klatce
 
-        val frame = frameTest
+        val frame = max(0,min(frameTest, model.framesQty - 1))
         //val frame = if ((System.currentTimeMillis() % 1000)<500) { 1 } else { 0 }
 //        val frame = when(System.currentTimeMillis() % 13000){
 //            in 0..1000 -> 0
@@ -60,12 +62,16 @@ class Plain3df(val context: Context, val textures: TexturesLoader) {
 
             //boneOffsetM = boneOffsetM * bone.offsetLocRot.quat.toRotationMatrix()
             boneOffsetM = boneOffsetM.translate(-bone.offsetLocRot.loc.x, -bone.offsetLocRot.loc.y, bone.offsetLocRot.loc.z)
+            boneOffsetM = boneOffsetM * bone.offsetLocRot.quat.toRotationMatrix()
+
+
 
             var bonTransformMatrix = getIdentityMatrix()
 
 
-            bonTransformMatrix = bonTransformMatrix.translate(-bone.frames[frame].locRot.loc.x, -bone.frames[frame].locRot.loc.y, bone.frames[frame].locRot.loc.z)
+
             //bonTransformMatrix = bonTransformMatrix.rotateZ(45f)
+            bonTransformMatrix = bonTransformMatrix.translate(-bone.frames[frame].locRot.loc.x, -bone.frames[frame].locRot.loc.y, bone.frames[frame].locRot.loc.z)
             bonTransformMatrix = bonTransformMatrix * bone.frames[frame].locRot.quat.toRotationMatrix4f()
 
 

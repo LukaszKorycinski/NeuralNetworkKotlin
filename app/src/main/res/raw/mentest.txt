@@ -63,71 +63,71 @@ indices
 
 bones_qty: 6
 bone_name: body
-xloc 0.0 xloc -0.0009 xloc 0.0023 xloc -0.0025 xloc 0.0024 xloc -0.0057 xloc 0.0236 xloc 0.0026 xloc -0.0009 xloc -0.0009 xloc -0.0009 xloc -0.0009 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc 0.0011 zloc 0.0023 zloc 0.003 zloc 0.0037 zloc 0.003 zloc 0.0027 zloc 0.0014 zloc 0.0011 zloc 0.0011 zloc 0.0011 zloc 0.0011 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc -0.0409 yloc -0.085 yloc -0.1127 yloc -0.1403 yloc -0.112 yloc -0.1027 yloc -0.0519 yloc -0.0409 yloc -0.0409 yloc -0.0409 yloc -0.0409 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 1.0 wrot 0.9972 wrot 0.9975 wrot 1.0 wrot 0.9996 wrot 0.9995 wrot 1.0 wrot 1.0 wrot 1.0 wrot 0.9669 wrot 0.9705 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot 0.0 xrot 0.0001 xrot 0.0001 xrot 0.0 xrot -0.0001 xrot -0.0001 xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0005 xrot -0.0005 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot 0.0 zrot 0.0747 zrot 0.0712 zrot 0.0 zrot -0.0268 zrot -0.0329 zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.2551 zrot -0.2409 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot -0.0 yrot 0.002 yrot 0.0019 yrot -0.0 yrot -0.0007 yrot -0.0009 yrot -0.0 yrot -0.0 yrot -0.0 yrot 0.0068 yrot -0.0064 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc -0.0128 xloc 0.0 xloc 0.0347 
+zloc 0.0 zloc -0.0 zloc 0.0 zloc 0.0 
+yloc -0.0 yloc 0.001 yloc -0.0 yloc -0.0026 
+wrot 1.0 wrot 1.0 wrot 1.0 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot -0.0 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 bone_name: head
-xloc 0.0 xloc -0.0059 xloc -0.0484 xloc -0.0532 xloc -0.0149 xloc -0.0054 xloc 0.028 xloc -0.0038 xloc -0.0059 xloc -0.0059 xloc -0.1553 xloc 0.2334 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc 0.0011 zloc 0.0023 zloc 0.0031 zloc 0.0038 zloc 0.003 zloc 0.0027 zloc 0.0014 zloc 0.0011 zloc 0.0011 zloc 0.001 zloc -0.0016 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc -0.0405 yloc -0.0767 yloc -0.1047 yloc -0.1396 yloc -0.1117 yloc -0.1061 yloc -0.0519 yloc -0.0405 yloc -0.0405 yloc -0.0078 yloc 0.0135 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 1.0 wrot 1.0 wrot 0.9983 wrot 0.9983 wrot 0.9995 wrot 0.9996 wrot 0.9997 wrot 1.0 wrot 1.0 wrot 0.9931 wrot 0.9989 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0003 xrot 0.0003 xrot 0.0002 xrot 0.0001 xrot -0.0001 xrot 0.0 xrot 0.0 xrot 0.0006 xrot 0.0002 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0576 zrot 0.0578 zrot 0.0321 zrot 0.0269 zrot -0.0262 zrot 0.0 zrot 0.0 zrot 0.1174 zrot 0.0467 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot -0.0 yrot -0.0 yrot 0.0015 yrot 0.0015 yrot 0.0009 yrot 0.0007 yrot -0.0007 yrot -0.0 yrot -0.0 yrot 0.0031 yrot 0.0012 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc -0.0126 xloc 0.0 xloc 0.0341 
+zloc 0.0 zloc -0.0 zloc 0.0 zloc 0.0 
+yloc -0.0 yloc 0.0025 yloc -0.0 yloc -0.0069 
+wrot 1.0 wrot 1.0 wrot 1.0 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot -0.0 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 bone_name: armDark
-xloc 0.0 xloc 0.001 xloc -0.0442 xloc -0.0587 xloc -0.0868 xloc -0.0291 xloc -0.0607 xloc -0.0265 xloc 0.001 xloc -0.024 xloc -0.017 xloc -0.0133 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc -0.0004 zloc 0.0035 zloc 0.005 zloc 0.0096 zloc 0.0022 zloc 0.0075 zloc 0.0032 zloc -0.0004 zloc 0.0026 zloc -0.0011 zloc 0.0051 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc 0.0079 yloc 0.1058 yloc 0.1283 yloc 0.1099 yloc 0.0733 yloc 0.0464 yloc 0.0224 yloc 0.0079 yloc 0.033 yloc 0.1323 yloc -0.1176 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 0.9907 wrot 0.9922 wrot 0.9862 wrot 0.9985 wrot 0.9999 wrot 0.9928 wrot 0.9818 wrot 0.9907 wrot 1.0 wrot 0.6465 wrot 0.9835 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot -0.0194 xrot -0.0177 xrot -0.0237 xrot -0.0077 xrot 0.0021 xrot -0.0171 xrot -0.0271 xrot -0.0194 xrot 0.0 xrot 0.1089 xrot -0.0258 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot -0.1347 zrot -0.123 zrot -0.1639 zrot -0.0535 zrot 0.0149 zrot -0.1183 zrot -0.1877 zrot -0.1347 zrot 0.0 zrot 0.7549 zrot -0.1791 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot -0.0036 yrot -0.0033 yrot -0.0044 yrot -0.0014 yrot 0.0004 yrot -0.0032 yrot -0.0051 yrot -0.0036 yrot -0.0 yrot 0.0204 yrot -0.0048 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc -0.4719 xloc -0.4719 xloc 0.0 
+zloc 0.0 zloc 0.0765 zloc 0.0765 zloc 0.0 
+yloc -0.0 yloc -0.3123 yloc -0.3123 yloc -0.0 
+wrot 1.0 wrot 1.0 wrot 0.8787 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0682 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.4724 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot 0.0128 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 bone_name: armLight
-xloc 0.0 xloc 0.006 xloc 0.0246 xloc 0.0289 xloc 0.0029 xloc 0.0002 xloc -0.0414 xloc -0.0006 xloc 0.006 xloc 0.0024 xloc 0.0878 xloc -0.1589 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc -0.0012 zloc -0.0054 zloc -0.0068 zloc -0.0043 zloc -0.0034 zloc 0.0042 zloc -0.0013 zloc -0.0012 zloc -0.0015 zloc -0.0127 zloc 0.0209 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc 0.0073 yloc 0.046 yloc 0.0754 yloc 0.1403 yloc 0.1247 yloc 0.0949 yloc 0.052 yloc 0.0073 yloc 0.0408 yloc -0.0622 yloc 0.19 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 0.9991 wrot 0.9972 wrot 0.9961 wrot 0.9882 wrot 0.9996 wrot 0.9888 wrot 1.0 wrot 0.9991 wrot 1.0 wrot 0.996 wrot 0.5423 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot 0.007 xrot 0.0121 xrot -0.0142 xrot -0.0248 xrot -0.0043 xrot 0.0242 xrot 0.0 xrot 0.007 xrot 0.0 xrot -0.0145 xrot -0.136 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot 0.0429 zrot 0.0737 zrot -0.0868 zrot -0.1512 zrot -0.0265 zrot 0.1473 zrot 0.0 zrot 0.0429 zrot 0.0 zrot -0.088 zrot -0.8288 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot 0.0012 yrot 0.002 yrot -0.0024 yrot -0.0041 yrot -0.0007 yrot 0.004 yrot -0.0 yrot 0.0012 yrot -0.0 yrot -0.0024 yrot -0.0224 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc 0.0126 xloc 0.0 xloc -0.0341 
+zloc 0.0 zloc -0.002 zloc 0.0 zloc 0.0055 
+yloc -0.0 yloc -0.0015 yloc -0.0 yloc 0.0041 
+wrot 1.0 wrot 1.0 wrot 1.0 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot -0.0 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 bone_name: LegL
-xloc 0.0 xloc -0.0414 xloc -0.1437 xloc -0.1923 xloc -0.1284 xloc -0.0398 xloc -0.0063 xloc -0.06 xloc -0.0414 xloc 0.0007 xloc -0.0008 xloc -0.167 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc 0.0038 zloc 0.0171 zloc 0.0244 zloc 0.0172 zloc 0.0071 zloc 0.0016 zloc 0.0073 zloc 0.0038 zloc -0.0007 zloc -0.001 zloc 0.02 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc 0.0387 yloc -0.0021 yloc -0.0796 yloc -0.0883 yloc -0.0938 yloc -0.032 yloc -0.0121 yloc 0.0387 yloc 0.0231 yloc 0.0397 yloc -0.0258 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 0.9904 wrot 0.953 wrot 0.9314 wrot 0.9817 wrot 0.9998 wrot 0.999 wrot 0.9715 wrot 0.9904 wrot 0.9995 wrot 1.0 wrot 0.8863 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot -0.0159 xrot -0.0354 xrot -0.0418 xrot -0.0219 xrot -0.0023 xrot 0.0052 xrot -0.0273 xrot -0.0159 xrot 0.0036 xrot 0.0008 xrot -0.0532 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot -0.1371 zrot -0.3058 zrot -0.3614 zrot -0.1892 zrot -0.0202 zrot 0.0449 zrot -0.2355 zrot -0.1371 zrot 0.031 zrot 0.0068 zrot -0.4598 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot -0.0037 yrot -0.0082 yrot -0.0097 yrot -0.0051 yrot -0.0005 yrot 0.0012 yrot -0.0063 yrot -0.0037 yrot 0.0008 yrot 0.0002 yrot -0.0124 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc 0.0029 xloc 0.0 xloc -0.008 
+zloc 0.0 zloc -0.0007 zloc 0.0 zloc 0.0018 
+yloc -0.0 yloc 0.0125 yloc -0.0 yloc -0.0338 
+wrot 1.0 wrot 1.0 wrot 1.0 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot -0.0 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 bone_name: LegP
-xloc 0.0 xloc -0.0037 xloc -0.0072 xloc -0.0107 xloc -0.0478 xloc -0.0579 xloc -0.1038 xloc -0.0987 xloc -0.0037 xloc -0.0151 xloc -0.0434 xloc -0.0122 xloc 0.0 xloc 0.0 
-zloc 0.0 zloc 0.0005 zloc -0.0003 zloc -0.0011 zloc 0.0018 zloc 0.0044 zloc 0.0104 zloc 0.0113 zloc 0.0005 zloc 0.0016 zloc 0.0047 zloc 0.0013 zloc 0.0 zloc 0.0 
-yloc -0.0 yloc -0.0048 yloc 0.0246 yloc 0.0832 yloc 0.1197 yloc 0.0642 yloc 0.0222 yloc -0.0304 yloc -0.0048 yloc 0.0017 yloc -0.0045 yloc -0.0006 yloc -0.0 yloc -0.0 
-wrot 1.0 wrot 0.9969 wrot 0.9978 wrot 0.9987 wrot 0.9878 wrot 0.9999 wrot 0.989 wrot 0.9951 wrot 0.9969 wrot 0.9991 wrot 0.9769 wrot 1.0 wrot 1.0 wrot 1.0 
-xrot 0.0 xrot 0.0083 xrot 0.0051 xrot -0.0053 xrot -0.0164 xrot -0.0015 xrot -0.0156 xrot -0.0104 xrot 0.0083 xrot -0.0045 xrot -0.0225 xrot -0.0008 xrot 0.0 xrot 0.0 
-zrot 0.0 zrot 0.0782 zrot 0.0481 zrot -0.0503 zrot -0.1546 zrot -0.0145 zrot -0.1473 zrot -0.0987 zrot 0.0782 zrot -0.0423 zrot -0.2126 zrot -0.0073 zrot 0.0 zrot 0.0 
-yrot -0.0 yrot 0.0021 yrot 0.0013 yrot -0.0014 yrot -0.0042 yrot -0.0004 yrot -0.004 yrot -0.0027 yrot 0.0021 yrot -0.0011 yrot -0.0057 yrot -0.0002 yrot -0.0 yrot -0.0 
-xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
-zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
-yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
+xloc 0.0 xloc -0.0016 xloc 0.0 xloc 0.0044 
+zloc 0.0 zloc -0.0002 zloc 0.0 zloc 0.0005 
+yloc -0.0 yloc 0.0127 yloc -0.0 yloc -0.0345 
+wrot 1.0 wrot 1.0 wrot 1.0 wrot 1.0 
+xrot 0.0 xrot 0.0 xrot 0.0 xrot 0.0 
+zrot 0.0 zrot 0.0 zrot 0.0 zrot 0.0 
+yrot -0.0 yrot -0.0 yrot -0.0 yrot -0.0 
+xscale 1.0 xscale 1.0 xscale 1.0 xscale 1.0 
+zscale 1.0 zscale 1.0 zscale 1.0 zscale 1.0 
+yscale 1.0 yscale 1.0 yscale 1.0 yscale 1.0 
 body pos: -0.0632 0.0091 0.1892 quaternion: 0.9992 -0.0134 -0.0374 0.0005 parent: None
 head pos: -0.0404 0.0091 -0.073 quaternion: 0.995 -0.0136 -0.099 0.0013 parent: None
 armDark pos: 0.1394 0.0089 0.0145 quaternion: 0.2856 -0.0724 -0.9556 0.0077 parent: None

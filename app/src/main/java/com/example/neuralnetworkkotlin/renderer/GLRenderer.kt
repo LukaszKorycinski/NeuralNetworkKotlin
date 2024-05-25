@@ -17,6 +17,7 @@ import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import javax.vecmath.Vector2f
 
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
@@ -97,8 +98,9 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
-        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL)
+        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.MEN_MODEL)
 
+        
         //f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
 
         //assimpBridge.draw(camera.viewProjectionMatrix, MODELS_ASSIMP.DRAGON_MODEL)
