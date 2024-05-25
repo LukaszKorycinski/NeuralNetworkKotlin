@@ -23,14 +23,11 @@ import javax.vecmath.Vector2f
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var terrain: Terrain
-
     lateinit var backGround: BackGround
-
 
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
-    //val f3d = F3d(context, textures)
 
     val file3DA = File3dA(context, textures)
     val file3Df = File3d(context, textures)
@@ -98,9 +95,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         //terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
         val animation = when(file3DA.frameTest) {
-            0 -> Animations.ATTACK
+            0 -> Animations.ATTACK_CUT
             1 -> Animations.WALK
             2 -> Animations.IDENTITY
+            3 -> Animations.ATTACK_PUSH
             else -> Animations.WALK
         }
         file3DA.drawHuman(camera.viewProjectionMatrix, MODELS_3DA.MEN, anim = animation, variant = 0)

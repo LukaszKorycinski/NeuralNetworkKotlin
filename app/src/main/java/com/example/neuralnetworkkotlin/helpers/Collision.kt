@@ -1,10 +1,34 @@
 package com.example.neuralnetworkkotlin.helpers
 
+import com.example.neuralnetworkkotlin.geometry.Terrain
+import com.example.neuralnetworkkotlin.geometry.vectors.distance
 import javax.vecmath.Vector2f
 
+class Circle(val position: Vector2f, val radius: Float)
 class Triangle(val a: Vector2f, val b: Vector2f, val c: Vector2f)
 class Line(val v: Vector2f, val w: Vector2f)
 class Collision {
+
+
+
+    val circles = mutableListOf<Circle>()
+
+
+    fun checkCollision(position: Vector2f): Boolean {
+        for (circle in circles) {
+            if (circle.position.distance(position) < circle.radius) {
+                return true
+            }
+        }
+        return false
+    }
+
+
+
+    fun terrainColision(position: Vector2f, terrain: Terrain): Boolean {
+        return terrain.collision(Vector2f(position.x/4, position.y/4))
+    }
+
 
     fun pointTriangleColision(s: Vector2f, triangle: Triangle):Boolean{
         val as_x = (s.x - triangle.a.x)
