@@ -94,6 +94,15 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
         return rotationMatrix
     }
 
+    fun slerp(quat: Quaternion, step: Float): Quaternion {
+        return Quaternion(
+            x * (1 - step) + quat.x * step,
+            y * (1 - step) + quat.y * step,
+            z * (1 - step) + quat.z * step,
+            w * (1 - step) + quat.w * step
+        )
+    }
+
 
     companion object {
         fun fromMatrix(matrix: Matrix4f): Quaternion {

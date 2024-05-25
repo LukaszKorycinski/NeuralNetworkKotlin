@@ -28,7 +28,7 @@ enum class MODELS_ANIM_ASSIMP(
     val texture: TEXTURES
 ) {
     DRAGON_MODEL(0, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.TERRAINTEXTURE),
-    DRAGON_MODEL2(1, "test.dae", Shaders.BASIC_ANIM, TEXTURES.DRAGON),
+    DRAGON_MODEL2(1, "test.dae", Shaders.BASIC_ANIM, TEXTURES.TERRAIN),
 }
 
 

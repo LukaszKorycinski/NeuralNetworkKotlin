@@ -26,7 +26,7 @@ enum class MODELS_ASSIMP(
     val texture: TEXTURES
 ) {
     DRAGON_MODEL(0, "kwadrat.dae", Shaders.BASIC, TEXTURES.TERRAINTEXTURE),
-    DRAGON_MODEL2(1, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.DRAGON),
+    DRAGON_MODEL2(1, "kwadrat.dae", Shaders.BASIC_ANIM, TEXTURES.TERRAIN),
 }
 
 class AssimpBridge(val context: Context, val textures: TexturesLoader) {

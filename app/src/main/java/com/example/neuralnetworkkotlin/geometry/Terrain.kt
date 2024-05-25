@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20
 import androidx.core.content.ContextCompat
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
 import java.nio.ByteBuffer
@@ -26,10 +27,10 @@ class Terrain(context: Context) {
     val size = 4.0f
 
     val layerCoords = floatArrayOf(
-        -size, size, 0.0f,      // top left
-        -size, -size, 0.0f,      // bottom left
-        size, -size, 0.0f,      // bottom right
-        size, size, 0.0f       // top right
+        -size, size, 0.1f,      // top left
+        -size, -size, 0.1f,      // bottom left
+        size, -size, 0.1f,      // bottom right
+        size, size, 0.1f       // top right
     )
 
 
@@ -91,22 +92,22 @@ class Terrain(context: Context) {
         val texHandler = GLES20.glGetUniformLocation(shader, "u_Texture")
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[11])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAIN.id])
 
         val texHandlerTerrain = GLES20.glGetUniformLocation(shader, "u_TextureTerrain")
         GLES20.glUniform1i(texHandlerTerrain, 1)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[8])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAINTEXTURE.id])
 
         val texHandlerTerrain2 = GLES20.glGetUniformLocation(shader, "u_TextureTerrain2")
         GLES20.glUniform1i(texHandlerTerrain2, 2)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE2)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[7])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAINTEXTURE2.id])
 
         val texHandlerTerrain3 = GLES20.glGetUniformLocation(shader, "u_TextureTerrain3")
         GLES20.glUniform1i(texHandlerTerrain3, 3)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[6])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAINTEXTURE3.id])
 
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {

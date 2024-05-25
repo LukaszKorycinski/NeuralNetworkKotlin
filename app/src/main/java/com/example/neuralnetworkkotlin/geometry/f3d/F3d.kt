@@ -22,7 +22,7 @@ import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
 enum class MODELS_3D(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES) {
-    DRAGON_MODEL(0, R.raw.dragon, Shaders.BASIC, TEXTURES.DRAGON),
+    DRAGON_MODEL(0, R.raw.dragon, Shaders.BASIC, TEXTURES.TERRAIN),
     COW_MODEL(1, R.raw.cow, Shaders.BASIC, TEXTURES.COWS_TEXTURE),
 }
 

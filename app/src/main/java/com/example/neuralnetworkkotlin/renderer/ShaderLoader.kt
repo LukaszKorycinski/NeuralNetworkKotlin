@@ -13,6 +13,7 @@ enum class Shaders {
     SKY,
     BASIC,
     BASIC_ANIM,
+    HUMAN_ANIM,
     TERRAIN,
     SEED,
     GRASS,
@@ -30,6 +31,7 @@ class ShaderLoader(context : Context){
         var shaderProgramSky: Int = 0
         var shaderProgramBasic: Int = 0
         var shaderProgramBasicAnim: Int = 0
+        var shaderProgramHumanAnim: Int = 0
         var shaderProgramTerrain: Int = 0
         var shaderProgramSeed: Int = 0
         var shaderProgramGrass: Int = 0
@@ -45,6 +47,7 @@ class ShaderLoader(context : Context){
                 Shaders.SKY -> shaderProgramSky
                 Shaders.BASIC -> shaderProgramBasic
                 Shaders.BASIC_ANIM -> shaderProgramBasicAnim
+                Shaders.HUMAN_ANIM -> shaderProgramHumanAnim
                 Shaders.TERRAIN -> shaderProgramTerrain
                 Shaders.SEED -> shaderProgramSeed
                 Shaders.GRASS -> shaderProgramGrass
@@ -72,6 +75,14 @@ class ShaderLoader(context : Context){
         shaderProgramBasicAnim = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, animVertexShader)
             GLES20.glAttachShader(it, animFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
+
+        val animHumanFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_human_anim, context)
+
+        shaderProgramHumanAnim = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, animVertexShader)
+            GLES20.glAttachShader(it, animHumanFragmentShader)
             GLES20.glLinkProgram(it)
         }
 

@@ -4,9 +4,9 @@ import com.example.neuralnetworkkotlin.R
 import com.example.neuralnetworkkotlin.renderer.Shaders
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 
-enum class MODELS_3D(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES, val framesQty: Int) {
-    TEST_MODEL(0, R.raw.test_many_frames, Shaders.BASIC_ANIM, TEXTURES.SEED, 13),
+enum class MODELS_3D(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES, val framesQty: Int, val textureAlpha: TEXTURES? = null) {
+    //TEST_MODEL(0, R.raw.test_many_frames, Shaders.BASIC_ANIM, TEXTURES.SEED, 13),
     //MEN_MODEL(1, R.raw.mentest, Shaders.BASIC_ANIM, TEXTURES.MEN, 4),
-    MEN_MODEL(1, R.raw.men, Shaders.BASIC_ANIM, TEXTURES.MEN, 14),
-    //COW_MODEL(1, R.raw.test, Shaders.BASIC_ANIM, TEXTURES.COWS_TEXTURE),
+    MEN(0, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, 14, TEXTURES.MEN_ALPHA),
+    SWORD(1, R.raw.sword, Shaders.BASIC_ANIM, TEXTURES.WARPEONS, 14),
 }

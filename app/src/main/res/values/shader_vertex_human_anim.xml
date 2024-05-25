@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ps_human_anim"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D a_Texture;
+                uniform float textureOffset;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec4 a = texture2D(a_Texture, texCoord);
+
+        vec2 textureOffseted = texCoord;
+        textureOffseted.x = textureOffseted.x + textureOffset * a.r;
+        vec4 color = texture2D(u_Texture, textureOffseted);
+
+
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+</resources>
