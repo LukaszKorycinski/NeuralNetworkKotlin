@@ -2,6 +2,14 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.content.Context
 import com.example.neuralnetworkkotlin.ext.readTextFile
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Bone
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Frame
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.LocRot
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
+import com.example.neuralnetworkkotlin.geometry.plain3d.data.Buffers
+import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
+import com.example.neuralnetworkkotlin.geometry.plain3d.data.Vertex3dA
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.Quaternion
 import com.example.neuralnetworkkotlin.helpers.intIterator
 import timber.log.Timber
@@ -11,17 +19,19 @@ import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
 class Loader(val context: Context, val type: LoaderType) {
-    val vertices = mutableListOf<Vertex3d>()
+    val vertices = mutableListOf<Vertex3dA>()
     val indices = mutableListOf<Int>()
     var framesQty = 0
     val bones = mutableListOf<Bone>()
+    lateinit var model3da: MODELS_3DA
     lateinit var model3d: MODELS_3D
 
     val buffers = Buffers()
 
 
-
     fun loadModel(model: MODELS_3D) : Loader{
+        model3d = model
+
         val file = context.resources.openRawResource(model.rawResId)
         val fileString = removeTrash(String.readTextFile(file)).split(" ").filter { it.isNotEmpty() }
 
@@ -32,7 +42,31 @@ class Loader(val context: Context, val type: LoaderType) {
             val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
             val texCoord = Vector2f(fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
 
-            vertices.add(Vertex3d(coord, normal, texCoord, boneIndex = fileString[iterator++].toInt()))
+            vertices.add(Vertex3dA(coord, normal, texCoord))
+        }
+
+        iterator++
+        while (fileString[iterator] != "end") {
+            indices.add(fileString[iterator++].toInt())
+        }
+
+        return this
+    }
+
+    fun loadModel(model: MODELS_3DA) : Loader{
+        model3da = model
+
+        val file = context.resources.openRawResource(model.rawResId)
+        val fileString = removeTrash(String.readTextFile(file)).split(" ").filter { it.isNotEmpty() }
+
+        var iterator = 2
+
+        while (fileString[iterator] != "indices") {
+            val coord = Vector3f(-fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
+            val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val texCoord = Vector2f(fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
+
+            vertices.add(Vertex3dA(coord, normal, texCoord, boneIndex = fileString[iterator++].toInt()))
         }
 
         iterator++
@@ -140,7 +174,6 @@ class Loader(val context: Context, val type: LoaderType) {
             bone.parent = if( parent == "None") { null } else { parent }
         }
 
-        model3d = model
         return this
     }
 

@@ -6,11 +6,12 @@ import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import androidx.lifecycle.MutableLiveData
 import com.example.neuralnetworkkotlin.geometry.Camera
-import com.example.neuralnetworkkotlin.geometry.F3d
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.plain3d.Animations
-import com.example.neuralnetworkkotlin.geometry.plain3d.MODELS_3D
-import com.example.neuralnetworkkotlin.geometry.plain3d.Plain3df
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Animations
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
@@ -29,11 +30,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
-    val f3d = F3d(context, textures)
-    //val f3da = F3da(context, textures)
-    //val assimpBridge = AssimpBridge(context, textures)
-    //val assimpBridgeAnim = AssimpBridgeAnim(context, textures)
-    val plain3df = Plain3df(context, textures)
+    //val f3d = F3d(context, textures)
+
+    val file3DA = File3dA(context, textures)
+    val file3Df = File3d(context, textures)
 
     lateinit var shaderLoader: ShaderLoader
 
@@ -46,12 +46,12 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun onZoomEnd(zoom: Float) { controlHelper.onZoomEnd(zoom) }
 
     fun nextFrame() {
-        plain3df.frameTest++
-        frame.postValue(plain3df.frameTest)
+        file3DA.frameTest++
+        frame.postValue(file3DA.frameTest)
     }
     fun prievousFrame() {
-        plain3df.frameTest--
-        frame.postValue(plain3df.frameTest)
+        file3DA.frameTest--
+        frame.postValue(file3DA.frameTest)
     }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
@@ -97,31 +97,26 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         //terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
 
-        val animation = when(plain3df.frameTest) {
+        val animation = when(file3DA.frameTest) {
             0 -> Animations.ATTACK
             1 -> Animations.WALK
             2 -> Animations.IDENTITY
             else -> Animations.WALK
         }
-        plain3df.drawHuman(camera.viewProjectionMatrix, MODELS_3D.MEN, anim = animation, variant = 0)
-        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.SWORD, anim = animation)
+        file3DA.drawHuman(camera.viewProjectionMatrix, MODELS_3DA.MEN, anim = animation, variant = 0)
+        file3DA.drawAnim(camera.viewProjectionMatrix, MODELS_3DA.SWORD, anim = animation)
 
-        plain3df.drawHuman(camera.viewProjectionMatrix, MODELS_3D.MEN, anim = animation, variant = 1, position = Vector2f(1.3f, -0.55f))
-        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.SWORD, anim = animation, position = Vector2f(1.3f, -0.55f))
+        file3DA.drawHuman(camera.viewProjectionMatrix, MODELS_3DA.MEN, anim = animation, variant = 1, position = Vector2f(1.3f, -0.55f))
+        file3DA.drawAnim(camera.viewProjectionMatrix, MODELS_3DA.SWORD, anim = animation, position = Vector2f(1.3f, -0.55f))
 
-        plain3df.drawHuman(camera.viewProjectionMatrix, MODELS_3D.MEN, anim = animation, variant = 2, position = Vector2f(-1.0f, -0.45f))
-        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.SWORD, anim = animation, position = Vector2f(-1.0f, -0.45f))
+        file3DA.drawHuman(camera.viewProjectionMatrix, MODELS_3DA.MEN, anim = animation, variant = 2, position = Vector2f(-1.0f, -0.45f))
+        file3DA.drawAnim(camera.viewProjectionMatrix, MODELS_3DA.SWORD, anim = animation, position = Vector2f(-1.0f, -0.45f))
 
-        plain3df.drawHuman(camera.viewProjectionMatrix, MODELS_3D.MEN, anim = animation, variant = 3, position = Vector2f(-0.9f, -1.45f))
-        plain3df.drawAnim(camera.viewProjectionMatrix, MODELS_3D.SWORD, anim = animation, position = Vector2f(-0.9f, -1.45f))
+        file3DA.drawHuman(camera.viewProjectionMatrix, MODELS_3DA.MEN, anim = animation, variant = 3, position = Vector2f(-0.9f, -1.45f))
+        file3DA.drawAnim(camera.viewProjectionMatrix, MODELS_3DA.SWORD, anim = animation, position = Vector2f(-0.9f, -1.45f))
 
-        //f3da.draw(camera.viewProjectionMatrix, MODELS_3DA.DRAGON_MODEL)
+        file3Df.draw(camera.viewProjectionMatrix, MODELS_3D.COW,)
 
-        //assimpBridge.draw(camera.viewProjectionMatrix, MODELS_ASSIMP.DRAGON_MODEL)
-        //assimpBridgeAnim.draw(camera.viewProjectionMatrix, MODELS_ANIM_ASSIMP.DRAGON_MODEL)
-
-        //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.DRAGON_MODEL )
-        //f3d.draw(camera.viewProjectionMatrix, MODELS_3D.COW_MODEL, Vector2f(1.3f, -3.55f))
 
 
         //backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, ShaderLoader.shaderProgramSky)

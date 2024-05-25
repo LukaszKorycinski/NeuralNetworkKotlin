@@ -1,7 +1,5 @@
 package com.example.neuralnetworkkotlin.helpers
 
-import timber.log.Timber
-import java.util.ArrayList
 import javax.vecmath.Vector2f
 
 class Triangle(val a: Vector2f, val b: Vector2f, val c: Vector2f)
@@ -9,11 +7,8 @@ class Line(val v: Vector2f, val w: Vector2f)
 class Collision {
 
     fun pointTriangleColision(s: Vector2f, triangle: Triangle):Boolean{
-
         val as_x = (s.x - triangle.a.x)
         val as_y = (s.y - triangle.a.y)
-
-
 
         val s_ab = (triangle.b.x - triangle.a.x) * as_y - (triangle.b.y - triangle.a.y) * as_x > 0
 
@@ -26,8 +21,6 @@ class Collision {
 
 
     fun pointLineColision(p: Vector2f, line: Line):Float{
-
-
         val l2 = dist2(line.v, line.w)
 
         if(Math.abs(l2) < 0.0001f) return dist2(p, line.v)

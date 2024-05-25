@@ -2,7 +2,7 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.opengl.GLES20
 import android.opengl.Matrix
-import com.example.neuralnetworkkotlin.ext.Vector2f
+import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import javax.vecmath.Vector2f
@@ -79,45 +79,45 @@ class Drawer(val textures: TexturesLoader) {
         Matrix.setIdentityM(tmpMatrix, 0)
         Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
 
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3d.shader))
+        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "uMVPMatrix"
         )
         Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
         GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
 
         val texHandler = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "u_Texture"
         )
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(
             GLES20.GL_TEXTURE_2D,
-            textures.textureHandle[model.model3d.texture.id]
+            textures.textureHandle[model.model3da.texture.id]
         )
 
         val tex2Handler = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "a_Texture"
         )
         GLES20.glUniform1i(tex2Handler, 1)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
         GLES20.glBindTexture(
             GLES20.GL_TEXTURE_2D,
-            textures.textureHandle[model.model3d.textureAlpha?.id ?: 0]
+            textures.textureHandle[model.model3da.textureAlpha?.id ?: 0]
         )
 
         val textureOffsetHandle = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "textureOffset"
         )
         GLES20.glUniform1f(textureOffsetHandle, variant * 0.2246f)
 
 
         val bonesMatricesHandle = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "bonesMatrices"
         )
         GLES20.glUniformMatrix4fv(
@@ -129,7 +129,7 @@ class Drawer(val textures: TexturesLoader) {
         )
 
         val mPositionHandle = GLES20.glGetAttribLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "vPosition"
         )
         GLES20.glEnableVertexAttribArray(mPositionHandle)
@@ -143,7 +143,7 @@ class Drawer(val textures: TexturesLoader) {
         )
 
         val mTexCoordHandle = GLES20.glGetAttribLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "a_TexCoordinate"
         )
         GLES20.glEnableVertexAttribArray(mTexCoordHandle)
@@ -174,27 +174,27 @@ class Drawer(val textures: TexturesLoader) {
         Matrix.setIdentityM(tmpMatrix, 0)
         Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
 
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3d.shader))
+        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "uMVPMatrix"
         )
         Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
         GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
 
         val texHandler = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "u_Texture"
         )
         GLES20.glUniform1i(texHandler, 0)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(
             GLES20.GL_TEXTURE_2D,
-            textures.textureHandle[model.model3d.texture.id]
+            textures.textureHandle[model.model3da.texture.id]
         )
 
         val bonesMatricesHandle = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "bonesMatrices"
         )
         GLES20.glUniformMatrix4fv(
@@ -206,7 +206,7 @@ class Drawer(val textures: TexturesLoader) {
         )
 
         val mPositionHandle = GLES20.glGetAttribLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "vPosition"
         )
         GLES20.glEnableVertexAttribArray(mPositionHandle)
@@ -220,7 +220,7 @@ class Drawer(val textures: TexturesLoader) {
         )
 
         val mTexCoordHandle = GLES20.glGetAttribLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            ShaderLoader.getShaderProgram(model.model3da.shader),
             "a_TexCoordinate"
         )
         GLES20.glEnableVertexAttribArray(mTexCoordHandle)

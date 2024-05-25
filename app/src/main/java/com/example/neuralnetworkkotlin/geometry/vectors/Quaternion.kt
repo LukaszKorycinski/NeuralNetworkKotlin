@@ -1,12 +1,10 @@
 package com.example.neuralnetworkkotlin.geometry.vectors
 
-import com.example.neuralnetworkkotlin.assimp.AiQuaternion
 import javax.vecmath.Matrix4f
 import kotlin.math.sqrt
 
 
 class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
-    constructor(aiQuaternion: AiQuaternion) : this(aiQuaternion.x, aiQuaternion.y, aiQuaternion.z, aiQuaternion.w)
     constructor() : this(0f, 0f, 0f, 1f)
 
     init {
