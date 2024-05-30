@@ -1,10 +1,12 @@
 package com.example.neuralnetworkkotlin.geometry.plain3d.anim
 
 import android.content.Context
+import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.geometry.plain3d.Drawer
 import com.example.neuralnetworkkotlin.geometry.plain3d.Loader
 import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
+import com.example.neuralnetworkkotlin.geometry.vectors.copy
 import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.invert
 import com.example.neuralnetworkkotlin.helpers.times
@@ -16,7 +18,6 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
 
     private val drawer = Drawer(textures)
     private val loadedModels = mutableListOf<Loader>()
-    var frameTest = 0
 
     init {
         MODELS_3DA.values().forEach { model ->
@@ -24,38 +25,70 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
         }
     }
 
-    fun drawAnim(mvpMatrix: FloatArray, model: MODELS_3DA, position: Vector2f = Vector2f(0f), anim: Animations) {
-        drawer.draw(mvpMatrix, loadedModels[model.index], position, interpolateSkeletons(model, anim))
+    fun drawAnim(
+        mvpMatrix: FloatArray,
+        model: MODELS_3DA,
+        position: Vector2f = Vector2f(0f),
+        anim: Animations
+    ) {
+        drawer.draw(
+            mvpMatrix,
+            loadedModels[model.index],
+            position,
+            interpolateSkeletons(model, anim)
+        )
     }
 
-    fun drawHuman(mvpMatrix: FloatArray, model: MODELS_3DA, position: Vector2f = Vector2f(0f), anim: Animations, variant: Int) {
-        drawer.drawHuman(mvpMatrix, loadedModels[model.index], position, interpolateSkeletons(model, anim), variant)
+    fun draGear(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
+        drawer.draw(
+            mvpMatrix,
+            loadedModels[model.index],
+            human.position,
+            interpolateSkeletons(model, human.look.animation),
+            human.look.direction.scaleX,
+            human.box.y
+        )
     }
 
-    var frame = 0f
+    fun drawHuman(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
+        drawer.drawHuman(
+            mvpMatrix,
+            loadedModels[model.index],
+            human,
+            interpolateSkeletons(model, human.look.animation)
+        )
+    }
 
     private fun interpolateSkeletons(model: MODELS_3DA, animation: Animations): FloatArray {
 
-        if(frame >= animation.end) frame = animation.start.toFloat()
-        if(frame < animation.start) frame = animation.start.toFloat()
+        var wave = animation.wave
+        if (wave >= animation.end) wave = animation.start.toFloat()
+        if (wave < animation.start) wave = animation.start.toFloat()
 
-        frame += animation.speed * 0.25f
-
+        wave += animation.speed * 0.25f
 
         val currMatrixes = FloatArray(16 * loadedModels[model.index].bones.size)
 
         loadedModels[model.index].bones.forEachIndexed { index, bone ->
-            var boneOffsetM = getIdentityMatrix().translate(-bone.offsetLocRot.loc.x, -bone.offsetLocRot.loc.y, bone.offsetLocRot.loc.z)
+            var boneOffsetM = getIdentityMatrix().translate(
+                -bone.offsetLocRot.loc.x,
+                -bone.offsetLocRot.loc.y,
+                bone.offsetLocRot.loc.z
+            )
             boneOffsetM *= bone.offsetLocRot.quat.toRotationMatrix()
 
-            val interpolatedFrame = bone.interpolatedFrame(frame)
+            val interpolatedFrame = bone.interpolatedFrame(wave)
 
-            var bonTransformMatrix = getIdentityMatrix().translate(-interpolatedFrame.loc.x, -interpolatedFrame.loc.y, interpolatedFrame.loc.z)
+            var bonTransformMatrix = getIdentityMatrix().translate(
+                -interpolatedFrame.loc.x,
+                -interpolatedFrame.loc.y,
+                interpolatedFrame.loc.z
+            )
             bonTransformMatrix *= interpolatedFrame.quat.toRotationMatrix4f()
 
             val boneMatrixTotal = boneOffsetM * bonTransformMatrix * boneOffsetM.invert()
 
-                for (i in 0..15) {
+            for (i in 0..15) {
                 currMatrixes[index * 16 + i] = boneMatrixTotal[i]
             }
         }

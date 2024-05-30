@@ -41,6 +41,16 @@ fun FloatArray.translate(x:Float, y: Float, z:Float): FloatArray {
     return this
 }
 
+fun FloatArray.scale(x:Float, y: Float, z:Float): FloatArray {
+    Matrix.scaleM(this, 0, x, y, z)
+    return this
+}
+
+fun FloatArray.rotateX(a:Float): FloatArray {
+    Matrix.rotateM(this, 0, a, 1f, 0f, 0f)
+    return this
+}
+
 fun FloatArray.rotateZ(a:Float): FloatArray {
     Matrix.rotateM(this, 0, a, 0f, 0f, 1f)
     return this

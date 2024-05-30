@@ -24,13 +24,13 @@ class Terrain(context: Context) {
         bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
     }
 
-    val size = 4.0f
+    val size = 10.0f
 
     val layerCoords = floatArrayOf(
-        -size, size, 0.1f,      // top left
-        -size, -size, 0.1f,      // bottom left
-        size, -size, 0.1f,      // bottom right
-        size, size, 0.1f       // top right
+        -size,    0f, size,      // top left
+        -size,  0f,-size,      // bottom left
+         size,  0f,-size,      // bottom right
+         size,  0f, size       // top right
     )
 
 

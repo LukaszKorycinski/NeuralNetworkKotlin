@@ -59,8 +59,14 @@ class MainActivity : AppCompatActivity() {
             glSurfaceView.switchMode(switchMode.isChecked)
         }
 
-        minus.setOnClickListener { glSurfaceView.previousFrame() }
-        plus.setOnClickListener { glSurfaceView.nextFrame() }
+        minus.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.previousFrame(motionEvent)
+            true
+        }
+        plus.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.nextFrame(motionEvent)
+            true
+        }
         glSurfaceView.frame.observeForever {
             frame.text = it.toString()
         }

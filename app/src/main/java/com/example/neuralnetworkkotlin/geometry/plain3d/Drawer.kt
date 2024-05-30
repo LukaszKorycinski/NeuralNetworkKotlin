@@ -2,7 +2,10 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.opengl.GLES20
 import android.opengl.Matrix
+import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
+import com.example.neuralnetworkkotlin.helpers.scale
+import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import javax.vecmath.Vector2f
@@ -73,11 +76,17 @@ class Drawer(val textures: TexturesLoader) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
-    fun drawHuman(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), currentBonesPosesArray: FloatArray, variant: Int) {
+    fun drawHuman(
+        mvpMatrix: FloatArray,
+        model: Loader,
+        human: Human,
+        currentBonesPosesArray: FloatArray
+    ) {
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
+        tmpMatrix.translate(human.position.x, human.box.y, human.position.y)
+        tmpMatrix.scale(human.look.direction.scaleX, 1.0f, 1.0f)
 
         GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
@@ -111,10 +120,19 @@ class Drawer(val textures: TexturesLoader) {
 
         val textureOffsetHandle = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
-            "textureOffset"
+            "textureOffset1"
         )
-        GLES20.glUniform1f(textureOffsetHandle, variant * 0.2246f)
-
+        GLES20.glUniform1f(textureOffsetHandle, human.look.variant.head * 0.2246f)
+        val textureOffset2Handle = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3da.shader),
+            "textureOffset2"
+        )
+        GLES20.glUniform1f(textureOffset2Handle, human.look.variant.beard * 0.2246f)
+        val skinColorHandle = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3da.shader),
+            "skinColor"
+        )
+        GLES20.glUniform1f(skinColorHandle, human.look.variant.skinColor)
 
         val bonesMatricesHandle = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
@@ -167,12 +185,18 @@ class Drawer(val textures: TexturesLoader) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
-
-    fun draw(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), currentBonesPosesArray: FloatArray) {
-
+    fun draw(
+        mvpMatrix: FloatArray,
+        model: Loader,
+        position: Vector2f = Vector2f(0f),
+        currentBonesPosesArray: FloatArray,
+        direction: Float = 1f,
+        offsetUP: Float = 0f
+    ) {
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
+        tmpMatrix.translate(position.x, offsetUP, position.y)
+        tmpMatrix.scale(direction, 1.0f, 1.0f)
 
         GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(

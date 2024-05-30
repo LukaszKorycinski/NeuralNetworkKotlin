@@ -1,6 +1,5 @@
 package com.example.neuralnetworkkotlin.helpers
 
-import android.util.Log
 import android.view.MotionEvent
 import javax.vecmath.Vector3f
 
@@ -14,6 +13,9 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
+
+    var angleMinus = false
+    var anglePlus = false
 
     fun upKey(action: MotionEvent){
         when(action.action){
@@ -43,6 +45,20 @@ class ControlHelper {
         }
     }
 
+    fun rotateXPlus(action: MotionEvent) {
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> anglePlus = true
+            MotionEvent.ACTION_UP -> anglePlus = false
+        }
+    }
+
+    fun rotateXMinus(action: MotionEvent) {
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> angleMinus = true
+            MotionEvent.ACTION_UP -> angleMinus = false
+        }
+    }
+
     fun onZoom(zoom: Float){
         zoomTmp = zoom
     }
@@ -51,11 +67,22 @@ class ControlHelper {
         position.z = position.z / zoomTmp
         zoomTmp = 1.0f
     }
+    //strategy
+    //8.099995, pos.y = -29.300076, pos.z = 32.28673
+    //-42.79992, rot.y = 0.0, rot.z = 0.0
 
+    //fight
+    // -0.9000051, pos.y = -3.8999968, pos.z = 4.3
+    //-37.000008, rot.y = 0.0, rot.z = 0.0
 
+    private val positionStrategy = Vector3f(8f, -29.300076f, 32.28673f)
+    private val rotationStrategy = Vector3f(-42.79992f, 0f, 0f)
 
+    private val positionFight = Vector3f(-0f, -3.8999968f, 4.3f)
+    private val rotationFight = Vector3f(-37.000008f, 0f, 0f)
 
-    val position = Vector3f(0f, 0f, 15.0f)
+    val position = positionFight
+    val rotation = rotationFight
     var zoomTmp = 1.0f
 
     fun updatePosition(): Vector3f {
@@ -73,6 +100,12 @@ class ControlHelper {
         }
         if(left){
             position.x = position.x + 0.1f
+        }
+        if(anglePlus){
+            rotation.x = rotation.x + 0.1f
+        }
+        if(angleMinus){
+            rotation.x = rotation.x - 0.1f
         }
 
         positionOut.x = position.x
@@ -103,4 +136,6 @@ class ControlHelper {
 
         return positionOut
     }
+
+
 }

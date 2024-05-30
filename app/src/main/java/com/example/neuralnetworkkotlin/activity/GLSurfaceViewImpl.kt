@@ -39,9 +39,9 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
 
     fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
 
-    fun nextFrame() { renderer.nextFrame() }
+    fun nextFrame(action: MotionEvent) { renderer.nextFrame(action) }
 
-    fun previousFrame() { renderer.prievousFrame() }
+    fun previousFrame(action: MotionEvent) { renderer.prievousFrame(action) }
 
     fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
 }

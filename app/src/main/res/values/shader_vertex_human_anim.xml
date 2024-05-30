@@ -6,7 +6,9 @@
         precision mediump float;
         uniform sampler2D u_Texture;
         uniform sampler2D a_Texture;
-                uniform float textureOffset;
+        uniform float textureOffset1;
+        uniform float textureOffset2;
+        uniform float skinColor;
         varying vec2 texCoord;
 
         void main() {
@@ -14,8 +16,8 @@
         vec4 a = texture2D(a_Texture, texCoord);
 
         vec2 textureOffseted = texCoord;
-        textureOffseted.x = textureOffseted.x + textureOffset * a.r;
-        vec4 color = texture2D(u_Texture, textureOffseted);
+        textureOffseted.x = textureOffseted.x + textureOffset1 * a.r + textureOffset2 * a.g;
+        vec4 color = texture2D(u_Texture, textureOffseted) + skinColor * a.r;
 
 
 
