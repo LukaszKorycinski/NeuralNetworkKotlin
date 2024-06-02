@@ -8,7 +8,7 @@ import com.example.neuralnetworkkotlin.R
 
 
 enum class TEXTURES(val id: Int, val resId: Int) {
-    CHAMP_GRADIENT(0, R.drawable.champ_gradient),
+    BANNER(0, R.drawable.banner),
     MEN_ALPHA(1, R.drawable.men_alpha),
     SMOKE(2, R.drawable.smoke),
     B3(3, R.drawable.b3),
@@ -17,10 +17,10 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     TERRAINTEXTURE3(6, R.drawable.terraintexture3),
     TERRAINTEXTURE2(7, R.drawable.terraintexture2),
     TERRAINTEXTURE(8, R.drawable.terraintexture),
-    WARPEONS(9, R.drawable.warpeons),
+    WARPEONS(9, R.drawable.warpeon),
     PLANT(10, R.drawable.plant),
     TERRAIN(11, R.drawable.terrain),
-    FOG_BACKGROUND(12, R.drawable.fog_background),
+    BANNER_GRADIENT(12, R.drawable.banner_gradient),
     SKY(13, R.drawable.sky),
     COWS_TEXTURE(14, R.drawable.cows_texture),
 }

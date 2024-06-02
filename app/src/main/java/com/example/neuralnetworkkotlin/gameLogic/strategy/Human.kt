@@ -4,21 +4,18 @@ package com.example.neuralnetworkkotlin.gameLogic.strategy
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Animations
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import javax.vecmath.Vector2f
+import kotlin.random.Random
 
 data class Human(
     var look: Look,
     var position: Vector2f = Vector2f(0f),
     var velocity: Vector2f = Vector2f(0f),
     var box: Vector2f = Vector2f(0.2f, 0.4f),
-    var health: Int = 10
+    var health: Int = 10,
+    var wave: Float = 0f,
 ) {
-
-
-
-
-
     private fun randomPosition(): Human {
-        position = Vector2f((Math.random() * 3).toFloat(), (Math.random() * 8).toFloat())
+        position = Vector2f((Math.random() * 1).toFloat(), (Math.random() * 3).toFloat())
         return this
     }
 
@@ -27,10 +24,25 @@ data class Human(
         return this
     }
 
+    fun handleWave() {
+        if (wave >= look.animation.end) wave = look.animation.start.toFloat()
+        if (wave < look.animation.start) wave = look.animation.start.toFloat()
+
+        wave += look.animation.speed
+
+        if (wave > look.animation.end) {
+            wave = look.animation.start.toFloat()
+        }
+        if (wave < look.animation.start) {
+            wave = look.animation.start.toFloat()
+        }
+    }
+
     companion object {
         fun random(): Human {
             val look = Look.nextRandom()
             return Human(look).randomPosition().randomLook()
+                .apply { wave = Random.nextFloat() * look.animation.end }
         }
     }
 }
@@ -58,7 +70,7 @@ data class Look(
         fun nextRandom(): Look {
             return Look(
                 direction = Direction.values().random(),
-                animation = Animations.values().random(),
+                animation = Animations.IDENTITY,//.values().random(),
                 variant = Variant.random(),
             )
         }

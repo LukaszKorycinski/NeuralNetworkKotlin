@@ -15,6 +15,7 @@ import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import javax.vecmath.Vector2f
 
 
 class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
@@ -22,7 +23,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var backGround: BackGround
 
-    private val camera = Camera()
+    val camera = Camera()
     val controlHelper = ControlHelper()
     var textures = TexturesLoader(context)
 
@@ -34,21 +35,21 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun switchMode(isChecked: Boolean) { ControlHelper.modeSwitcher = isChecked }
 
     fun upKey(action: MotionEvent) {
-        //controlHelper.upKey(action)
-        strategyGame.playable.upKey(action)
+        controlHelper.upKey(action)
+        //strategyGame.playable.upKey(action)
     }
     fun downKey(action: MotionEvent) {
-        //controlHelper.downKey(action)
-        strategyGame.playable.downKey(action)
+        controlHelper.downKey(action)
+        //strategyGame.playable.downKey(action)
     }
 
     fun leftKey(action: MotionEvent) {
-        //controlHelper.leftKey(action)
-        strategyGame.playable.leftKey(action)
+        controlHelper.leftKey(action)
+        //strategyGame.playable.leftKey(action)
     }
     fun rightKey(action: MotionEvent) {
-        //controlHelper.rightKey(action)
-        strategyGame.playable.rightKey(action)
+        controlHelper.rightKey(action)
+        //strategyGame.playable.rightKey(action)
     }
 
     fun onZoom(zoom: Float) { controlHelper.onZoom(zoom) }
@@ -138,6 +139,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height)
         val ratio: Float = width.toFloat() / height.toFloat()
 
+        camera.renderResolution = Vector2f(width.toFloat(), height.toFloat())
         camera.frustrum(ratio)
     }
 

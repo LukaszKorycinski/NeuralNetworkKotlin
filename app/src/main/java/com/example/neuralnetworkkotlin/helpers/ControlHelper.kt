@@ -81,8 +81,8 @@ class ControlHelper {
     private val positionFight = Vector3f(-0f, -3.8999968f, 4.3f)
     private val rotationFight = Vector3f(-37.000008f, 0f, 0f)
 
-    val position = positionFight
-    val rotation = rotationFight
+    val position = positionStrategy
+    val rotation = rotationStrategy
     var zoomTmp = 1.0f
 
     fun updatePosition(): Vector3f {
@@ -114,28 +114,5 @@ class ControlHelper {
 
         return positionOut
     }
-
-    fun updateControls(): Vector3f {
-
-        val positionOut = Vector3f()
-
-        if(up){
-            positionOut.y = 0.1f
-        }
-        if(down){
-            positionOut.y = -0.1f
-        }
-        if(right){
-            positionOut.x = 0.1f
-        }
-        if(left){
-            positionOut.x = -0.1f
-        }
-
-
-
-        return positionOut
-    }
-
 
 }

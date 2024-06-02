@@ -29,13 +29,14 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
         mvpMatrix: FloatArray,
         model: MODELS_3DA,
         position: Vector2f = Vector2f(0f),
+        wave: Float,
         anim: Animations
     ) {
         drawer.draw(
             mvpMatrix,
             loadedModels[model.index],
             position,
-            interpolateSkeletons(model, anim)
+            interpolateSkeletons(model, wave, anim)
         )
     }
 
@@ -44,28 +45,23 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
             mvpMatrix,
             loadedModels[model.index],
             human.position,
-            interpolateSkeletons(model, human.look.animation),
+            interpolateSkeletons(model, human.wave,  human.look.animation),
             human.look.direction.scaleX,
             human.box.y
         )
     }
 
     fun drawHuman(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
+        drawer.bindProgram(loadedModels[model.index])
         drawer.drawHuman(
             mvpMatrix,
             loadedModels[model.index],
             human,
-            interpolateSkeletons(model, human.look.animation)
+            interpolateSkeletons(model, human.wave, human.look.animation)
         )
     }
 
-    private fun interpolateSkeletons(model: MODELS_3DA, animation: Animations): FloatArray {
-
-        var wave = animation.wave
-        if (wave >= animation.end) wave = animation.start.toFloat()
-        if (wave < animation.start) wave = animation.start.toFloat()
-
-        wave += animation.speed * 0.25f
+    private fun interpolateSkeletons(model: MODELS_3DA, wave: Float, animation: Animations): FloatArray {
 
         val currMatrixes = FloatArray(16 * loadedModels[model.index].bones.size)
 

@@ -7,6 +7,6 @@ import com.example.neuralnetworkkotlin.renderer.TEXTURES
 enum class MODELS_3DA(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES, val framesQty: Int, val textureAlpha: TEXTURES? = null) {
     //TEST_MODEL(0, R.raw.test_many_frames, Shaders.BASIC_ANIM, TEXTURES.SEED, 13),
     //MEN_MODEL(1, R.raw.mentest, Shaders.BASIC_ANIM, TEXTURES.MEN, 4),
-    MEN(0, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, 18, TEXTURES.MEN_ALPHA),
-    SWORD(1, R.raw.sword, Shaders.BASIC_ANIM, TEXTURES.WARPEONS, 18),
+    MEN(0, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, 17, TEXTURES.MEN_ALPHA),
+    SWORD(1, R.raw.sword, Shaders.BASIC_ANIM, TEXTURES.WARPEONS, 17),
 }

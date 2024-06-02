@@ -12,13 +12,44 @@ import javax.vecmath.Vector2f
 
 class Drawer(val textures: TexturesLoader) {
 
+
+    fun bindProgram(model: Loader) {
+        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3d.shader))
+    }
+
+    fun drawBanner(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), wave: Float) {
+
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
+        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
+
+        val waveHsndler = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3d.shader),
+            "wave"
+        )
+        GLES20.glUniform1f(waveHsndler, wave)
+
+        val tex2Handler = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3d.shader),
+            "a_Texture"
+        )
+        GLES20.glUniform1i(tex2Handler, 1)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
+        GLES20.glBindTexture(
+            GLES20.GL_TEXTURE_2D,
+            textures.textureHandle[model.model3d.textureAlpha?.id ?: 0]
+        )
+
+        draw(mvpMatrix, model, position)
+    }
+
+
     fun draw(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f)) {
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, position.y, 0.0f)
+        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
 
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3d.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
             "uMVPMatrix"
@@ -76,19 +107,19 @@ class Drawer(val textures: TexturesLoader) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
+    private val HUMAN_HEAD_OFFSET = 0.1542f
+
     fun drawHuman(
         mvpMatrix: FloatArray,
         model: Loader,
         human: Human,
         currentBonesPosesArray: FloatArray
     ) {
-
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
         tmpMatrix.translate(human.position.x, human.box.y, human.position.y)
         tmpMatrix.scale(human.look.direction.scaleX, 1.0f, 1.0f)
 
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
             "uMVPMatrix"
@@ -122,12 +153,12 @@ class Drawer(val textures: TexturesLoader) {
             ShaderLoader.getShaderProgram(model.model3da.shader),
             "textureOffset1"
         )
-        GLES20.glUniform1f(textureOffsetHandle, human.look.variant.head * 0.2246f)
+        GLES20.glUniform1f(textureOffsetHandle, human.look.variant.head * HUMAN_HEAD_OFFSET)
         val textureOffset2Handle = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
             "textureOffset2"
         )
-        GLES20.glUniform1f(textureOffset2Handle, human.look.variant.beard * 0.2246f)
+        GLES20.glUniform1f(textureOffset2Handle, human.look.variant.beard * HUMAN_HEAD_OFFSET)
         val skinColorHandle = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
             "skinColor"

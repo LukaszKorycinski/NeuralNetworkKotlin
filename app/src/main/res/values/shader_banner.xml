@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ps_banner"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform sampler2D a_Texture;
+        uniform float wave;
+        varying vec2 texCoord;
+
+        void main() {
+
+        vec2 texC = texCoord;
+
+        vec4 distance = texture2D(a_Texture, texCoord);
+        texC.x = texC.x + distance.r * sin(texC.x * 5.0 + wave) * 0.02;
+
+        vec4 color = texture2D(u_Texture, texC);
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+</resources>

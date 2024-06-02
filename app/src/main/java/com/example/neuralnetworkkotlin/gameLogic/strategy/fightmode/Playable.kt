@@ -22,29 +22,27 @@ class Playable {
         position = Vector2f(0f),
     )
 
-
-
     fun loop() {
-        human.look.animation.handleWave()
-        human.look.animation = Animations.IDENTITY.copy(human.look.animation)
+        human.handleWave()
+        human.look.animation = Animations.IDENTITY
 
         if (left) {
             human.position.x += 0.01f
-            human.look.animation = Animations.WALK.copy(human.look.animation)
+            human.look.animation = Animations.WALK
             human.look.direction = Direction.LEFT
         }
         if (right) {
             human.position.x -= 0.01f
-            human.look.animation = Animations.WALK.copy(human.look.animation)
+            human.look.animation = Animations.WALK
             human.look.direction = Direction.RIGHT
         }
         if (up) {
             human.position.y += 0.01f
-            human.look.animation = Animations.WALK.copy(human.look.animation)
+            human.look.animation = Animations.WALK
         }
         if (down) {
             human.position.y -= 0.01f
-            human.look.animation = Animations.WALK.copy(human.look.animation)
+            human.look.animation = Animations.WALK
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.neuralnetworkkotlin.gameLogic.strategy
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.copy
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Collision
@@ -15,8 +17,9 @@ class Humans {
 
     fun loop() {
         banners.forEach { banner ->
+            banner.handleWave()
             banner.humans.forEach { soldier ->
-                soldier.look.animation.handleWave()
+                soldier.handleWave()
 
                 var newPosition = soldier.position + Vector2f(soldier.velocity.x, 0f)
                 if (!collision.checkCollision(newPosition)) {
@@ -30,8 +33,15 @@ class Humans {
         }
     }
 
-    fun draw(file3DA: File3dA, camera: Camera) {
+    fun draw(file3D: File3d, file3DA: File3dA, camera: Camera) {
+
         banners.forEach { banner ->
+            file3D.drawBanner(
+                camera.viewProjectionMatrix,
+                MODELS_3D.BANNER,
+                position = banner.position,
+                wave = banner.wave
+            )
             banner.humans.forEach { soldier ->
                 file3DA.drawHuman(
                     camera.viewProjectionMatrix,

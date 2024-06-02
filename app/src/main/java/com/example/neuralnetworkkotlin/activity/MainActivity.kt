@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.plus
 import kotlinx.android.synthetic.main.activity_main.right
 import kotlinx.android.synthetic.main.activity_main.switchMode
 import kotlinx.android.synthetic.main.activity_main.up
+import javax.vecmath.Vector2f
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        glSurfaceView.setOnTouchListener { _, motionEvent ->
+            glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
+            true//view.performClick()
+        }
 
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
 

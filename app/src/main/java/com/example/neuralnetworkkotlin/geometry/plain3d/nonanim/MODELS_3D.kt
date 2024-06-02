@@ -6,5 +6,6 @@ import com.example.neuralnetworkkotlin.renderer.TEXTURES
 
 enum class MODELS_3D(val index: Int, val rawResId: Int, val shader: Shaders, val texture: TEXTURES, val textureAlpha: TEXTURES? = null) {
     COW(0, R.raw.cows, Shaders.BASIC, TEXTURES.COWS_TEXTURE, ),
-    //SWORD(1, R.raw.sword, Shaders.BASIC, TEXTURES.TERRAIN, ),
+    //BANNER(1, R.raw.banner, Shaders.BASIC, TEXTURES.BANNER, ),
+    BANNER(1, R.raw.banner, Shaders.BANNER, TEXTURES.BANNER, TEXTURES.BANNER_GRADIENT),
 }

@@ -9,65 +9,40 @@ import com.example.neuralnetworkkotlin.R
 
 enum class Shaders {
     BACKGROUND,
-    FOG,
-    SKY,
     BASIC,
+    BANNER,
     BASIC_ANIM,
     HUMAN_ANIM,
     TERRAIN,
-    SEED,
-    GRASS,
-    CREATURES,
-    EYES,
     FONT,
-    PARTICLES
 }
 
 class ShaderLoader(context : Context){
 
     companion object{
         var shaderProgramBackground: Int = 0
-        var shaderProgramFog: Int = 0
-        var shaderProgramSky: Int = 0
         var shaderProgramBasic: Int = 0
         var shaderProgramBasicAnim: Int = 0
         var shaderProgramHumanAnim: Int = 0
         var shaderProgramTerrain: Int = 0
-        var shaderProgramSeed: Int = 0
-        var shaderProgramGrass: Int = 0
-        var shaderProgramCreatures: Int = 0
-        var shaderProgramEyes: Int = 0
+        var shaderProgramBanner: Int = 0
         var shaderProgramFont: Int = 0
-        var shaderProgramParticles: Int = 0
+
 
         fun getShaderProgram(shader: Shaders) : Int{
             return when (shader) {
                 Shaders.BACKGROUND -> shaderProgramBackground
-                Shaders.FOG -> shaderProgramFog
-                Shaders.SKY -> shaderProgramSky
                 Shaders.BASIC -> shaderProgramBasic
                 Shaders.BASIC_ANIM -> shaderProgramBasicAnim
                 Shaders.HUMAN_ANIM -> shaderProgramHumanAnim
                 Shaders.TERRAIN -> shaderProgramTerrain
-                Shaders.SEED -> shaderProgramSeed
-                Shaders.GRASS -> shaderProgramGrass
-                Shaders.CREATURES -> shaderProgramCreatures
-                Shaders.EYES -> shaderProgramEyes
                 Shaders.FONT -> shaderProgramFont
-                Shaders.PARTICLES -> shaderProgramParticles
+                Shaders.BANNER -> shaderProgramBanner
             }
         }
     }
 
     init {
-        val vertexParticles: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_basic, context)
-        val fragmentParticles: Int = loadShader(GLES20.GL_FRAGMENT_SHADER,  R.string.ps_particles, context)
-
-        shaderProgramParticles = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, vertexParticles)
-            GLES20.glAttachShader(it, fragmentParticles)
-            GLES20.glLinkProgram(it)
-        }
 
         val animVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_anim, context)
         val animFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_anim, context)
@@ -88,7 +63,6 @@ class ShaderLoader(context : Context){
 
         val backVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_background, context)
         val backFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_background, context)
-
         shaderProgramBackground = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, backVertexShader)
             GLES20.glAttachShader(it, backFragmentShader)
@@ -96,30 +70,19 @@ class ShaderLoader(context : Context){
         }
 
 
+
         val basicVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_basic, context)
         val basicFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER,  R.string.ps_basic, context)
-
         shaderProgramBasic = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, basicVertexShader)
             GLES20.glAttachShader(it, basicFragmentShader)
             GLES20.glLinkProgram(it)
         }
 
-
-
-        val creaturesFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_creatures, context)
-
-        shaderProgramCreatures = GLES20.glCreateProgram().also {
+        val bannerFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER,  R.string.ps_banner, context)
+        shaderProgramBanner = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, basicVertexShader)
-            GLES20.glAttachShader(it, creaturesFragmentShader)
-            GLES20.glLinkProgram(it)
-        }
-
-        val eyesFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.eye_creatures, context)
-
-        shaderProgramEyes = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, basicVertexShader)
-            GLES20.glAttachShader(it, eyesFragmentShader)
+            GLES20.glAttachShader(it, bannerFragmentShader)
             GLES20.glLinkProgram(it)
         }
 
@@ -131,47 +94,6 @@ class ShaderLoader(context : Context){
         }
 
 
-        val seedfragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_seed, context)
-
-        shaderProgramSeed = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, basicVertexShader)
-            GLES20.glAttachShader(it, seedfragmentShader)
-            GLES20.glLinkProgram(it)
-        }
-
-
-        val grassVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_grass, context)
-        val grassfragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_grass, context)
-
-        shaderProgramGrass = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, grassVertexShader)
-            GLES20.glAttachShader(it, grassfragmentShader)
-            GLES20.glLinkProgram(it)
-        }
-
-
-
-
-        val fogVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER,  R.string.vs_fog, context)
-        val fogFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_fog, context)
-
-        shaderProgramFog = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, fogVertexShader)
-            GLES20.glAttachShader(it, fogFragmentShader)
-            GLES20.glLinkProgram(it)
-        }
-
-
-
-
-        val skyVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_sky, context)
-        val skyFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_sky, context)
-
-        shaderProgramSky = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, skyVertexShader)
-            GLES20.glAttachShader(it, skyFragmentShader)
-            GLES20.glLinkProgram(it)
-        }
 
 
         val terrainVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_terrain, context)
