@@ -41,7 +41,7 @@ class Camera {
         val outPoint1: FloatArray = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
         val outPoint2: FloatArray = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
 
-        val fixedY = renderResolution.y - xy.y  - 1f
+        val fixedY = renderResolution.y - xy.y - 1f
         GLU.gluUnProject(
             xy.x,fixedY,0.0f,
             viewMatrix, 0,

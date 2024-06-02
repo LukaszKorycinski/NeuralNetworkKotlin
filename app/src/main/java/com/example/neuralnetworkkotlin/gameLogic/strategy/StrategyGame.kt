@@ -23,18 +23,9 @@ class StrategyGame(val file3DA: File3dA, val file3Df: File3d, val textures: Text
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
         val pointer3d = camera.unproject(pos)
 
-        when (motionEvent.action){
-            MotionEvent.ACTION_DOWN -> {
-                Pointer.position = pointer3d
-            }
-            MotionEvent.ACTION_MOVE -> {
-                //pointer.addDestination(pointer3d)
-            }
-            MotionEvent.ACTION_UP -> {
-                //pointer.addDestination(pointer3d)
-            }
-            else -> {}
-        }
+        humans.onClick(motionEvent, pos)
+
+        Pointer.position = pointer3d
     }
 
     fun onSurfaceCreated() {

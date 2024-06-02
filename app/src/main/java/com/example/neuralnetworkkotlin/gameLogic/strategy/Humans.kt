@@ -1,10 +1,12 @@
 package com.example.neuralnetworkkotlin.gameLogic.strategy
 
+import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
+import com.example.neuralnetworkkotlin.geometry.vectors.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Collision
 import javax.vecmath.Vector2f
@@ -13,6 +15,25 @@ class Humans {
 
     val banners = mutableListOf<Banner>()
     val collision = Collision()
+
+    fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
+
+        when (motionEvent.action){
+            MotionEvent.ACTION_DOWN -> {
+                val closestIndex = banners.closestIndex(pos)
+                if(banners[closestIndex].position.distance(pos) < 0.5f){
+                    banners[closestIndex].isSelected = true
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                //pointer.addDestination(pointer3d)
+            }
+            MotionEvent.ACTION_UP -> {
+                //pointer.addDestination(pointer3d)
+            }
+            else -> {}
+        }
+    }
 
     fun loop() {
         banners.forEach { banner ->
