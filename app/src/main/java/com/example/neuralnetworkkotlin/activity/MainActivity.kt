@@ -21,12 +21,15 @@ import javax.vecmath.Vector2f
 class MainActivity : AppCompatActivity() {
 
     lateinit var zoomGestureListener: ScaleGestureDetector
+    var scaling = false
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
+    override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
+        if(!scaling){
+            glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
+        }
+        zoomGestureListener.onTouchEvent(motionEvent)
 
-        zoomGestureListener.onTouchEvent(event)
-
-        return super.onTouchEvent(event)
+        return super.onTouchEvent(motionEvent)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,29 +37,22 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        glSurfaceView.setOnTouchListener { _, motionEvent ->
-            glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
-            true//view.performClick()
-        }
-
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
-
             override fun onScale(detector: ScaleGestureDetector): Boolean {
+                scaling = true
                 detector.scaleFactor.let{
                     glSurfaceView.onZoom(it)
                 }
-
                 return super.onScale(detector)
             }
 
             override fun onScaleEnd(detector: ScaleGestureDetector) {
-
+                scaling = false
                 detector.scaleFactor.let{
                     glSurfaceView.onZoomEnd(it)
                 }
                 super.onScaleEnd(detector)
             }
-
         } )
 
         switchMode.isChecked=true

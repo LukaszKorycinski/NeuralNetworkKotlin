@@ -17,7 +17,7 @@ import javax.vecmath.Vector3f
 
 class StrategyGame(val file3DA: File3dA, val file3Df: File3d, val textures: TexturesLoader, val camera: Camera, val context: Context) {
     val humans = Humans()
-    val playable = Playable()
+    //val playable = Playable()
     lateinit var terrain: Terrain
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
@@ -52,17 +52,13 @@ class StrategyGame(val file3DA: File3dA, val file3Df: File3d, val textures: Text
 
     fun loop() {
         humans.loop()
-        playable.loop()
+        //playable.loop()
     }
 
     fun draw() {
-
         humans.draw(file3Df, file3DA, camera)
-
-        playable.draw(file3DA, camera)
-
+        //playable.draw(file3DA, camera)
         Pointer.draw(file3Df, camera)
-
         terrain.drawTerrain(camera.viewProjectionMatrix, textures, ShaderLoader.shaderProgramTerrain)
     }
 }

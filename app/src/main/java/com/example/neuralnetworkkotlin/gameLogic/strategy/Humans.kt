@@ -5,7 +5,6 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
-import com.example.neuralnetworkkotlin.geometry.vectors.copy
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Collision
 import javax.vecmath.Vector2f
@@ -48,7 +47,7 @@ class Humans {
                     MODELS_3DA.MEN,
                     human = soldier,
                 )
-                file3DA.draGear(
+                file3DA.drawGear(
                     camera.viewProjectionMatrix,
                     MODELS_3DA.SWORD,
                     soldier

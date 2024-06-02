@@ -3,6 +3,8 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 import android.opengl.GLES20
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
+import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.helpers.scale
 import com.example.neuralnetworkkotlin.helpers.translate
@@ -13,8 +15,8 @@ import javax.vecmath.Vector2f
 class Drawer(val textures: TexturesLoader) {
 
 
-    fun bindProgram(model: Loader) {
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3d.shader))
+    fun bindProgram(model: Model) {
+        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.shader))
     }
 
     fun drawBanner(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), wave: Float) {
@@ -229,7 +231,6 @@ class Drawer(val textures: TexturesLoader) {
         tmpMatrix.translate(position.x, offsetUP, position.y)
         tmpMatrix.scale(direction, 1.0f, 1.0f)
 
-        GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.model3da.shader))
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3da.shader),
             "uMVPMatrix"

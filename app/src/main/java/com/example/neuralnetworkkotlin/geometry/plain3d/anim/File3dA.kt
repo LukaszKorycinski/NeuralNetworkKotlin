@@ -6,7 +6,6 @@ import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.geometry.plain3d.Drawer
 import com.example.neuralnetworkkotlin.geometry.plain3d.Loader
 import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
-import com.example.neuralnetworkkotlin.geometry.vectors.copy
 import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.invert
 import com.example.neuralnetworkkotlin.helpers.times
@@ -32,6 +31,7 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
         wave: Float,
         anim: Animations
     ) {
+        drawer.bindProgram(loadedModels[model.index].modelInterface)
         drawer.draw(
             mvpMatrix,
             loadedModels[model.index],
@@ -40,7 +40,8 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
         )
     }
 
-    fun draGear(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
+    fun drawGear(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
+        drawer.bindProgram(loadedModels[model.index].modelInterface)
         drawer.draw(
             mvpMatrix,
             loadedModels[model.index],
@@ -52,7 +53,7 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
     }
 
     fun drawHuman(mvpMatrix: FloatArray, model: MODELS_3DA, human: Human) {
-        drawer.bindProgram(loadedModels[model.index])
+        drawer.bindProgram(loadedModels[model.index].modelInterface)
         drawer.drawHuman(
             mvpMatrix,
             loadedModels[model.index],

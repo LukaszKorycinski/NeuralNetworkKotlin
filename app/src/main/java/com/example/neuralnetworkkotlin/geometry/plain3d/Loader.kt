@@ -19,12 +19,14 @@ import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
 class Loader(val context: Context, val type: LoaderType) {
+
     val vertices = mutableListOf<Vertex3dA>()
     val indices = mutableListOf<Int>()
     var framesQty = 0
     val bones = mutableListOf<Bone>()
     lateinit var model3da: MODELS_3DA
     lateinit var model3d: MODELS_3D
+    lateinit var modelInterface: Model
 
     val buffers = Buffers()
 
@@ -50,6 +52,7 @@ class Loader(val context: Context, val type: LoaderType) {
             indices.add(fileString[iterator++].toInt())
         }
 
+        modelInterface = model3d
         return this
     }
 
@@ -173,7 +176,7 @@ class Loader(val context: Context, val type: LoaderType) {
 
             bone.parent = if( parent == "None") { null } else { parent }
         }
-
+        modelInterface = model3da
         return this
     }
 

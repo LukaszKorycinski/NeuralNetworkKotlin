@@ -52,7 +52,7 @@ class Playable {
             MODELS_3DA.MEN,
             human = human,
         )
-        file3DA.draGear(
+        file3DA.drawGear(
             camera.viewProjectionMatrix,
             MODELS_3DA.SWORD,
             human
