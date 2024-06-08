@@ -24,8 +24,14 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
 
-    fun drawBanner(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector2f = Vector2f(0f), wave: Float) {
+    fun drawBanner(
+        mvpMatrix: FloatArray,
+        model: MODELS_3D,
+        position: Vector2f = Vector2f(0f),
+        wave: Float,
+        selected: Boolean
+    ) {
         drawer.bindProgram(loadedModels[model.index].modelInterface)
-        drawer.drawBanner(mvpMatrix, loadedModels[model.index], position, wave)
+        drawer.drawBanner(mvpMatrix, loadedModels[model.index], position, wave, selected)
     }
 }

@@ -11,7 +11,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     BANNER(0, R.drawable.banner),
     MEN_ALPHA(1, R.drawable.men_alpha),
     SMOKE(2, R.drawable.smoke),
-    B3(3, R.drawable.b3),
+    PATH(3, R.drawable.path),
     STRING(4, R.drawable.string),
     MEN(5, R.drawable.men),
     TERRAINTEXTURE3(6, R.drawable.terraintexture3),

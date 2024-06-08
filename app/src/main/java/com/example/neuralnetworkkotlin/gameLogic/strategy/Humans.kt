@@ -9,72 +9,83 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Collision
+import timber.log.Timber
 import javax.vecmath.Vector2f
 
 class Humans {
 
     val banners = mutableListOf<Banner>()
     val collision = Collision()
+    val pathPointer = PathPointer()
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
 
-        when (motionEvent.action){
+        when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
-                val closestIndex = banners.closestIndex(pos)
-                if(banners[closestIndex].position.distance(pos) < 0.5f){
-                    banners[closestIndex].isSelected = true
+                selectBanners(pos)
+                pathPointer.clearDestination(pos)
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                pathPointer.addDestination(pos)
+            }
+
+            MotionEvent.ACTION_UP -> {
+                pathPointer.addDestination(pos)
+
+                banners.forEachIndexed{ index, banner ->
+                    Timber.e("banner $index: isSelected: ${banner.isSelected}, path: ${banner.path}")
+                }
+
+                banners.forEach { banner ->
+                    if (banner.isSelected) {
+                        banner.path = pathPointer.path
+                    }
                 }
             }
-            MotionEvent.ACTION_MOVE -> {
-                //pointer.addDestination(pointer3d)
-            }
-            MotionEvent.ACTION_UP -> {
-                //pointer.addDestination(pointer3d)
-            }
+
             else -> {}
         }
     }
 
+
     fun loop() {
         banners.forEach { banner ->
-            banner.handleWave()
-            banner.humans.forEach { soldier ->
-                soldier.handleWave()
-
-                var newPosition = soldier.position + Vector2f(soldier.velocity.x, 0f)
-                if (!collision.checkCollision(newPosition)) {
-                    soldier.position.set(newPosition)
-                }
-                newPosition = soldier.position + Vector2f(soldier.velocity.x, soldier.velocity.y)
-                if (!collision.checkCollision(newPosition)) {
-                    soldier.position.set(newPosition)
-                }
-            }
+            banner.loop(collision)
         }
     }
 
     fun draw(file3D: File3d, file3DA: File3dA, camera: Camera) {
-
         banners.forEach { banner ->
+
             file3D.drawBanner(
                 camera.viewProjectionMatrix,
                 MODELS_3D.BANNER,
                 position = banner.position,
-                wave = banner.wave
+                wave = banner.wave.value,
+                selected = banner.isSelected
             )
-            banner.humans.forEach { soldier ->
+            banner.humans.forEach { human ->
                 file3DA.drawHuman(
                     camera.viewProjectionMatrix,
                     MODELS_3DA.MEN,
-                    human = soldier,
+                    human = human,
                 )
                 file3DA.drawGear(
                     camera.viewProjectionMatrix,
                     MODELS_3DA.SWORD,
-                    soldier
+                    human
                 )
                 //draw soldier
             }
+        }
+    }
+
+    private fun selectBanners(pos: Vector2f) {
+        val closestIndex = banners.closestIndex(pos)
+
+        banners.forEachIndexed { index, banner ->
+            banner.isSelected = index == closestIndex && banner.position.distance(pos) < 0.3f
         }
     }
 

@@ -137,10 +137,10 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)
-        val ratio: Float = width.toFloat() / height.toFloat()
+        //val ratio: Float = width.toFloat() / height.toFloat()
 
         camera.renderResolution = Vector2f(width.toFloat(), height.toFloat())
-        camera.frustrum(ratio)
+        camera.perspectiveINV()
     }
 
 
@@ -148,7 +148,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT)
 
-        camera.setUpFrame(controlHelper.updatePosition(), controlHelper.rotation)
+        camera.setUpFrame(controlHelper.updatePosition(), controlHelper.positionRotation.rotation)
 
         val texturesUniformHandle = GLES20.glGetUniformLocation(
             ShaderLoader.shaderProgramBackground,

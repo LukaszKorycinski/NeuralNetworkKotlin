@@ -5,6 +5,8 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.app.AppCompatActivity
 import com.example.neuralnetworkkotlin.R
+import kotlinx.android.synthetic.main.activity_main.Zdown
+import kotlinx.android.synthetic.main.activity_main.Zup
 import kotlinx.android.synthetic.main.activity_main.down
 import kotlinx.android.synthetic.main.activity_main.fps
 import kotlinx.android.synthetic.main.activity_main.frame
@@ -73,21 +75,28 @@ class MainActivity : AppCompatActivity() {
             frame.text = it.toString()
         }
 
-
+        Zup.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.renderer.controlHelper.zUpKey(motionEvent)
+            true
+        }
+        Zdown.setOnTouchListener { view, motionEvent ->
+            glSurfaceView.renderer.controlHelper.zDownKey(motionEvent)
+            true
+        }
         up.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.upKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.upKey(motionEvent)
             true
         }
         down.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.downKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.downKey(motionEvent)
             true
         }
         left.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.leftKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.leftKey(motionEvent)
             true
         }
         right.setOnTouchListener { view, motionEvent ->
-            glSurfaceView.rightKey(motionEvent)
+            glSurfaceView.renderer.controlHelper.rightKey(motionEvent)
             true
         }
 

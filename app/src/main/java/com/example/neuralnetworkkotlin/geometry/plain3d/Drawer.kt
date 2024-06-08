@@ -6,11 +6,13 @@ import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
+import com.example.neuralnetworkkotlin.helpers.rotateZ
 import com.example.neuralnetworkkotlin.helpers.scale
 import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import javax.vecmath.Vector2f
+import kotlin.math.sin
 
 class Drawer(val textures: TexturesLoader) {
 
@@ -19,17 +21,35 @@ class Drawer(val textures: TexturesLoader) {
         GLES20.glUseProgram(ShaderLoader.getShaderProgram(model.shader))
     }
 
-    fun drawBanner(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), wave: Float) {
+    fun drawBanner(
+        mvpMatrix: FloatArray,
+        model: Loader,
+        position: Vector2f = Vector2f(0f),
+        wave: Float,
+        selected: Boolean
+    ) {
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
 
-        val waveHsndler = GLES20.glGetUniformLocation(
+        Matrix.translateM(tmpMatrix, 0, position.x,  if(selected) sin(wave)*.25f else 0f, position.y)
+//        if (selected) {
+//            tmpMatrix.rotateZ(sin(wave)*10f)
+//        }
+
+        val iVPMatrix = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3d.shader),
+            "uMVPMatrix"
+        )
+        Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
+        GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
+
+
+        val waveHandler = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
             "wave"
         )
-        GLES20.glUniform1f(waveHsndler, wave)
+        GLES20.glUniform1f(waveHandler, wave)
 
         val tex2Handler = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
@@ -42,12 +62,10 @@ class Drawer(val textures: TexturesLoader) {
             textures.textureHandle[model.model3d.textureAlpha?.id ?: 0]
         )
 
-        draw(mvpMatrix, model, position)
+        draw(model, position)
     }
 
-
     fun draw(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f)) {
-
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
         Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
@@ -58,7 +76,10 @@ class Drawer(val textures: TexturesLoader) {
         )
         Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
         GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
+        draw(model, position)
+    }
 
+    fun draw(model: Loader, position: Vector2f = Vector2f(0f)) {
         val texHandler = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
             "u_Texture"

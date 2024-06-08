@@ -25,6 +25,29 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+
+
+    <ImageView
+            android:id="@+id/Zup"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_up"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/left" />
+    <ImageView
+            android:id="@+id/Zdown"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_down"
+            app:layout_constraintBottom_toTopOf="@+id/down"
+            app:layout_constraintStart_toStartOf="@+id/right" />
+
     <ImageView
             android:id="@+id/down"
             android:layout_width="64dp"

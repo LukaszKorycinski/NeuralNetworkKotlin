@@ -14,7 +14,7 @@
         vec2 texC = texCoord;
 
         vec4 distance = texture2D(a_Texture, texCoord);
-        texC.x = texC.x + distance.r * sin(texC.x * 5.0 + wave) * 0.02;
+        texC.x = texC.x + distance.r * sin(texC.x * 5.0 + wave) * 0.05;
 
         vec4 color = texture2D(u_Texture, texC);
 

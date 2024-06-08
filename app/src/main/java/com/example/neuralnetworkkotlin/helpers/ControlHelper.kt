@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.helpers
 
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.geometry.vectors.PositionRotation
 import javax.vecmath.Vector3f
 
 class ControlHelper {
@@ -13,9 +14,25 @@ class ControlHelper {
     var down = false
     var right = false
     var left = false
+    var upZ = false
+    var downZ = false
 
     var angleMinus = false
     var anglePlus = false
+
+    fun zDownKey(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> upZ = true
+            MotionEvent.ACTION_UP -> upZ = false
+        }
+    }
+
+    fun zUpKey(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> downZ = true
+            MotionEvent.ACTION_UP -> downZ = false
+        }
+    }
 
     fun upKey(action: MotionEvent){
         when(action.action){
@@ -59,58 +76,48 @@ class ControlHelper {
         }
     }
 
-    fun onZoom(zoom: Float){
-        zoomTmp = zoom
-    }
+    fun onZoom(zoom: Float){}
 
-    fun onZoomEnd(zoom: Float){
-        position.z = position.z / zoomTmp
-        zoomTmp = 1.0f
-    }
-    //strategy
-    //8.099995, pos.y = -29.300076, pos.z = 32.28673
-    //-42.79992, rot.y = 0.0, rot.z = 0.0
+    fun onZoomEnd(zoom: Float){}
 
-    //fight
-    // -0.9000051, pos.y = -3.8999968, pos.z = 4.3
-    //-37.000008, rot.y = 0.0, rot.z = 0.0
+    private val strategy = PositionRotation(Vector3f(8f, -29.300076f, 32.28673f), Vector3f(-42.79992f, 0f, 0f))
+    private val fight = PositionRotation(Vector3f(-0f, -3.8999968f, 4.3f), Vector3f(-37.000008f, 0f, 0f))
+    private val debug = PositionRotation(Vector3f(-0.6f, -4.9999976f, -5.39f), Vector3f(42.299927f, 0f, 0f))
 
-    private val positionStrategy = Vector3f(8f, -29.300076f, 32.28673f)
-    private val rotationStrategy = Vector3f(-42.79992f, 0f, 0f)
-
-    private val positionFight = Vector3f(-0f, -3.8999968f, 4.3f)
-    private val rotationFight = Vector3f(-37.000008f, 0f, 0f)
-
-    val position = positionStrategy
-    val rotation = rotationStrategy
-    var zoomTmp = 1.0f
+    val positionRotation = debug
 
     fun updatePosition(): Vector3f {
 
         val positionOut = Vector3f()
 
         if(up){
-            position.y = position.y - 0.1f
+            positionRotation.position.y -= 0.1f
         }
         if(down){
-            position.y = position.y + 0.1f
+            positionRotation.position.y += 0.1f
+        }
+        if(upZ){
+            positionRotation.position.z += 0.1f
+        }
+        if(downZ){
+            positionRotation.position.z -= 0.1f
         }
         if(right){
-            position.x = position.x - 0.1f
+            positionRotation.position.x += 0.1f
         }
         if(left){
-            position.x = position.x + 0.1f
+            positionRotation.position.x -= 0.1f
         }
         if(anglePlus){
-            rotation.x = rotation.x + 0.1f
+            positionRotation.rotation.x += 0.1f
         }
         if(angleMinus){
-            rotation.x = rotation.x - 0.1f
+            positionRotation.rotation.x -= 0.1f
         }
 
-        positionOut.x = position.x
-        positionOut.y = position.y
-        positionOut.z = position.z / zoomTmp
+        positionOut.x = positionRotation.position.x
+        positionOut.y = positionRotation.position.y
+        positionOut.z = positionRotation.position.z
 
         return positionOut
     }

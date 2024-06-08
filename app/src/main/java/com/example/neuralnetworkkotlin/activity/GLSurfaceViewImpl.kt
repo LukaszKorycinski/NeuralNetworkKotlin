@@ -29,19 +29,11 @@ class GLSurfaceViewImpl(context: Context, attrs: AttributeSet) : GLSurfaceView(c
     }
     fun switchMode(isChecked: Boolean) {renderer.switchMode(isChecked)}
 
-    fun upKey(action: MotionEvent) { renderer.upKey(action) }
-
-    fun downKey(action: MotionEvent) { renderer.downKey(action) }
-
-    fun leftKey(action: MotionEvent) { renderer.leftKey(action) }
-
-    fun rightKey(action: MotionEvent) { renderer.rightKey(action) }
-
-    fun onZoom(zoom: Float) { renderer.onZoom(zoom) }
+    fun onZoom(zoom: Float) { renderer.controlHelper.onZoom(zoom) }
 
     fun nextFrame(action: MotionEvent) { renderer.nextFrame(action) }
 
     fun previousFrame(action: MotionEvent) { renderer.prievousFrame(action) }
 
-    fun onZoomEnd(zoom: Float) { renderer.onZoomEnd(zoom) }
+    fun onZoomEnd(zoom: Float) { renderer.controlHelper.onZoomEnd(zoom) }
 }

@@ -3,6 +3,7 @@ package com.example.neuralnetworkkotlin.geometry
 import android.opengl.GLU
 import android.opengl.Matrix
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.rotateX
 import com.example.neuralnetworkkotlin.helpers.translate
 import timber.log.Timber
@@ -16,10 +17,16 @@ class Camera {
     var viewMatrix = FloatArray(16)
     var renderResolution = Vector2f(0f, 0f)
 
-    fun setUpFrame(position: Vector3f, rotation: Vector3f) {
-        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
 
-        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+
+
+
+
+    fun setUpFrame(position: Vector3f, rotation: Vector3f) {
+        //Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+
+        //Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+        viewMatrix = getIdentityMatrix()
         viewMatrix.rotateX(rotation.x)
         viewMatrix.translate(
             position.x,
@@ -27,14 +34,15 @@ class Camera {
             position.z,
         )
 
-        Timber.e("pos.x = ${position.x}, pos.y = ${position.y}, pos.z = ${position.z}")
-        Timber.e("rot.x = ${rotation.x}, rot.y = ${rotation.y}, rot.z = ${rotation.z}")
+        //Timber.e("pos.x = ${position.x}, pos.y = ${position.y}, pos.z = ${position.z}")
+        //Timber.e("rot.x = ${rotation.x}, rot.y = ${rotation.y}, rot.z = ${rotation.z}")
 
         Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
     }
 
-    fun frustrum(ratio: Float) {
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 70f)
+    fun perspectiveINV() {
+        val ratio: Float = renderResolution.x / renderResolution.y
+        Matrix.perspectiveM(projectionMatrix,0,40.0f, ratio, 3.0f, 150.0f)
     }
 
     fun unproject(xy: Vector2f): Vector2f {
