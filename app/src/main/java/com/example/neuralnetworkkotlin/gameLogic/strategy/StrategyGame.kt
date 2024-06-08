@@ -23,7 +23,7 @@ class StrategyGame(val file3DA: File3dA, val file3Df: File3d, val textures: Text
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
         val pointer3d = camera.unproject(pos)
 
-        humans.onClick(motionEvent, pos)
+        humans.onClick(motionEvent, pointer3d)
 
         Pointer.position = pointer3d
     }
