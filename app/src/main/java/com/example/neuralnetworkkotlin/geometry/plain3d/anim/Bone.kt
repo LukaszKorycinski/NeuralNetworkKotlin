@@ -26,6 +26,8 @@ data class Bone (
             quat = frame1.quat.slerp(frame2.quat, step)
         )
 
+        interpolated.loc.z = 0f
+
         return interpolated
     }
 }

@@ -12,10 +12,10 @@ import com.example.neuralnetworkkotlin.helpers.Collision
 import timber.log.Timber
 import javax.vecmath.Vector2f
 
-class Humans {
+class Humans(val collision: Collision) {
 
     val banners = mutableListOf<Banner>()
-    val collision = Collision()
+
     val pathPointer = PathPointer()
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {

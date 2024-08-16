@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.gameLogic.strategy
 
 import android.opengl.GLES20
+import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.geometry.vectors.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
@@ -18,18 +19,17 @@ private const val PATH_SIZE = .7f
 class PathPointer() {
 
     var path: ArrayList<Vector2f> = arrayListOf()
+    var startPosition: Vector2f = Vector2f(0f)
 
-
-    fun clearDestination(pointer3d: Vector2f) {
+    fun clearDestination(startPosition: Vector2f) {
         path.clear()
-        path.add(pointer3d)
-        //this.start = start
-
+        //path.add(pointer3d)
+        this.startPosition = startPosition
         recalculate()
     }
 
     fun addDestination(pointer3d: Vector2f) {
-        path.lastOrNull()?.let { lastDest ->
+        (path.lastOrNull() ?: startPosition).let { lastDest ->
             if (pointer3d.distance(lastDest) > PATH_SIZE) {
                 path.add(pointer3d)
             }
@@ -54,13 +54,14 @@ class PathPointer() {
         drawOrder = shortArrayOf()
         val y = 0.1f
 
+        initialized = false
         path.forEachIndexed { i, p ->
 
             //val angle = 90.0f * PI/180.0f
             val angle = (if (i == 0) {
-                atan2(path.get(i).y - path.get(0).y, p.x - path.get(0).x) * 180 / PI
+                atan2(p.y - startPosition.y, p.x - startPosition.x) * 180 / PI
             } else {
-                atan2(path.get(i).y - path.get(i - 1).y, p.x - path.get(i - 1).x) * 180 / PI
+                atan2(p.y - path[i - 1].y, p.x - path[i - 1].x) * 180 / PI
             } - 90.0) * PI / 180.0f
 
 

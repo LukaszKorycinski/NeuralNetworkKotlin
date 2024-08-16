@@ -97,10 +97,10 @@ class ControlHelper {
             positionRotation.position.y += 0.1f
         }
         if(upZ){
-            positionRotation.position.z += 0.1f
+            positionRotation.position.z -= 0.1f
         }
         if(downZ){
-            positionRotation.position.z -= 0.1f
+            positionRotation.position.z += 0.1f
         }
         if(right){
             positionRotation.position.x += 0.1f

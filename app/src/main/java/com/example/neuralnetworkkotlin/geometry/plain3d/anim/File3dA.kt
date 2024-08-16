@@ -29,14 +29,13 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
         model: MODELS_3DA,
         position: Vector2f = Vector2f(0f),
         wave: Float,
-        anim: Animations
     ) {
         drawer.bindProgram(loadedModels[model.index].modelInterface)
         drawer.draw(
             mvpMatrix,
             loadedModels[model.index],
             position,
-            interpolateSkeletons(model, wave, anim)
+            interpolateSkeletons(model, wave)
         )
     }
 
@@ -46,7 +45,7 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
             mvpMatrix,
             loadedModels[model.index],
             human.position,
-            interpolateSkeletons(model, human.wave,  human.look.animation),
+            interpolateSkeletons(model, human.wave),
             human.look.direction.scaleX,
             human.box.y
         )
@@ -58,11 +57,11 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
             mvpMatrix,
             loadedModels[model.index],
             human,
-            interpolateSkeletons(model, human.wave, human.look.animation)
+            interpolateSkeletons(model, human.wave)
         )
     }
 
-    private fun interpolateSkeletons(model: MODELS_3DA, wave: Float, animation: Animations): FloatArray {
+    private fun interpolateSkeletons(model: MODELS_3DA, wave: Float): FloatArray {
 
         val currMatrixes = FloatArray(16 * loadedModels[model.index].bones.size)
 
@@ -70,7 +69,7 @@ class File3dA(val context: Context, val textures: TexturesLoader) {
             var boneOffsetM = getIdentityMatrix().translate(
                 -bone.offsetLocRot.loc.x,
                 -bone.offsetLocRot.loc.y,
-                bone.offsetLocRot.loc.z
+                -bone.offsetLocRot.loc.z
             )
             boneOffsetM *= bone.offsetLocRot.quat.toRotationMatrix()
 

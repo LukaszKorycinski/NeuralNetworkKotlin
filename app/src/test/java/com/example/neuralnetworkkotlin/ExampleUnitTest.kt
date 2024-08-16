@@ -1,11 +1,11 @@
 package com.example.neuralnetworkkotlin
 
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Triangle
-import com.example.neuralnetworkkotlin.geometry.collada.converter.Vector2f
 import com.example.neuralnetworkkotlin.helpers.Collision
+import com.example.neuralnetworkkotlin.helpers.Triangle
 import org.junit.Test
 
 import org.junit.Assert.*
+import javax.vecmath.Vector2f
 
 /**
  * Example local unit test, which will execute on the development machine (host).
