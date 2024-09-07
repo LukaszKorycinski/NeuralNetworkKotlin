@@ -80,11 +80,11 @@ class ControlHelper {
 
     fun onZoomEnd(zoom: Float){}
 
-    private val strategy = PositionRotation(Vector3f(8f, -29.300076f, 32.28673f), Vector3f(-42.79992f, 0f, 0f))
+    private val strategy = PositionRotation(Vector3f(  -0.6f, -15.600023f,  -10.290006f), Vector3f(57.399696f, 0f, 0f))
     private val fight = PositionRotation(Vector3f(-0f, -3.8999968f, 4.3f), Vector3f(-37.000008f, 0f, 0f))
     private val debug = PositionRotation(Vector3f(-0.6f, -4.9999976f, -5.39f), Vector3f(42.299927f, 0f, 0f))
 
-    val positionRotation = debug
+    val positionRotation = strategy
 
     fun updatePosition(): Vector3f {
 

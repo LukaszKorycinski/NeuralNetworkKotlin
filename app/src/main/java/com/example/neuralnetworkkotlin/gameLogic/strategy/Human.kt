@@ -1,9 +1,12 @@
 package com.example.neuralnetworkkotlin.gameLogic.strategy
 
 
+import com.example.neuralnetworkkotlin.ext.toRadians
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Animations
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
+import com.example.neuralnetworkkotlin.geometry.vectors.angle
 import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.minus
 import com.example.neuralnetworkkotlin.geometry.vectors.normalize
 import com.example.neuralnetworkkotlin.geometry.vectors.normalizeOrLow
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
@@ -16,6 +19,7 @@ import javax.vecmath.Vector2f
 import kotlin.random.Random
 
 const val VELOCITY_MULTIPLIER = 0.02f
+const val ANGLE_CHANGE_SPEED = 0.1f
 
 data class Human(
     var look: Look,
@@ -23,76 +27,80 @@ data class Human(
     var velocity: Vector2f = Vector2f(0f),
     var box: Vector2f = Vector2f(0.2f, 0.4f),
     var health: Int = 10,
+    var angle: Float = 0f,
     var wave: Float = 0f,
     var isCenturion: Boolean = false,
 ) {
     val uuid: UUID = UUID.randomUUID()
     var destination: Vector2f = Vector2f(0f)
-        set(value) {
-            if (isOnPlace(value)) {
-                if(!isOnFinish() ){
-                    field = destination
-                }
-            } else {
-                field = destination
-            }
-        }
 
-    fun isOnFinish() = isOnPlace(destination)
+
+    fun isOnDestination() = isOnPlace(destination)
     private fun isOnPlace(place: Vector2f) = place.distance(position) < 0.02f
 
     fun distanceToDestination() = destination.distance(position)
 
-//    fun setDestination(destination: Vector2f) {
-//        if (isOnPlace(destination)) {
-//            if(!isOnFinish() ){
-//                this.destination = destination
-//            }
-//        } else {
-//            this.destination = destination
-//        }
-//    }
-
-    fun centurionLoop(collision: Collision, speedInFormation: Float) {
+    fun loop(collision: Collision) {
         handleWave()
-        velocity = calculateVelocity(speedInFormation)
-        Timber.e("velocity: ${velocity}")
+
+        calculateVelocity()
+
         move(collision)
     }
 
-    private fun calculateVelocity(speedInFormation: Float) = if (!isOnFinish()) {
-        look.direction = if (destination.x > position.x) Direction.RIGHT else Direction.LEFT
-        look.animation = Animations.WALK
-        Vector2f(destination.x - position.x, destination.y - position.y)
-            .normalizeOrLow(VELOCITY_MULTIPLIER)
-    } else {
-        look.animation = Animations.IDENTITY
-        Vector2f(0f)
+    private fun calculateVelocity() {
+        look.direction = if (velocity.x > 0) Direction.RIGHT else Direction.LEFT
+        look.animation = if (velocity.length() > 0) Animations.WALK else Animations.IDENTITY
+        if (isOnDestination()) {
+            velocity = Vector2f(0f, 0f)
+            return
+        }
+
+        Timber.e("position: $position, destination: $destination")
+        val idealVelocity = destination - position
+        Timber.e("idealVelocity: $idealVelocity")
+        val idealAngle = idealVelocity.angle().toRadians()
+        Timber.e("idealAngle: $idealAngle")
+
+        if (idealAngle.isNaN()) {
+            velocity = Vector2f(0f, 0f)
+            return
+        }
+        val angleDiff = idealAngle - angle
+        val step = ANGLE_CHANGE_SPEED
+
+        angle = if (isCenturion) {
+            if (angleDiff > step) angle + step else if (angleDiff < -step) angle - step else idealAngle
+        } else {
+            idealAngle
+        }
+
+        //angle = idealAngle
+
+        Timber.e("angle: $angle, idealAngle: $idealAngle, angleDiff: $angleDiff")
+
+        velocity = Vector2f(1f, 0f).rotate(angle).normalizeOrLow(VELOCITY_MULTIPLIER)
+
+        //velocity = idealVelocity.normalizeOrLow(VELOCITY_MULTIPLIER)
+        //angle = velocity.angle(Vector2f(1f, 0f))
+//        val direction = destination - position
+//        val normalizedDirection = direction.normalizeOrLow(VELOCITY_MULTIPLIER)
+//        velocity = normalizedDirection
     }
 
-    private fun move(collision: Collision, rerun: Boolean = true): Boolean {
+
+    private fun move(collision: Collision) {
         val newPosition = position + Vector2f(velocity.x, 0f)
 
-        var coliCount = 0
-
-//        if (collision.checkCollision(newPosition, uuid)) {
-//            newPosition.x = position.x
-//            coliCount++
-//        }
-//        newPosition.y = position.y + velocity.y
-//        if (collision.checkCollision(newPosition, uuid)) {
-//            newPosition.y = position.y
-//            coliCount++
-//        }
-        newPosition.normalize(desireL = VELOCITY_MULTIPLIER)
-        position = newPosition
-
-        if (coliCount == 2 && rerun) {
-            velocity = velocity.rotate(RADIANS_90)
-            move(collision, false)
-            return false
+        if (collision.checkCollision(newPosition, uuid)) {
+            newPosition.x = position.x
         }
-        return true
+        newPosition.y = position.y + velocity.y
+        if (collision.checkCollision(newPosition, uuid)) {
+            newPosition.y = position.y
+        }
+
+        position = position + velocity// newPosition
     }
 
 

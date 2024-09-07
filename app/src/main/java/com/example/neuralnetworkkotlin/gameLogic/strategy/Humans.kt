@@ -57,7 +57,6 @@ class Humans(val collision: Collision) {
 
     fun draw(file3D: File3d, file3DA: File3dA, camera: Camera) {
         banners.forEach { banner ->
-
             file3D.drawBanner(
                 camera.viewProjectionMatrix,
                 MODELS_3D.BANNER,

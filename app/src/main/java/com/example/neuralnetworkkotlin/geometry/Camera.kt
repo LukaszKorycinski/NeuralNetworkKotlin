@@ -17,11 +17,6 @@ class Camera {
     var viewMatrix = FloatArray(16)
     var renderResolution = Vector2f(0f, 0f)
 
-
-
-
-
-
     fun setUpFrame(position: Vector3f, rotation: Vector3f) {
         //Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
 

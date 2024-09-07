@@ -97,15 +97,15 @@
             android:padding="6dp"
             android:textSize="22sp"
             android:text="0"
-            app:layout_constraintStart_toEndOf="@+id/minus"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/minus"
+            app:layout_constraintTop_toBottomOf="@+id/plus"/>
 
     <Button
             android:id="@+id/plus"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:text="+"
-            app:layout_constraintStart_toEndOf="@+id/frame"
+            app:layout_constraintStart_toEndOf="@+id/minus"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -116,7 +116,7 @@
             android:text="GFX"
             android:textColor="@color/textColor"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/fps" />
 
 
     <TextView
@@ -127,7 +127,7 @@
             android:textColor="@color/textColor"
             android:textSize="22dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchMode" />
+            app:layout_constraintTop_toBottomOf="@+id/frame" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
