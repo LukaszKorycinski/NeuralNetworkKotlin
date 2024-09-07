@@ -134,7 +134,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         //backGround.drawSky(camera.nonCamViewProjectionMatrix, controlHelper.position, textures, ShaderLoader.shaderProgramSky)
     }
 
-
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)
         //val ratio: Float = width.toFloat() / height.toFloat()

@@ -27,7 +27,7 @@ class Terrain(context: Context) {
     val size = 10.0f
 
     val layerCoords = floatArrayOf(
-        -size,    0f, size,      // top left
+        -size,  0f, size,      // top left
         -size,  0f,-size,      // bottom left
          size,  0f,-size,      // bottom right
          size,  0f, size       // top right

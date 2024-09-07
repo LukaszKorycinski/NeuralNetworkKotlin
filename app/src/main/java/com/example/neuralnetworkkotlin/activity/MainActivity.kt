@@ -25,19 +25,19 @@ class MainActivity : AppCompatActivity() {
     lateinit var zoomGestureListener: ScaleGestureDetector
     var scaling = false
 
-    override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
-        if(!scaling){
-            glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
-        }
-        zoomGestureListener.onTouchEvent(motionEvent)
-
-        return super.onTouchEvent(motionEvent)
-    }
-
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+
+        glSurfaceView.setOnTouchListener { view, motionEvent ->
+            if(!scaling){
+                glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
+            }
+            zoomGestureListener.onTouchEvent(motionEvent)
+            true//view.performClick()
+        }
 
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {

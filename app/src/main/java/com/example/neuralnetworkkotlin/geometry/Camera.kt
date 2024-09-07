@@ -44,7 +44,7 @@ class Camera {
 
         val fixedY = renderResolution.y - xy.y - 1f
         GLU.gluUnProject(
-            xy.x,fixedY,0.0f,
+            xy.x, fixedY,0.0f,
             viewMatrix, 0,
             projectionMatrix, 0,
             intArrayOf(0, 0, renderResolution.x.toInt(), renderResolution.y.toInt()), 0,
@@ -52,7 +52,7 @@ class Camera {
         )
 
         GLU.gluUnProject(
-            xy.x,fixedY,1.0f,
+            xy.x, fixedY,1.0f,
             viewMatrix, 0,
             projectionMatrix, 0,
             intArrayOf(0, 0, renderResolution.x.toInt(), renderResolution.y.toInt()), 0,

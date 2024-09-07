@@ -15,6 +15,7 @@ import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
+import timber.log.Timber
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
@@ -33,7 +34,7 @@ class StrategyGame(
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
         val pointer3d = camera.unproject(pos)
-
+        Timber.e("pointer3d: $pointer3d")
         humans.onClick(motionEvent, pointer3d)
 
         Pointer.position = pointer3d
