@@ -18,16 +18,14 @@ class Camera {
     var renderResolution = Vector2f(0f, 0f)
 
     fun setUpFrame(position: Vector3f, rotation: Vector3f) {
-        //Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -50f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
-
-        //Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
-        viewMatrix = getIdentityMatrix()
-        viewMatrix.rotateX(rotation.x)
-        viewMatrix.translate(
+        val tmpMatrix = getIdentityMatrix()
+        tmpMatrix.rotateX(rotation.x)
+        tmpMatrix.translate(
             position.x,
             position.y,
             position.z,
         )
+        viewMatrix = tmpMatrix
 
         //Timber.e("pos.x = ${position.x}, pos.y = ${position.y}, pos.z = ${position.z}")
         //Timber.e("rot.x = ${rotation.x}, rot.y = ${rotation.y}, rot.z = ${rotation.z}")
