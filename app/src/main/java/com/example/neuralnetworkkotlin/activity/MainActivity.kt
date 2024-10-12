@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
-        zoomGestureListener.onTouchEvent(event)
+        event?.let{ zoomGestureListener.onTouchEvent(it) }
 
         return super.onTouchEvent(event)
     }
@@ -34,21 +34,18 @@ class MainActivity : AppCompatActivity() {
 
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
                 Log.e("TAG", "scaleFactor "+detector?.scaleFactor)
 
-                detector?.scaleFactor?.let{
-                    glSurfaceView.onZoom(it)
-                }
+
+                glSurfaceView.onZoom(detector.scaleFactor)
 
                 return super.onScale(detector)
             }
 
-            override fun onScaleEnd(detector: ScaleGestureDetector?) {
+            override fun onScaleEnd(detector: ScaleGestureDetector) {
 
-                detector?.scaleFactor?.let{
-                    glSurfaceView.onZoomEnd(it)
-                }
+                glSurfaceView.onZoomEnd(detector.scaleFactor)
 
                 Log.e("TAG", "onScaleEnd "+detector?.scaleFactor)
                 super.onScaleEnd(detector)
