@@ -15,6 +15,8 @@ enum class Shaders {
     HUMAN_ANIM,
     TERRAIN,
     FONT,
+    TREE,
+    LEAFS,
 }
 
 class ShaderLoader(context : Context){
@@ -27,6 +29,8 @@ class ShaderLoader(context : Context){
         var shaderProgramTerrain: Int = 0
         var shaderProgramBanner: Int = 0
         var shaderProgramFont: Int = 0
+        var shaderProgramTree: Int = 0
+        var shaderProgramLeafs: Int = 0
 
 
         fun getShaderProgram(shader: Shaders) : Int{
@@ -38,6 +42,8 @@ class ShaderLoader(context : Context){
                 Shaders.TERRAIN -> shaderProgramTerrain
                 Shaders.FONT -> shaderProgramFont
                 Shaders.BANNER -> shaderProgramBanner
+                Shaders.TREE -> shaderProgramTree
+                Shaders.LEAFS -> shaderProgramLeafs
             }
         }
     }
@@ -53,10 +59,11 @@ class ShaderLoader(context : Context){
             GLES20.glLinkProgram(it)
         }
 
+        val animHumanVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_human_anim, context)
         val animHumanFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.ps_human_anim, context)
 
         shaderProgramHumanAnim = GLES20.glCreateProgram().also {
-            GLES20.glAttachShader(it, animVertexShader)
+            GLES20.glAttachShader(it, animHumanVertexShader)
             GLES20.glAttachShader(it, animHumanFragmentShader)
             GLES20.glLinkProgram(it)
         }
@@ -93,7 +100,20 @@ class ShaderLoader(context : Context){
             GLES20.glLinkProgram(it)
         }
 
+        val treesVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.trees_v_shader, context)
+        val treeFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.tree_f_shader, context)
+        shaderProgramTree= GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, treesVertexShader)
+            GLES20.glAttachShader(it, treeFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
 
+        val leafsFragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, R.string.leafs_f_shader, context)
+        shaderProgramLeafs= GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, treesVertexShader)
+            GLES20.glAttachShader(it, leafsFragmentShader)
+            GLES20.glLinkProgram(it)
+        }
 
 
         val terrainVertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, R.string.vs_terrain, context)

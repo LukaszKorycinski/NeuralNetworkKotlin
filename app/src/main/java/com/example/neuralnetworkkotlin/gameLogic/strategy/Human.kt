@@ -1,34 +1,36 @@
 package com.example.neuralnetworkkotlin.gameLogic.strategy
 
 
-import com.example.neuralnetworkkotlin.ext.toRadians
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Animations
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
-import com.example.neuralnetworkkotlin.geometry.vectors.angle
+import com.example.neuralnetworkkotlin.geometry.vectors.angleRadians
 import com.example.neuralnetworkkotlin.geometry.vectors.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.minus
-import com.example.neuralnetworkkotlin.geometry.vectors.normalize
 import com.example.neuralnetworkkotlin.geometry.vectors.normalizeOrLow
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
+import com.example.neuralnetworkkotlin.geometry.vectors.times
 import com.example.neuralnetworkkotlin.helpers.Collision
-import com.example.neuralnetworkkotlin.helpers.RADIANS_90
 import timber.log.Timber
 import java.util.UUID
 import javax.vecmath.Vector2f
+import kotlin.math.PI
 import kotlin.random.Random
 
-const val VELOCITY_MULTIPLIER = 0.02f
-const val ANGLE_CHANGE_SPEED = 0.1f
+private const val VELOCITY_MULTIPLIER = 0.02f
+private const val ANGLE_CHANGE_SPEED = 0.5f
+private const val PRECISION = 0.02f
 
 data class Human(
     var look: Look,
     var position: Vector2f = Vector2f(0f),
     var velocity: Vector2f = Vector2f(0f),
-    var box: Vector2f = Vector2f(0.2f, 0.4f),
+    var box: Vector2f = Vector2f(0.1f, 0.1f),
     var health: Int = 10,
     var angle: Float = 0f,
     var wave: Float = 0f,
+    var waveWalk: Float = 0f,
+    var waveSword: Float = 0f,
     var isCenturion: Boolean = false,
 ) {
     val uuid: UUID = UUID.randomUUID()
@@ -36,19 +38,19 @@ data class Human(
 
 
     fun isOnDestination() = isOnPlace(destination)
-    private fun isOnPlace(place: Vector2f) = place.distance(position) < 0.02f
+    private fun isOnPlace(place: Vector2f) = place.distance(position) < PRECISION
 
     fun distanceToDestination() = destination.distance(position)
 
-    fun loop(collision: Collision) {
+    fun loop(collision: Collision, centurionDistance: Float = 1f) {
         handleWave()
 
-        calculateVelocity()
+        calculateVelocity(centurionDistance)
 
         move(collision)
     }
 
-    private fun calculateVelocity() {
+    private fun calculateVelocity(centurionDistance: Float) {
         look.direction = if (velocity.x > 0) Direction.RIGHT else Direction.LEFT
         look.animation = if (velocity.length() > 0) Animations.WALK else Animations.IDENTITY
         if (isOnDestination()) {
@@ -56,11 +58,8 @@ data class Human(
             return
         }
 
-        Timber.e("position: $position, destination: $destination")
         val idealVelocity = destination - position
-        Timber.e("idealVelocity: $idealVelocity")
-        val idealAngle = idealVelocity.angle().toRadians()
-        Timber.e("idealAngle: $idealAngle")
+        val idealAngle = idealVelocity.angleRadians()
 
         if (idealAngle.isNaN()) {
             velocity = Vector2f(0f, 0f)
@@ -75,12 +74,16 @@ data class Human(
             idealAngle
         }
 
-        //angle = idealAngle
-
-        Timber.e("angle: $angle, idealAngle: $idealAngle, angleDiff: $angleDiff")
-
         velocity = Vector2f(1f, 0f).rotate(angle).normalizeOrLow(VELOCITY_MULTIPLIER)
+        Timber.e("velocity 1: $velocity")
 
+        if (centurionDistance > PRECISION)
+            velocity = velocity * (distanceToDestination() / centurionDistance)
+
+        Timber.e("distanceToDestination: ${distanceToDestination()}")
+        Timber.e("centurionDistance: $centurionDistance")
+        Timber.e("multipler: ${distanceToDestination() / centurionDistance}")
+        Timber.e("velocity 2: $velocity")
         //velocity = idealVelocity.normalizeOrLow(VELOCITY_MULTIPLIER)
         //angle = velocity.angle(Vector2f(1f, 0f))
 //        val direction = destination - position
@@ -116,17 +119,22 @@ data class Human(
     }
 
     fun handleWave() {
-        if (wave >= look.animation.end) wave = look.animation.start.toFloat()
-        if (wave < look.animation.start) wave = look.animation.start.toFloat()
+        //if (wave >= look.animation.end) wave = look.animation.start.toFloat()
+        //if (wave < look.animation.start) wave = look.animation.start.toFloat()
 
-        wave += look.animation.speed
+        if (waveWalk > 2 * PI) waveWalk = 0f
+        waveWalk += look.animation.speedWalk
 
-        if (wave > look.animation.end) {
-            wave = look.animation.start.toFloat()
-        }
-        if (wave < look.animation.start) {
-            wave = look.animation.start.toFloat()
-        }
+        //if(waveSword>2*PI) waveSword = 0f
+        //waveSword += look.animation.speedSword
+
+
+//        if (wave > look.animation.end) {
+//            wave = look.animation.start.toFloat()
+//        }
+//        if (wave < look.animation.start) {
+//            wave = look.animation.start.toFloat()
+//        }
     }
 
     companion object {
@@ -154,7 +162,7 @@ data class Variant(
 
 data class Look(
     var direction: Direction = Direction.RIGHT,
-    var animation: Animations = Animations.IDENTITY,
+    var animation: Animations = Animations.ATTACK_CUT,
     var variant: Variant,
 ) {
     companion object {

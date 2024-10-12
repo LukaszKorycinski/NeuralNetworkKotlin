@@ -31,6 +31,10 @@ fun Vector2f.angle(): Float {
     return Math.toDegrees(atan2(y.toDouble(), x.toDouble())).toFloat()
 }
 
+fun Vector2f.angleRadians(): Float {
+    return(atan2(y.toDouble(), x.toDouble())).toFloat()
+}
+
 fun Vector2f.rotate(radians: Double): Vector2f {
     return this.rotate(radians.toFloat())
 }

@@ -109,16 +109,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GFX"
-            android:textColor="@color/textColor"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fps" />
-
-
     <TextView
             android:id="@+id/fps"
             android:layout_width="wrap_content"
@@ -129,5 +119,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/frame" />
 
+    <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GFX"
+            android:textColor="@color/textColor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fps" />
+
+
+
+    <SeekBar
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:max="360"
+            android:progress="5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

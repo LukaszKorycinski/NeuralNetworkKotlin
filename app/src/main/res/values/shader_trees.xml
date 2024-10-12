@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+      <string name="trees_v_shader"><![CDATA[
+
+        uniform mat4 uMVPMatrix;
+        attribute vec3 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 texCoord;
+        varying vec2 posYZ;
+
+        void main() {
+
+            gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+
+            texCoord = a_TexCoordinate;
+            posYZ = vPosition.yz;
+        }
+
+    ]]></string>
+
+        <string name="tree_f_shader"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform float wave;
+        uniform float kind;
+        varying vec2 texCoord;
+        varying vec2 posYZ;
+
+        void main() {
+
+        vec2 texC = texCoord;
+
+        float waveFixed = wave;
+
+        texC.x = texC.x + kind * 0.212;
+        texC.x = texC.x + sin( waveFixed ) * 0.007 * posYZ.x;
+
+        vec4 color = texture2D(u_Texture, texC);
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
+    <string name="leafs_f_shader"><![CDATA[
+
+        precision mediump float;
+        uniform sampler2D u_Texture;
+        uniform float wave;
+        varying vec2 texCoord;
+        varying vec2 posYZ;
+
+        void main() {
+
+        vec2 texC = texCoord;
+
+        float waveFixedHard = wave;
+
+        texC.x = texC.x + sin( waveFixedHard ) * 0.01 * posYZ.x;
+
+        float waveFixed = wave * 2.0 + posYZ.y * 100.0;
+
+        texC.x = texC.x + sin( waveFixed ) * 0.002;
+        texC.y = texC.y + cos( waveFixed ) * 0.002;
+
+        vec4 color = texture2D(u_Texture, texC);
+
+        if(color.a<0.5){
+            discard;
+        }
+
+        gl_FragColor = color;
+        }
+
+    ]]></string>
+
+</resources>

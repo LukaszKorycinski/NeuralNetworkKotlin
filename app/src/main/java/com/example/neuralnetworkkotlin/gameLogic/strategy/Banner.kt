@@ -14,8 +14,8 @@ import java.util.UUID
 import javax.vecmath.Vector2f
 import kotlin.math.abs
 
-private const val RANDOM_SOLDIERS_QTY = 8
-private const val FORMATION_DENSITY = 0.5f
+private const val RANDOM_SOLDIERS_QTY = 14
+private const val FORMATION_DENSITY = 0.35f
 
 class Banner(
     var wave: Wave = Wave(0f),
@@ -35,20 +35,31 @@ class Banner(
     fun loop(collision: Collision) {
         wave += 0.035f
 
+        var everyoneInDestination = true
+        humans.forEach {
+            if (!it.isOnDestination()) {
+                everyoneInDestination = false
+            }
+        }
+
+        val centurion = getCenturion()
+
+
         humans.forEachIndexed { index, human ->
             if (human.isCenturion) {
                 human.destination = path.firstOrNull() ?: human.position
-                if (human.isOnDestination()) {
+                if (everyoneInDestination) {
                     path.firstOrNull()?.let { path.removeFirst() }
                 }
             } else {
                 human.destination = getCenturion().destination + positionInFormation(index)
             }
-            human.loop(collision)
+            human.loop(collision, centurionDistance = centurion.distanceToDestination())
         }
 
-        position = getCenturion().position
-        directionAngle = getCenturion().angle
+        //val centurion = getCenturion()
+        position = centurion.position
+        directionAngle = centurion.angle
     }
 
     private fun getCenturion(): Human {
@@ -58,7 +69,7 @@ class Banner(
     private fun positionInFormation(
         humanIndex: Int,
     ): Vector2f {
-        val translation = FORMATIONS.LINE.positions[humanIndex] * FORMATION_DENSITY
+        val translation = FORMATIONS.BOX.positions[humanIndex] * FORMATION_DENSITY
         return translation.rotate(visualAngle)
     }
 
@@ -73,13 +84,13 @@ class Banner(
             return directionAngle
         }
 
-    fun makeBanner(): Banner {
+    fun makeBanner(pos: Vector2f = Vector2f()): Banner {
         for (i in 0..RANDOM_SOLDIERS_QTY) {
             humans.add(
                 Human
                     .random()
                     .apply {
-                        position = positionInFormation(i)
+                        position = positionInFormation(i) + pos
                         destination = position
                     }
             )
@@ -89,58 +100,65 @@ class Banner(
         directionAngle = 2f
         return this
     }
-
-    private fun middle(): Vector2f {
-        val x = humans.map { it.position.x }.average().toFloat()
-        val y = humans.map { it.position.y }.average().toFloat()
-        return Vector2f(x, y)
-    }
-
 }
 
-fun MutableList<Banner>.closest(vec2: Vector2f): Banner {
-    var min = Float.MAX_VALUE
-    var closest = first()
-    forEach {
-        val distance = it.position.distance(vec2)
-        if (distance < min) {
-            min = distance
-            closest = it
-        }
-    }
-    return closest
-}
-
-fun MutableList<Banner>.closestIndex(vec2: Vector2f): Int {
+fun MutableList<Banner>.closestIndex(vec2: Vector2f): Pair<Int, Float> {
     var min = Float.MAX_VALUE
     var index = 0
+    var distanceToClosestUnit = 0f
+
     forEachIndexed { i, banner ->
-        val distance = banner.position.distance(vec2)
-        if (distance < min) {
-            min = distance
+        distanceToClosestUnit = banner.humans.minOf { it.position.distance(vec2) }
+        if (distanceToClosestUnit < min) {
+            min = distanceToClosestUnit
             index = i
         }
     }
-    return index
+    return index to min
 }
 
 enum class FORMATIONS(val positions: List<Vector2f>) {
     LINE(
         listOf(
-            Vector2f(0f, 0f),
-            Vector2f(0f, 1f),
-            Vector2f(0f, -1f),
-            Vector2f(0f, 2f),
-            Vector2f(0f, -2f),
-            Vector2f(0f, 3f),
-            Vector2f(0f, -3f),
-            Vector2f(0f, 4f),
-            Vector2f(0f, -4f),
-            Vector2f(0f, 5f),
-            Vector2f(0f, -5f),
-            Vector2f(0f, 6f),
-            Vector2f(0f, -6f),
-            Vector2f(0f, 7f),
+            Vector2f(0f, 0f),//0
+            Vector2f(0f, 1f),//1
+            Vector2f(0f, -1f),//2
+            Vector2f(0f, 2f),//3
+            Vector2f(0f, -2f),//4
+            Vector2f(0f, 3f),//5
+            Vector2f(0f, -3f),//6
+            Vector2f(0f, 4f),//7
+            Vector2f(0f, -4f),//8
+            Vector2f(0f, 5f),//9
+            Vector2f(0f, -5f),//10
+            Vector2f(0f, 6f),//11
+            Vector2f(0f, -6f),//12
+            Vector2f(0f, 7f),//13
+            Vector2f(0f, -7f),//14
+            Vector2f(0f, 8f),//15
+            Vector2f(0f, -8f), //16
+        )
+    ),
+    BOX(
+        listOf(
+            Vector2f(0f, 0f),//0
+            Vector2f(0f, 1f),//1
+            Vector2f(0f, -1f),//2
+            Vector2f(1f, 0f),//3
+            Vector2f(-1f, 0f),//4
+            Vector2f(1f, 1f),//5
+            Vector2f(-1f, -1f),//6
+            Vector2f(1f, -1f),//7
+            Vector2f(-1f, 1f),//8
+            Vector2f(2f, 0f),//9
+            Vector2f(-2f, 0f),//10
+            Vector2f(2f, 1f),//11
+            Vector2f(-2f, -1f),//12
+            Vector2f(2f, -1f),//13
+            Vector2f(-2f, 1f),//14
+            Vector2f( 0f, 2f),//15
+            Vector2f( 0f, -2f),//16
+
         )
     ),
 }

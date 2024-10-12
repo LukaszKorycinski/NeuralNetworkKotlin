@@ -16,6 +16,6 @@ enum class MODELS_3DA(
 ): Model {
     //TEST_MODEL(0, R.raw.test_many_frames, Shaders.BASIC_ANIM, TEXTURES.SEED, 13),
     //MEN_MODEL(1, R.raw.mentest, Shaders.BASIC_ANIM, TEXTURES.MEN, 4),
-    MEN(0, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, 17, TEXTURES.MEN_ALPHA),
+    MEN(0, R.raw.sword, Shaders.HUMAN_ANIM, TEXTURES.MEN, 17, TEXTURES.MEN_ALPHA),
     SWORD(1, R.raw.sword, Shaders.BASIC_ANIM, TEXTURES.WARPEONS, 17),
 }

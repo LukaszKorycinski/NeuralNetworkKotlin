@@ -27,8 +27,9 @@ class Camera {
         )
         viewMatrix = tmpMatrix
 
-        //Timber.e("pos.x = ${position.x}, pos.y = ${position.y}, pos.z = ${position.z}")
-        //Timber.e("rot.x = ${rotation.x}, rot.y = ${rotation.y}, rot.z = ${rotation.z}")
+
+        Timber.e("pos = ${position.x}f, ${position.y}f, ${position.z}f")
+        Timber.e("rot = ${rotation.x}f, ${rotation.y}f, ${rotation.z}f")
 
         Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
     }

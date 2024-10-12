@@ -28,9 +28,9 @@ class PathPointer() {
         recalculate()
     }
 
-    fun addDestination(pointer3d: Vector2f) {
+    fun addDestination(pointer3d: Vector2f, force: Boolean = false) {
         (path.lastOrNull() ?: startPosition).let { lastDest ->
-            if (pointer3d.distance(lastDest) > PATH_SIZE) {
+            if (pointer3d.distance(lastDest) > PATH_SIZE || force) {
                 path.add(pointer3d)
             }
         }

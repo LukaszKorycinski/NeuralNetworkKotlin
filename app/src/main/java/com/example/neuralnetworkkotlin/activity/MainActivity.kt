@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.app.AppCompatActivity
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.ext.toRadians
 import kotlinx.android.synthetic.main.activity_main.Zdown
 import kotlinx.android.synthetic.main.activity_main.Zup
 import kotlinx.android.synthetic.main.activity_main.down
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.left
 import kotlinx.android.synthetic.main.activity_main.minus
 import kotlinx.android.synthetic.main.activity_main.plus
 import kotlinx.android.synthetic.main.activity_main.right
+import kotlinx.android.synthetic.main.activity_main.seekBar
 import kotlinx.android.synthetic.main.activity_main.switchMode
 import kotlinx.android.synthetic.main.activity_main.up
 import javax.vecmath.Vector2f
@@ -30,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-
         glSurfaceView.setOnTouchListener { view, motionEvent ->
             if(!scaling){
                 glSurfaceView.renderer.strategyGame.onClick(motionEvent, Vector2f(motionEvent.x, motionEvent.y))
@@ -38,6 +39,18 @@ class MainActivity : AppCompatActivity() {
             zoomGestureListener.onTouchEvent(motionEvent)
             true//view.performClick()
         }
+
+        seekBar.setOnSeekBarChangeListener(object: android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+                glSurfaceView.renderer.strategyGame.setWarpeonAngle(seekBar!!.progress.toFloat().toRadians())
+            }
+
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {
+            }
+        })
 
         zoomGestureListener = ScaleGestureDetector(this, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {

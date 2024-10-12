@@ -9,6 +9,7 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
+import com.example.neuralnetworkkotlin.geometry.trees.Trees
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Circle
 import com.example.neuralnetworkkotlin.helpers.Collision
@@ -18,6 +19,8 @@ import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 class StrategyGame(
     val file3DA: File3dA,
@@ -26,17 +29,22 @@ class StrategyGame(
     val camera: Camera,
     val context: Context
 ) {
-
-    //val playable = Playable()
     private lateinit var terrain: Terrain
     private val collision = Collision()
     private val humans = Humans(collision)
+    private val trees = Trees(file3Df)
+
+    fun setWarpeonAngle(angle: Float){
+        humans.banners.forEach { banner ->
+            banner.humans.forEach { human ->
+                human.waveSword = angle
+            }
+        }
+    }
 
     fun onClick(motionEvent: MotionEvent, pos: Vector2f) {
         val pointer3d = camera.unproject(pos)
-        Timber.e("pointer3d: $pointer3d")
         humans.onClick(motionEvent, pointer3d)
-
         Pointer.position = pointer3d
     }
 
@@ -44,41 +52,46 @@ class StrategyGame(
         terrain = Terrain(context)
 
         humans.banners.add(Banner().makeBanner())
-        humans.banners.add(
-            Banner()
-                .makeBanner()
-                .apply {
-                    humans.forEach {
-                        it.position += Vector2f(2.7f, 0f)
-                        it.destination += Vector2f(2.7f, 0f)
-                    }
-                }
-        )
+        //humans.banners.add(Banner().makeBanner(Vector2f(2.7f, 0f)))
+        //humans.banners.add(Banner().makeBanner(Vector2f(-2.7f, 0f)))
+
     }
 
+    @OptIn(ExperimentalTime::class)
     fun loop() {
-        collision.setCircles(humans.banners.flatMap {
-            it.humans.map { human ->
-                Circle(
-                    human.position,
-                    human.box.x * .3f,
-                    human.uuid
-                )
-            }
-        })
+        measureTime {
+            collision.setCircles(humans.banners.flatMap {
+                it.humans.map { human ->
+                    Circle(
+                        human.position,
+                        human.box.x * .3f,
+                        human.uuid
+                    )
+                }
+            })
+        }.let { Timber.w("collision.setCircles time $it") }
+
         humans.loop()
         //playable.loop()
     }
 
+    @OptIn(ExperimentalTime::class)
     fun draw() {
-        Pointer.draw(file3Df, camera)
-        humans.draw(file3Df, file3DA, camera)
-        humans.pathPointer.draw(
-            camera.viewProjectionMatrix,
-            TEXTURES.PATH.id,
-            ShaderLoader.shaderProgramTerrain,
-            textures
-        )
+        trees.draw(camera.viewProjectionMatrix)
+
+        measureTime { Pointer.draw(file3Df, camera) }.let { Timber.w("Pointer.draw time $it") }
+
+        measureTime { humans.draw(file3Df, file3DA, camera) }.let { Timber.w("humans.draw time $it") }
+
+
+        measureTime {
+            humans.pathPointer.draw(
+                camera.viewProjectionMatrix,
+                TEXTURES.PATH.id,
+                ShaderLoader.shaderProgramTerrain,
+                textures
+            )
+        }.let { Timber.w("pathPointer.draw $it") }
 
         //playable.draw(file3DA, camera)
         terrain.drawTerrain(

@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+            <string name="vs_human_anim">
+
+        uniform mat4 uMVPMatrix;
+        uniform sampler2D a_Texture;
+        uniform float legsWave;
+        uniform float swordWave;
+        attribute vec3 vPosition;
+        attribute vec2 a_TexCoordinate;
+        varying vec2 texCoord;
+
+        void main() {
+            vec4 bodypartBias = texture2D(a_Texture, a_TexCoordinate);
+
+            vec3 position = vPosition;
+            vec3 legsOffset = vec3(0.0, 0.0, 0.0);
+            float fixedLegsWave = legsWave+sign(position.x)*1.57075;
+            legsOffset.x += sin(fixedLegsWave) * 0.05;
+            legsOffset.y += cos(fixedLegsWave) * 0.05;
+            position.xyz += legsOffset * bodypartBias.g;
+
+
+            float sinSword = sin(swordWave);
+            float cosSword = cos(swordWave);
+            vec3 swordOffset = vec3(cosSword * position.x - sinSword * position.y, sinSword * position.x + cosSword * position.y, 0.0);
+            position.xyz = position.xyz * (1.0 - bodypartBias.r) + swordOffset * bodypartBias.r;
+
+            gl_Position = uMVPMatrix * vec4(position, 1.0);
+
+            texCoord = a_TexCoordinate;
+        }
+    </string>
+
     <string name="ps_human_anim"><![CDATA[
 
         precision mediump float;
         uniform sampler2D u_Texture;
-        uniform sampler2D a_Texture;
-        uniform float textureOffset1;
-        uniform float textureOffset2;
-        uniform float skinColor;
         varying vec2 texCoord;
 
         void main() {
 
-        vec4 a = texture2D(a_Texture, texCoord);
-
-        vec2 textureOffseted = texCoord;
-        textureOffseted.x = textureOffseted.x + textureOffset1 * a.r + textureOffset2 * a.g;
-        vec4 color = texture2D(u_Texture, textureOffseted) + skinColor * a.r;
-
-
+        vec4 color = texture2D(u_Texture, texCoord);
 
         if(color.a<0.5){
             discard;

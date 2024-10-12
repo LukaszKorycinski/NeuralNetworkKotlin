@@ -40,7 +40,7 @@ class Loader(val context: Context, val type: LoaderType) {
         var iterator = 2
 
         while (fileString[iterator] != "indices") {
-            val coord = Vector3f(-fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
+            val coord = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
             val normal = Vector3f(fileString[iterator++].toFloat(), fileString[iterator++].toFloat(), fileString[iterator++].toFloat())
             val texCoord = Vector2f(fileString[iterator++].toFloat(), -fileString[iterator++].toFloat())
 

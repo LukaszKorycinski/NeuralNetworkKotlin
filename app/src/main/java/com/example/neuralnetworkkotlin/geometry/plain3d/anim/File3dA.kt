@@ -15,8 +15,8 @@ import javax.vecmath.Vector2f
 
 class File3dA(val context: Context, val textures: TexturesLoader) {
 
-    private val drawer = Drawer(textures)
-    private val loadedModels = mutableListOf<Loader>()
+    internal val drawer = Drawer(textures)
+    internal val loadedModels = mutableListOf<Loader>()
 
     init {
         MODELS_3DA.values().forEach { model ->
