@@ -5,10 +5,10 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdk 34
     defaultConfig {
-        applicationId "com.example.neuralnetworkkotlin"
+        applicationId "com.simulator.neuralnetworkkotlin"
         minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 1
+        targetSdkVersion 34
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -19,7 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.example.neuralnetworkkotlin'
+    namespace 'com.simulator.neuralnetworkkotlin'
 
 
 }
