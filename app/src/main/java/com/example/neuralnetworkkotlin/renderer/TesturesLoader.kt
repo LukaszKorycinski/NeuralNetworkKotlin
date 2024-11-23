@@ -18,11 +18,12 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     TERRAINTEXTURE2(7, R.drawable.terraintexture2),
     TERRAINTEXTURE(8, R.drawable.terraintexture),
     WARPEONS(9, R.drawable.warpeon),
-    TREE(10, R.drawable.tree),
+    LEAF(10, R.drawable.leaf),
     TERRAIN(11, R.drawable.terrain),
     BANNER_GRADIENT(12, R.drawable.banner_gradient),
     SKY(13, R.drawable.sky),
     COWS_TEXTURE(14, R.drawable.cows_texture),
+    LEAF_CHANNELS(15, R.drawable.leaf_channels),
 }
 
 

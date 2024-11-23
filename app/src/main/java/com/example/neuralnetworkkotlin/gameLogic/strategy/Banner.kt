@@ -52,7 +52,8 @@ class Banner(
                     path.firstOrNull()?.let { path.removeFirst() }
                 }
             } else {
-                human.destination = getCenturion().destination + positionInFormation(index)
+                human.destination =
+                    getCenturion().destination + positionInFormation(index) + noise(index)
             }
             human.loop(collision, centurionDistance = centurion.distanceToDestination())
         }
@@ -66,6 +67,20 @@ class Banner(
         return humans.first { it.isCenturion }
     }
 
+    private fun noise(index: Int, factor: Float = .1f): Vector2f {
+        return Vector2f(
+            factor * hash(index),
+            factor * hash(index + 1)
+        )
+    }
+
+    private fun hash(value: Int): Float {
+        val prime = 2654435761L
+        var hash = value * prime
+        hash = hash xor (hash ushr 16)
+        return (hash and 0xFFFF) / 0xFFFF.toFloat()
+    }
+
     private fun positionInFormation(
         humanIndex: Int,
     ): Vector2f {
@@ -75,10 +90,10 @@ class Banner(
 
     private val visualAngle: Float
         get() {
-            if(directionAngle > 90f.toRadians()){
+            if (directionAngle > 90f.toRadians()) {
                 return directionAngle - 180f.toRadians()
             }
-            if(directionAngle < (-90f).toRadians()){
+            if (directionAngle < (-90f).toRadians()) {
                 return directionAngle + 180f.toRadians()
             }
             return directionAngle
@@ -156,8 +171,8 @@ enum class FORMATIONS(val positions: List<Vector2f>) {
             Vector2f(-2f, -1f),//12
             Vector2f(2f, -1f),//13
             Vector2f(-2f, 1f),//14
-            Vector2f( 0f, 2f),//15
-            Vector2f( 0f, -2f),//16
+            Vector2f(0f, 2f),//15
+            Vector2f(0f, -2f),//16
 
         )
     ),

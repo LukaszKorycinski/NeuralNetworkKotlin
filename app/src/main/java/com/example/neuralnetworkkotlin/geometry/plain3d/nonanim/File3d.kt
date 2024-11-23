@@ -83,6 +83,7 @@ class File3d(val context: Context, val textures: TexturesLoader) {
             ShaderLoader.getShaderProgram(loadedModels[model.index].modelInterface.shader),
             "kind"
         )
+
         GLES20.glUniform1f(kindHandler, kind.toFloat())
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }

@@ -134,6 +134,9 @@ open class Drawer(val textures: TexturesLoader) {
 
     fun draw(model: Loader, position: Vector2f = Vector2f(0f)) {
         bindTexture(model.model3d.texture.id, model.model3d.shader)
+        model.model3d.textureAlpha?.let {
+            bindTexture(it.id, model.model3d.shader, "a_Texture", 1)
+        }
 
         val mPositionHandle = GLES20.glGetAttribLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),

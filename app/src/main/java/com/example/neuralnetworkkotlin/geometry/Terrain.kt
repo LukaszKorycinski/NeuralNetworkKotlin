@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20
 import androidx.core.content.ContextCompat
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
@@ -83,7 +84,7 @@ class Terrain(context: Context) {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
 
-    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int) {
+    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int, treePositions: List<Vector2f>) {
 
         GLES20.glUseProgram(shader)
         val propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
@@ -108,6 +109,18 @@ class Terrain(context: Context) {
         GLES20.glUniform1i(texHandlerTerrain3, 3)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAINTEXTURE3.id])
+
+
+        val treePositionsHandle = GLES20.glGetUniformLocation(
+            shader,
+            "treePositions"
+        )
+        GLES20.glUniform2fv(
+            treePositionsHandle,
+            treePositions.size,
+            treePositions.flatMap { listOf(it.x, it.y) }.toFloatArray(),
+            0
+        )
 
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {

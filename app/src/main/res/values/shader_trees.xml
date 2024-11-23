@@ -39,7 +39,7 @@
 
         vec4 color = texture2D(u_Texture, texC);
 
-        if(color.a<0.5){
+        if(color.a<0.85){
             discard;
         }
 
@@ -52,6 +52,7 @@
 
         precision mediump float;
         uniform sampler2D u_Texture;
+        uniform sampler2D a_Texture;
         uniform float wave;
         varying vec2 texCoord;
         varying vec2 posYZ;
@@ -60,9 +61,12 @@
 
         vec2 texC = texCoord;
 
-        float waveFixedHard = wave;
+        vec4 colorA = texture2D(a_Texture, texC);
 
-        texC.x = texC.x + sin( waveFixedHard ) * 0.01 * posYZ.x;
+        float waveFixedHard = wave + colorA.r * 0.4;
+
+
+        texC.x = texC.x + sin( waveFixedHard ) * 0.02 * colorA.r;
 
         float waveFixed = wave * 2.0 + posYZ.y * 100.0;
 
@@ -71,7 +75,7 @@
 
         vec4 color = texture2D(u_Texture, texC);
 
-        if(color.a<0.5){
+        if(color.a<0.9){
             discard;
         }
 

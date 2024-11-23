@@ -88,7 +88,7 @@ class StrategyGame(
             humans.pathPointer.draw(
                 camera.viewProjectionMatrix,
                 TEXTURES.PATH.id,
-                ShaderLoader.shaderProgramTerrain,
+                ShaderLoader.shaderProgramBasic,
                 textures
             )
         }.let { Timber.w("pathPointer.draw $it") }
@@ -97,7 +97,8 @@ class StrategyGame(
         terrain.drawTerrain(
             camera.viewProjectionMatrix,
             textures,
-            ShaderLoader.shaderProgramTerrain
+            ShaderLoader.shaderProgramTerrain,
+            trees.items.map { it.position }
         )
     }
 }

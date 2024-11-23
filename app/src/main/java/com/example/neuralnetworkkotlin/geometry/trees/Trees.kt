@@ -13,17 +13,21 @@ class Trees(val file3Df: File3d) {
 
     init {
         val density = 20f
-        for (i in 0..2) {
+        for (i in 0..55) {
             items.add(
                 TreeData(
                     Vector2f(
                         (Random.nextFloat() - .5f) * density,
                         (Random.nextFloat() - .5f) * density
-                    ), wave = Random.nextFloat() * 6f, kindIndexL = Random.nextInt(0, 4)
+                    ), wave = Random.nextFloat() * 6f, kindIndexL = 0//Random.nextInt(0, 4)
                 )
             )
         }
         items = items. filter {it.position.distance(Vector2f(0f, 0f)) > 5f} as ArrayList<TreeData>
+    }
+
+    fun generateShadowTesture(): Int {
+        return file3Df.generateShadowTexture()
     }
 
     fun draw(mvpMatrix: FloatArray) {
