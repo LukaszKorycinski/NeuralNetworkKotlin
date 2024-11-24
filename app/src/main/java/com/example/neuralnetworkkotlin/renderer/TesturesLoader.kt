@@ -1,10 +1,12 @@
 package com.example.neuralnetworkkotlin.renderer
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import com.example.neuralnetworkkotlin.R
+import javax.vecmath.Vector2f
 
 
 enum class TEXTURES(val id: Int, val resId: Int?) {
@@ -29,6 +31,24 @@ enum class TEXTURES(val id: Int, val resId: Int?) {
 
 
 class TexturesLoader(var context: Context) {
+    private var shadowBitmap: Bitmap? = null
+    private var shadowBitmapBackup: Bitmap? = null
+
+    fun generateShadowTesture(positions: List<Vector2f>) {
+
+    }
+
+    fun clearTrack() {
+        shadowBitmap = shadowBitmapBackup!!.copy(shadowBitmapBackup!!.getConfig(), true)
+    }
+
+    fun drawLane(x: Float, y: Float, angle: Float?): ArrayList<Float> {
+        var xF = (-x + 8.333333f) / 16.666666f
+        var yF = (-y + 16.666666f) / 33.333333f
+        xF = xF * trackBitmap.getWidth()
+        yF = yF * trackBitmap.getHeight()
+        return drawLaneInt(xF.toInt(), yF.toInt(), angle)
+    }
 
     companion object {
         val TEXTURES_QTY = TEXTURES.values().size
@@ -42,10 +62,22 @@ class TexturesLoader(var context: Context) {
         
     }
 
+    private fun redrawTrack() {
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[TEXTURES.TERRARIN_SHADOW.id])
+        GLES20.glTexParameteri(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MIN_FILTER,
+            GLES20.GL_NEAREST
+        )
+        GLES20.glTexParameteri(
+            GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MAG_FILTER,
+            GLES20.GL_NEAREST
+        )
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, shadowBitmap, 0)
+    }
+
     fun loadTexture() {
-
-
-
         TEXTURES.values().forEach { texture ->
             texture.resId?.let {
                 GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)

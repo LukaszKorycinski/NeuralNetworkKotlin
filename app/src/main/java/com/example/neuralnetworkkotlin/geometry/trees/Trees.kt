@@ -26,9 +26,7 @@ class Trees(val file3Df: File3d) {
         items = items. filter {it.position.distance(Vector2f(0f, 0f)) > 5f} as ArrayList<TreeData>
     }
 
-    fun generateShadowTesture(): Int {
-        return file3Df.generateShadowTexture()
-    }
+
 
     fun draw(mvpMatrix: FloatArray) {
 
