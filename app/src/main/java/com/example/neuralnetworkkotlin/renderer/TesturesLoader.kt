@@ -7,7 +7,7 @@ import android.opengl.GLUtils
 import com.example.neuralnetworkkotlin.R
 
 
-enum class TEXTURES(val id: Int, val resId: Int) {
+enum class TEXTURES(val id: Int, val resId: Int?) {
     BANNER(0, R.drawable.banner),
     MEN_ALPHA(1, R.drawable.men_texture_alfa),
     SMOKE(2, R.drawable.smoke),
@@ -24,6 +24,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     SKY(13, R.drawable.sky),
     COWS_TEXTURE(14, R.drawable.cows_texture),
     LEAF_CHANNELS(15, R.drawable.leaf_channels),
+    TERRARIN_SHADOW(16, null),
 }
 
 
@@ -35,55 +36,65 @@ class TexturesLoader(var context: Context) {
 
     val textureHandle = IntArray(TEXTURES_QTY + 1)
 
+    fun generateShadowTexture() {
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[TEXTURES.TERRARIN_SHADOW.id])
+
+        
+    }
+
     fun loadTexture() {
-        GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
+
 
 
         TEXTURES.values().forEach { texture ->
-            val options = BitmapFactory.Options()
-            options.inScaled = true // No pre-scaling
+            texture.resId?.let {
+                GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
 
-            val bitmap = BitmapFactory.decodeResource(context.resources, texture.resId, options)
+                val options = BitmapFactory.Options()
+                options.inScaled = true // No pre-scaling
 
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[texture.id])
+                val bitmap = BitmapFactory.decodeResource(context.resources, texture.resId, options)
 
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_NEAREST
-            )
-            GLES20.glTexParameteri(
-                GLES20.GL_TEXTURE_2D,
-                GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_NEAREST
-            )
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[texture.id])
 
-            if (texture == TEXTURES.SKY) {
                 GLES20.glTexParameteri(
                     GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S,
-                    GLES20.GL_MIRRORED_REPEAT
+                    GLES20.GL_TEXTURE_MIN_FILTER,
+                    GLES20.GL_NEAREST
                 )
                 GLES20.glTexParameteri(
                     GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T,
-                    GLES20.GL_MIRRORED_REPEAT
+                    GLES20.GL_TEXTURE_MAG_FILTER,
+                    GLES20.GL_NEAREST
                 )
-            } else {
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S,
-                    GLES20.GL_REPEAT
-                )
-                GLES20.glTexParameteri(
-                    GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T,
-                    GLES20.GL_REPEAT
-                )
+
+                if (texture == TEXTURES.SKY) {
+                    GLES20.glTexParameteri(
+                        GLES20.GL_TEXTURE_2D,
+                        GLES20.GL_TEXTURE_WRAP_S,
+                        GLES20.GL_MIRRORED_REPEAT
+                    )
+                    GLES20.glTexParameteri(
+                        GLES20.GL_TEXTURE_2D,
+                        GLES20.GL_TEXTURE_WRAP_T,
+                        GLES20.GL_MIRRORED_REPEAT
+                    )
+                } else {
+                    GLES20.glTexParameteri(
+                        GLES20.GL_TEXTURE_2D,
+                        GLES20.GL_TEXTURE_WRAP_S,
+                        GLES20.GL_REPEAT
+                    )
+                    GLES20.glTexParameteri(
+                        GLES20.GL_TEXTURE_2D,
+                        GLES20.GL_TEXTURE_WRAP_T,
+                        GLES20.GL_REPEAT
+                    )
+                }
+
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
+                bitmap.recycle()
             }
-
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
-            bitmap.recycle()
         }
     }
 
