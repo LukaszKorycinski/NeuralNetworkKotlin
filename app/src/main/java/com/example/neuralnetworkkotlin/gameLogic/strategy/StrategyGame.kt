@@ -69,7 +69,7 @@ class StrategyGame(
                     )
                 }
             })
-        }.let { Timber.w("collision.setCircles time $it") }
+        }.let { /*Timber.w("collision.setCircles time $it")*/ }
 
         humans.loop()
         //playable.loop()
@@ -79,9 +79,9 @@ class StrategyGame(
     fun draw() {
         trees.draw(camera.viewProjectionMatrix)
 
-        measureTime { Pointer.draw(file3Df, camera) }.let { Timber.w("Pointer.draw time $it") }
+        measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 
-        measureTime { humans.draw(file3Df, file3DA, camera) }.let { Timber.w("humans.draw time $it") }
+        measureTime { humans.draw(file3Df, file3DA, camera) }.let { /*Timber.w("humans.draw time $it")*/ }
 
 
         measureTime {
@@ -91,7 +91,7 @@ class StrategyGame(
                 ShaderLoader.shaderProgramBasic,
                 textures
             )
-        }.let { Timber.w("pathPointer.draw $it") }
+        }.let { /*Timber.w("pathPointer.draw $it")*/ }
 
         //playable.draw(file3DA, camera)
         terrain.drawTerrain(

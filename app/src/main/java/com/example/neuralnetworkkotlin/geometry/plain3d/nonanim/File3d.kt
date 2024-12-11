@@ -53,8 +53,8 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.bindFloat(model, "swordWave", swordAngle)
 
         if (human.isCenturion) {
-            Timber.e("humanAngle a$humanAngle")
-            Timber.e("sword a$swordAngle")
+            //Timber.e("humanAngle a$humanAngle")
+            //Timber.e("sword a$swordAngle")
         }
 
 

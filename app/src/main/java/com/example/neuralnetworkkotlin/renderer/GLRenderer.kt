@@ -64,7 +64,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)//GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
+        GLES20.glClearColor(.5f, .7f, 1f, 1.0f)//GLES20.glClearColor(0.992f, 0.69f, 0.1f, 1.0f)
 
         strategyGame.onSurfaceCreated()
 

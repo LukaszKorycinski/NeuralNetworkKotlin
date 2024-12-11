@@ -50,9 +50,9 @@ class Humans(val collision: Collision) {
             banners.forEach { banner ->
                 measureTime {
                     banner.loop(collision)
-                }.let { Timber.w("loop banner $it") }
+                }.let { /*Timber.w("loop banner $it") */}
             }
-        }.let { Timber.w("loop total $it") }
+        }.let { /*Timber.w("loop total $it")*/ }
 
     }
 

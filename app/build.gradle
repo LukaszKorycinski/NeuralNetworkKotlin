@@ -13,7 +13,12 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     packagingOptions {
-        pickFirst  '**'
+        jniLibs {
+            pickFirsts += ['**']
+        }
+        resources {
+            pickFirsts += ['**']
+        }
     }
     buildTypes {
         release {
