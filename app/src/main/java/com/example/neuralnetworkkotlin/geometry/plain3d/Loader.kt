@@ -197,6 +197,7 @@ class Loader(val context: Context, val type: LoaderType) {
         buffers.vertexBuffer?.put(coordsFloatArray)
         buffers.vertexBuffer?.position(0)
 
+
         intIterator = 0
         vertices.forEach { vert ->
             texCoordsFloatArray[intIterator] = vert.texCoord.x

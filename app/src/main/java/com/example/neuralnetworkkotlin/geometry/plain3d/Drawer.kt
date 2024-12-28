@@ -1,6 +1,8 @@
 package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.opengl.GLES20
+import android.opengl.GLES30.GL_INVALID_INDEX
+import android.opengl.GLES31
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
@@ -10,6 +12,8 @@ import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.Shaders
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
+import timber.log.Timber
+import java.nio.FloatBuffer
 import javax.vecmath.Vector2f
 import kotlin.math.sin
 
@@ -119,8 +123,6 @@ open class Drawer(val textures: TexturesLoader) {
             model.buffers.texBuffer
         )
 
-
-
         GLES20.glDrawElements(
             GLES20.GL_TRIANGLES,
             model.buffers.indicesQty,
@@ -132,8 +134,86 @@ open class Drawer(val textures: TexturesLoader) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
-    fun draw(model: Loader, position: Vector2f = Vector2f(0f)) {
+    fun drawInstanced(mvpMatrix: FloatArray, model: Loader, instancedBufferId: Int){
+
+        val shaderId = ShaderLoader.getShaderProgram(model.model3d.shader)
+
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
+        //Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
+
+        val iVPMatrix = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.model3d.shader),
+            "uMVPMatrix"
+        )
+        Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
+        GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
+
         bindTexture(model.model3d.texture.id, model.model3d.shader)
+
+        model.model3d.textureAlpha?.let {
+            bindTexture(it.id, model.model3d.shader, "a_Texture", 1)
+        }
+
+        val mPositionHandle = GLES20.glGetAttribLocation(
+            ShaderLoader.getShaderProgram(model.model3d.shader),
+            "vPosition"
+        )
+        GLES20.glEnableVertexAttribArray(mPositionHandle)
+        GLES20.glVertexAttribPointer(
+            mPositionHandle,
+            3,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            model.buffers.vertexBuffer
+        )
+
+        val mTexCoordHandle = GLES20.glGetAttribLocation(
+            shaderId,
+            "a_TexCoordinate"
+        )
+        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
+        GLES20.glVertexAttribPointer(
+            mTexCoordHandle,
+            2,
+            GLES20.GL_FLOAT,
+            false,
+            0,
+            model.buffers.texBuffer // ja tu przesyłam całe buffory, powinno być id
+        )
+
+
+
+        val uniformBlockIndex = GLES31.glGetUniformBlockIndex(shaderId, "CubesUniformBlock")
+
+        if( uniformBlockIndex != GLES31.GL_INVALID_INDEX ) Timber.e("Could not retrieve uniform block index: CubesUniformBlock")
+
+        GLES31.glUniformBlockBinding(shaderId, uniformBlockIndex, 0)
+        GLES31.glBindBufferBase(GLES31.GL_UNIFORM_BUFFER, 0, instancedBufferId)
+
+
+        GLES31.glDrawElementsInstanced(
+            GLES31.GL_TRIANGLES,
+            model.buffers.indicesQty,
+            GLES31.GL_UNSIGNED_SHORT,
+            model.buffers.indicesBuffer,
+            instancedBufferId
+        )
+
+
+        GLES20.glDisableVertexAttribArray(mPositionHandle) //pole do optymalizacji
+
+        GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
+    }
+
+
+
+
+    fun draw(model: Loader, position: Vector2f = Vector2f(0f)) {
+
+        bindTexture(model.model3d.texture.id, model.model3d.shader)
+
         model.model3d.textureAlpha?.let {
             bindTexture(it.id, model.model3d.shader, "a_Texture", 1)
         }

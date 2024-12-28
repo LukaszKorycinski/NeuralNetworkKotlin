@@ -20,4 +20,5 @@ enum class MODELS_3D(
     LEAFS2(5, R.raw.leafs2, Shaders.LEAFS, TEXTURES.LEAF, TEXTURES.LEAF_CHANNELS),
     TREE_LOW_POLY(6, R.raw.tree_low_poly, Shaders.TREE, TEXTURES.LEAF),
     MEN(7, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, TEXTURES.MEN_ALPHA),
+    GRASS(8, R.raw.grass, Shaders.GRASS, TEXTURES.GRASS),
 }

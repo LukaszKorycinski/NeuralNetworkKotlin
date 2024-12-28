@@ -30,6 +30,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     COWS_TEXTURE(14, R.drawable.cows_texture),
     LEAF_CHANNELS(15, R.drawable.leafchannels),
     SHADOW_TERRAIN(16, R.drawable.terain_shadow),
+    GRASS(17, R.drawable.grass),
 }
 
 

@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.gameLogic.strategy.fightmode.Playable
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.Terrain
+import com.example.neuralnetworkkotlin.geometry.grass.Grass
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
@@ -33,6 +34,7 @@ class StrategyGame(
     private val collision = Collision()
     private val humans = Humans(collision)
     val trees = Trees(file3Df)
+    val grass = Grass(file3Df)
 
     fun setWarpeonAngle(angle: Float){
         humans.banners.forEach { banner ->
@@ -78,6 +80,7 @@ class StrategyGame(
     @OptIn(ExperimentalTime::class)
     fun draw() {
         trees.draw(camera.viewProjectionMatrix)
+        grass.draw(camera.viewProjectionMatrix)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 

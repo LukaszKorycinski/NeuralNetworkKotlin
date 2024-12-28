@@ -90,8 +90,8 @@ class ControlHelper {
     val positionRotation = strategy
 
     fun updatePosition(): Vector3f {
-        Timber.e("position: ${positionRotation.position.x}f, ${positionRotation.position.y}f, ${positionRotation.position.z}f")
-        Timber.e("rotation: ${positionRotation.rotation.x}f, ${positionRotation.rotation.y}f, ${positionRotation.rotation.z}f")
+//        Timber.e("position: ${positionRotation.position.x}f, ${positionRotation.position.y}f, ${positionRotation.position.z}f")
+//        Timber.e("rotation: ${positionRotation.rotation.x}f, ${positionRotation.rotation.y}f, ${positionRotation.rotation.z}f")
 
         val positionOut = Vector3f()
 

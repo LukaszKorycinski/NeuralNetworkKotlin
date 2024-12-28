@@ -60,14 +60,3 @@ class Trees(val file3Df: File3d) {
 }
 
 
-class TreeData(
-    val position: Vector2f,
-    var wave: Float,
-    val kindIndexL: Int,
-    val modelTree: MODELS_3D,
-    val modelLeaf: MODELS_3D,
-)
-
-enum class TreeType(model: MODELS_3D, texture: Int) {
-    //OAK(),
-}

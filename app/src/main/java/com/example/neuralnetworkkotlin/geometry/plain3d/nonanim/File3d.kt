@@ -67,6 +67,11 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
 
+    fun drawInstanced(mvpMatrix: FloatArray, model: MODELS_3D, instancedBufferId: Int) {
+        drawer.bindProgram(loadedModels[model.index].modelInterface)
+        drawer.drawInstanced(mvpMatrix, loadedModels[model.index], instancedBufferId)
+    }
+
     fun drawTrees(
         mvpMatrix: FloatArray,
         model: MODELS_3D,

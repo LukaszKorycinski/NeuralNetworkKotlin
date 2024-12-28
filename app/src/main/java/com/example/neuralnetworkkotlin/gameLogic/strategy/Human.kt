@@ -75,15 +75,15 @@ data class Human(
         }
 
         velocity = Vector2f(1f, 0f).rotate(angle).normalizeOrLow(VELOCITY_MULTIPLIER)
-        Timber.e("velocity 1: $velocity")
+  //      Timber.e("velocity 1: $velocity")
 
         if (centurionDistance > PRECISION)
             velocity = velocity * (distanceToDestination() / centurionDistance)
 
-        Timber.e("distanceToDestination: ${distanceToDestination()}")
-        Timber.e("centurionDistance: $centurionDistance")
-        Timber.e("multipler: ${distanceToDestination() / centurionDistance}")
-        Timber.e("velocity 2: $velocity")
+//        Timber.e("distanceToDestination: ${distanceToDestination()}")
+//        Timber.e("centurionDistance: $centurionDistance")
+//        Timber.e("multipler: ${distanceToDestination() / centurionDistance}")
+//        Timber.e("velocity 2: $velocity")
         //velocity = idealVelocity.normalizeOrLow(VELOCITY_MULTIPLIER)
         //angle = velocity.angle(Vector2f(1f, 0f))
 //        val direction = destination - position
