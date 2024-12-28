@@ -4,17 +4,20 @@
       <string name="trees_v_shader"><![CDATA[
 
         uniform mat4 uMVPMatrix;
+        uniform mat4 uWorldMatrix;
         attribute vec3 vPosition;
         attribute vec2 a_TexCoordinate;
         varying vec2 texCoord;
-        varying vec2 posYZ;
+        varying vec3 pos;
+        varying vec3 worldPos;
 
         void main() {
 
             gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+            worldPos = (uWorldMatrix * vec4(vPosition.xyz, 1.0)).xyz;
 
             texCoord = a_TexCoordinate;
-            posYZ = vPosition.yz;
+            pos = vPosition;
         }
 
     ]]></string>
@@ -23,19 +26,25 @@
 
         precision mediump float;
         uniform sampler2D u_Texture;
+        uniform sampler2D a_Texture;
         uniform float wave;
         uniform float kind;
         varying vec2 texCoord;
-        varying vec2 posYZ;
+        varying vec3 pos;
+        varying vec3 worldPos;
 
         void main() {
 
         vec2 texC = texCoord;
-
-        float waveFixed = wave;
+        vec2 texCoordWind = worldPos.xz/10.0;
+        texCoordWind.y = texCoordWind.y + wave;
+        vec4 alfa = texture2D(a_Texture, texC);
+        vec4 wind = texture2D(a_Texture, texCoordWind);
+        float waveWind = wind.r * 3.14;
 
         texC.x = texC.x + kind * 0.212;
-        texC.x = texC.x + sin( waveFixed ) * 0.007 * posYZ.x;
+        texC.x = texC.x + cos( waveWind ) * 0.003 * pos.y;
+        texC.y = texC.y + sin( waveWind ) * 0.002 * pos.y;
 
         vec4 color = texture2D(u_Texture, texC);
 
@@ -55,23 +64,21 @@
         uniform sampler2D a_Texture;
         uniform float wave;
         varying vec2 texCoord;
-        varying vec2 posYZ;
+        varying vec3 pos;
+        varying vec3 worldPos;
 
         void main() {
 
         vec2 texC = texCoord;
+        vec2 texCoordWind = worldPos.xz/10.0;
 
-        vec4 colorA = texture2D(a_Texture, texC);
+        vec4 alfa = texture2D(a_Texture, texC);
+        texCoordWind.y = texCoordWind.y + wave + alfa.g*0.1;
+        vec4 wind = texture2D(a_Texture, texCoordWind);
+        float waveWind = wind.r * 3.14;
 
-        float waveFixedHard = wave + colorA.r * 0.4;
-
-
-        texC.x = texC.x + sin( waveFixedHard ) * 0.02 * colorA.r;
-
-        float waveFixed = wave * 2.0 + posYZ.y * 100.0;
-
-        texC.x = texC.x + sin( waveFixed ) * 0.002;
-        texC.y = texC.y + cos( waveFixed ) * 0.002;
+        texC.x = texC.x + cos( waveWind ) * 0.005 * pos.y;
+        texC.y = texC.y + sin( waveWind ) * 0.0025 * pos.y;
 
         vec4 color = texture2D(u_Texture, texC);
 

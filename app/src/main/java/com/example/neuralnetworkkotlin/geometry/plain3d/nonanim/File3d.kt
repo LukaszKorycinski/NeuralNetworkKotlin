@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.geometry.plain3d.nonanim
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.ext.HALF_PI
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
@@ -85,6 +86,17 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         )
 
         GLES20.glUniform1f(kindHandler, kind.toFloat())
+
+        val tmpMatrix = FloatArray(16)
+        Matrix.setIdentityM(tmpMatrix, 0)
+        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
+        val worldMatrixHandle = GLES20.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            "uWorldMatrix"
+        )
+        GLES20.glUniformMatrix4fv(worldMatrixHandle, 1, false, tmpMatrix, 0)
+
+
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
 

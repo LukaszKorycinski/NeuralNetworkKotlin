@@ -32,7 +32,7 @@ class StrategyGame(
     private lateinit var terrain: Terrain
     private val collision = Collision()
     private val humans = Humans(collision)
-    private val trees = Trees(file3Df)
+    val trees = Trees(file3Df)
 
     fun setWarpeonAngle(angle: Float){
         humans.banners.forEach { banner ->
@@ -98,7 +98,7 @@ class StrategyGame(
             camera.viewProjectionMatrix,
             textures,
             ShaderLoader.shaderProgramTerrain,
-            trees.items.map { it.position }
+            //trees.items.map { it.position }
         )
     }
 }

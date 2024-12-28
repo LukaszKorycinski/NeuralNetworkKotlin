@@ -73,6 +73,8 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
+        textures.burnPointsShadows(strategyGame.trees.items.map { it.position })
+
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)
         GLES20.glDepthMask( true )

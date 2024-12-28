@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.helpers
 
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.vectors.PositionRotation
+import timber.log.Timber
 import javax.vecmath.Vector3f
 
 class ControlHelper {
@@ -80,14 +81,17 @@ class ControlHelper {
 
     fun onZoomEnd(zoom: Float){}
 
-    private val strategy = PositionRotation(Vector3f(  0f, -15.600023f,  -10.290006f), Vector3f(57.399696f, 0f, 0f))
+    private val strategy = PositionRotation(Vector3f(  -1.4000002f, -21.800047f, -17.690033f), Vector3f(52.899696f, 0.0f, 0.0f))
     private val fight = PositionRotation(Vector3f(-0f, -3.8999968f, 4.3f), Vector3f(-37.000008f, 0f, 0f))
     private val debug = PositionRotation(Vector3f(-0.6f, -4.9999976f, -5.39f), Vector3f(42.299927f, 0f, 0f))
     private val zoom = PositionRotation(Vector3f(0.0f, -4.499998f, -3.3900018f), Vector3f(57.399696f, 0.0f, 0.0f))
+    private val forest = PositionRotation(Vector3f(0.0f, -4.9999976f, -14.490022f), Vector3f(23.20005f, 0.0f, 0.0f))
 
     val positionRotation = strategy
 
     fun updatePosition(): Vector3f {
+        Timber.e("position: ${positionRotation.position.x}f, ${positionRotation.position.y}f, ${positionRotation.position.z}f")
+        Timber.e("rotation: ${positionRotation.rotation.x}f, ${positionRotation.rotation.y}f, ${positionRotation.rotation.z}f")
 
         val positionOut = Vector3f()
 
@@ -110,10 +114,10 @@ class ControlHelper {
             positionRotation.position.x -= 0.1f
         }
         if(anglePlus){
-            positionRotation.rotation.x += 0.1f
+            positionRotation.rotation.x += 0.5f
         }
         if(angleMinus){
-            positionRotation.rotation.x -= 0.1f
+            positionRotation.rotation.x -= 0.5f
         }
 
         positionOut.x = positionRotation.position.x

@@ -40,7 +40,7 @@
 
         vec4 finalColor = (color*alpha.r + color2*alpha.g + color3*alpha.b);
 
-        finalColor = finalColor * texture2D(shadowTexture, texCoordPosition);
+        finalColor = finalColor * texture2D(shadowTexture, texCoord);
 
         gl_FragColor = finalColor;
         }

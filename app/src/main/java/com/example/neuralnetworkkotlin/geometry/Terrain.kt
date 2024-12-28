@@ -28,10 +28,10 @@ class Terrain(context: Context) {
     val size = 10.0f
 
     val layerCoords = floatArrayOf(
-        -size,  0f, size,      // top left
-        -size,  0f,-size,      // bottom left
-         size,  0f,-size,      // bottom right
-         size,  0f, size       // top right
+        size,  0f,-size,      // top left
+        size,  0f, size,      // bottom left
+        -size,  0f, size,      // bottom right
+        -size,  0f,-size       // top right
     )
 
 
@@ -84,7 +84,7 @@ class Terrain(context: Context) {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
 
-    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int, treePositions: List<Vector2f>) {
+    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int, /*treePositions: List<Vector2f>*/) {
 
         GLES20.glUseProgram(shader)
         val propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
@@ -110,17 +110,20 @@ class Terrain(context: Context) {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.TERRAINTEXTURE3.id])
 
-
-        val treePositionsHandle = GLES20.glGetUniformLocation(
+        val texHandlerTerrain4 = GLES20.glGetUniformLocation(shader, "shadowTexture")
+        GLES20.glUniform1i(texHandlerTerrain4, 4)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE4)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_TERRAIN.id])
+/*        val treePositionsHandle = GLES20.glGetUniformLocation(
             shader,
             "treePositions"
-        )
-        GLES20.glUniform2fv(
+        )*/
+/*        GLES20.glUniform2fv(
             treePositionsHandle,
             treePositions.size,
             treePositions.flatMap { listOf(it.x, it.y) }.toFloatArray(),
             0
-        )
+        )*/
 
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
