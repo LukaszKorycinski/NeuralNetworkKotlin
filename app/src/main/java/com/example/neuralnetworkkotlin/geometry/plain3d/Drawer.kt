@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.geometry.plain3d
 
 import android.opengl.GLES20
 import android.opengl.GLES30.GL_INVALID_INDEX
+import android.opengl.GLES30.glBindBuffer
 import android.opengl.GLES31
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
@@ -134,16 +135,15 @@ open class Drawer(val textures: TexturesLoader) {
         GLES20.glDisableVertexAttribArray(mTexCoordHandle) //pole do optymalizacji
     }
 
-    fun drawInstanced(mvpMatrix: FloatArray, model: Loader, instancedBufferId: Int){
+    fun drawInstanced(mvpMatrix: FloatArray, model: Loader, quantity: Int, instancedBuffer: FloatBuffer){
 
         val shaderId = ShaderLoader.getShaderProgram(model.model3d.shader)
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        //Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
 
         val iVPMatrix = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            shaderId,
             "uMVPMatrix"
         )
         Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
@@ -156,7 +156,7 @@ open class Drawer(val textures: TexturesLoader) {
         }
 
         val mPositionHandle = GLES20.glGetAttribLocation(
-            ShaderLoader.getShaderProgram(model.model3d.shader),
+            shaderId,
             "vPosition"
         )
         GLES20.glEnableVertexAttribArray(mPositionHandle)
@@ -183,24 +183,23 @@ open class Drawer(val textures: TexturesLoader) {
             model.buffers.texBuffer // ja tu przesyłam całe buffory, powinno być id
         )
 
-
-
-        val uniformBlockIndex = GLES31.glGetUniformBlockIndex(shaderId, "CubesUniformBlock")
-
-        if( uniformBlockIndex != GLES31.GL_INVALID_INDEX ) Timber.e("Could not retrieve uniform block index: CubesUniformBlock")
-
-        GLES31.glUniformBlockBinding(shaderId, uniformBlockIndex, 0)
-        GLES31.glBindBufferBase(GLES31.GL_UNIFORM_BUFFER, 0, instancedBufferId)
-
+        val uniformBlockHandle = GLES31.glGetUniformLocation(
+            shaderId,
+            "position"
+        )
+        GLES31.glUniform2fv(
+            uniformBlockHandle,
+            quantity,
+            instancedBuffer
+        )
 
         GLES31.glDrawElementsInstanced(
             GLES31.GL_TRIANGLES,
             model.buffers.indicesQty,
             GLES31.GL_UNSIGNED_SHORT,
             model.buffers.indicesBuffer,
-            instancedBufferId
+            quantity
         )
-
 
         GLES20.glDisableVertexAttribArray(mPositionHandle) //pole do optymalizacji
 

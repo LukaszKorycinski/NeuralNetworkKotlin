@@ -4,21 +4,23 @@ import android.opengl.GLES31
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.helpers.Wave
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
+import kotlin.math.PI
 import kotlin.random.Random
 
 class Grass(val file3Df: File3d) {
-    var items: ArrayList<GrassData> = ArrayList()
-    var wave = 0f
+    private var items: ArrayList<GrassData> = ArrayList()
+    private var wave = Wave(0f)
 
-    val instancedBufferId = 0
+    var instancedBuffer: FloatBuffer? = null
 
-    val QUANTITY = 20
+    val QUANTITY = 256
 
     init {
         val density = 20f
@@ -39,42 +41,27 @@ class Grass(val file3Df: File3d) {
     }
 
     private fun buildInstancedBuffer() {
-
-        GLES31.glBindBuffer(GLES31.GL_ARRAY_BUFFER, instancedBufferId)
-
-        GLES31.glBufferData(
-            GLES31.GL_ARRAY_BUFFER,
-            QUANTITY * 4 * 2,
-            null,
-            GLES31.GL_STATIC_DRAW
-        )
-
-        val positionsBuffer: FloatBuffer
-
         val vbb = ByteBuffer.allocateDirect(QUANTITY * 4 * 2)
         vbb.order(ByteOrder.nativeOrder())
-        positionsBuffer = vbb.asFloatBuffer()
-        positionsBuffer.put(items.flatMap { listOf(it.position.x, it.position.y) }.toFloatArray())
-        positionsBuffer.position(0)
-
-        GLES31.glBufferSubData(GLES31.GL_ARRAY_BUFFER,
-            0,
-            QUANTITY * 4 * 2,
-            positionsBuffer
-        )
-
-        //instancedBufferId
+        instancedBuffer = vbb.asFloatBuffer()
+        instancedBuffer?.put(items.flatMap { listOf(it.position.x, it.position.y) }.toFloatArray())
+        instancedBuffer?.position(0)
     }
 
     fun draw(mvpMatrix: FloatArray) {
 
+        wave += 0.02f
+
+        instancedBuffer?.let {
+            file3Df.bindProgram(MODELS_3D.GRASS)
+            file3Df.setVariableF(MODELS_3D.GRASS, wave.value, "wave")
+            file3Df.drawInstanced(mvpMatrix, MODELS_3D.GRASS, QUANTITY, it)
+        }
 
 
-        file3Df.drawInstanced(mvpMatrix, MODELS_3D.GRASS, instancedBufferId)
 
 
-
-        file3Df.draw(mvpMatrix, MODELS_3D.GRASS, position = Vector2f())
+        //file3Df.draw(mvpMatrix, MODELS_3D.GRASS, position = Vector2f())
 
     }
 }

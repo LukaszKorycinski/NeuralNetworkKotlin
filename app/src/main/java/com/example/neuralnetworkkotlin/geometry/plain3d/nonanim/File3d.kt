@@ -2,6 +2,7 @@ package com.example.neuralnetworkkotlin.geometry.plain3d.nonanim
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.GLES31
 import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.ext.HALF_PI
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
@@ -12,6 +13,7 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
+import java.nio.FloatBuffer
 import javax.vecmath.Vector2f
 
 class File3d(val context: Context, val textures: TexturesLoader) {
@@ -67,9 +69,24 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
 
-    fun drawInstanced(mvpMatrix: FloatArray, model: MODELS_3D, instancedBufferId: Int) {
-        drawer.bindProgram(loadedModels[model.index].modelInterface)
-        drawer.drawInstanced(mvpMatrix, loadedModels[model.index], instancedBufferId)
+    fun drawInstanced(mvpMatrix: FloatArray, model: MODELS_3D, quantity: Int, instancedBuffer: FloatBuffer) {
+        drawer.drawInstanced(mvpMatrix, loadedModels[model.index], quantity, instancedBuffer)
+    }
+
+    fun setVariableF(model: MODELS_3D, value: Float, name: String) {
+        val handler = GLES31.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            name
+        )
+        GLES31.glUniform1f(handler, value)
+    }
+
+    fun setVariableMatrix4fv(model: MODELS_3D, value: FloatArray, name: String) {
+        val handler = GLES31.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            name
+        )
+        GLES31.glUniformMatrix4fv(handler, 1, false, value, 0)
     }
 
     fun drawTrees(
@@ -79,28 +96,15 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         wave: Float,
         kind: Int
     ) {
-        drawer.bindProgram(loadedModels[model.index].modelInterface)
-        val waveHandler = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(loadedModels[model.index].modelInterface.shader),
-            "wave"
-        )
-        GLES20.glUniform1f(waveHandler, wave)
-        val kindHandler = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(loadedModels[model.index].modelInterface.shader),
-            "kind"
-        )
-
-        GLES20.glUniform1f(kindHandler, kind.toFloat())
+        drawer.bindProgram(model)
+        setVariableF(model, wave, "wave")
+        setVariableF(model, kind.toFloat(), "kind")
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
         Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
-        val worldMatrixHandle = GLES20.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.shader),
-            "uWorldMatrix"
-        )
-        GLES20.glUniformMatrix4fv(worldMatrixHandle, 1, false, tmpMatrix, 0)
 
+        setVariableMatrix4fv(model, tmpMatrix, "uWorldMatrix")
 
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
@@ -113,11 +117,11 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         wave: Float,
         selected: Boolean
     ) {
-        drawer.bindProgram(loadedModels[model.index].modelInterface)
+        drawer.bindProgram(model)
         drawer.drawBanner(mvpMatrix, loadedModels[model.index], position, wave, selected)
     }
 
-    private fun bindProgram(model: MODELS_3D) {
-        drawer.bindProgram(loadedModels[model.index].modelInterface)
+    fun bindProgram(model: MODELS_3D) {
+        drawer.bindProgram(model)
     }
 }
