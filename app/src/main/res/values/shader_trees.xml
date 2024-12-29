@@ -2,19 +2,24 @@
 <resources>
 
       <string name="trees_v_shader"><![CDATA[
+        "#version 300 es\n"
 
         uniform mat4 uMVPMatrix;
         uniform mat4 uWorldMatrix;
-        attribute vec3 vPosition;
-        attribute vec2 a_TexCoordinate;
-        varying vec2 texCoord;
-        varying vec3 pos;
-        varying vec3 worldPos;
+        uniform vec3 eyePosition;
+        in vec3 vPosition;
+        in vec2 a_TexCoordinate;
+        out vec2 texCoord;
+        out vec3 pos;
+        out vec3 worldPos;
+        out float fogFactor;
 
         void main() {
 
             gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
             worldPos = (uWorldMatrix * vec4(vPosition.xyz, 1.0)).xyz;
+
+            fogFactor = min(1.0, distance(eyePosition, worldPos.xyz) * 0.03);
 
             texCoord = a_TexCoordinate;
             pos = vPosition;
@@ -23,34 +28,44 @@
     ]]></string>
 
         <string name="tree_f_shader"><![CDATA[
+        "#version 300 es\n"
 
         precision mediump float;
         uniform sampler2D u_Texture;
         uniform sampler2D a_Texture;
         uniform float wave;
         uniform float kind;
-        varying vec2 texCoord;
-        varying vec3 pos;
-        varying vec3 worldPos;
+        in vec2 texCoord;
+        in vec3 pos;
+        in vec3 worldPos;
+        in float fogFactor;
+
+        out vec4 gl_FragColor;
 
         void main() {
 
         vec2 texC = texCoord;
         vec2 texCoordWind = worldPos.xz/10.0;
         texCoordWind.y = texCoordWind.y + wave;
-        vec4 alfa = texture2D(a_Texture, texC);
-        vec4 wind = texture2D(a_Texture, texCoordWind);
+        vec4 alfa = texture(a_Texture, texC);
+        vec4 wind = texture(a_Texture, texCoordWind);
         float waveWind = wind.r * 3.14;
 
         texC.x = texC.x + kind * 0.212;
         texC.x = texC.x + cos( waveWind ) * 0.003 * pos.y;
         texC.y = texC.y + sin( waveWind ) * 0.002 * pos.y;
 
-        vec4 color = texture2D(u_Texture, texC);
+        vec4 color = texture(u_Texture, texC);
 
         if(color.a<0.85){
             discard;
         }
+
+        float fogFixed = max(fogFactor, 0.75);
+        fogFixed = fogFixed - 0.75;
+        fogFixed = fogFixed * 4.0;
+
+        color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
         gl_FragColor = color;
         }
@@ -58,33 +73,43 @@
     ]]></string>
 
     <string name="leafs_f_shader"><![CDATA[
+        "#version 300 es\n"
 
         precision mediump float;
         uniform sampler2D u_Texture;
         uniform sampler2D a_Texture;
         uniform float wave;
-        varying vec2 texCoord;
-        varying vec3 pos;
-        varying vec3 worldPos;
+        in vec2 texCoord;
+        in vec3 pos;
+        in vec3 worldPos;
+        in float fogFactor;
+
+        out vec4 gl_FragColor;
 
         void main() {
 
         vec2 texC = texCoord;
         vec2 texCoordWind = worldPos.xz/10.0;
 
-        vec4 alfa = texture2D(a_Texture, texC);
+        vec4 alfa = texture(a_Texture, texC);
         texCoordWind.y = texCoordWind.y + wave + alfa.g*0.1;
-        vec4 wind = texture2D(a_Texture, texCoordWind);
+        vec4 wind = texture(a_Texture, texCoordWind);
         float waveWind = wind.r * 3.14;
 
         texC.x = texC.x + cos( waveWind ) * 0.005 * pos.y;
         texC.y = texC.y + sin( waveWind ) * 0.0025 * pos.y;
 
-        vec4 color = texture2D(u_Texture, texC);
+        vec4 color = texture(u_Texture, texC);
 
         if(color.a<0.9){
             discard;
         }
+
+        float fogFixed = max(fogFactor, 0.75);
+        fogFixed = fogFixed - 0.75;
+        fogFixed = fogFixed * 4.0;
+
+        color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
         gl_FragColor = color;
         }

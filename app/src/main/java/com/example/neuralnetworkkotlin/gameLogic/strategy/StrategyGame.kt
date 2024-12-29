@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.gameLogic.strategy.fightmode.Playable
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.Terrain
+import com.example.neuralnetworkkotlin.geometry.buldings.Buldings
 import com.example.neuralnetworkkotlin.geometry.grass.Grass
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.MODELS_3DA
@@ -14,12 +15,13 @@ import com.example.neuralnetworkkotlin.geometry.trees.Trees
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.helpers.Circle
 import com.example.neuralnetworkkotlin.helpers.Collision
+import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import javax.vecmath.Vector2f
-import javax.vecmath.Vector3f
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.times
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -35,6 +37,7 @@ class StrategyGame(
     private val humans = Humans(collision)
     val trees = Trees(file3Df)
     val grass = Grass(file3Df)
+    val buldings = Buldings(file3Df)
 
     fun setWarpeonAngle(angle: Float){
         humans.banners.forEach { banner ->
@@ -79,8 +82,9 @@ class StrategyGame(
 
     @OptIn(ExperimentalTime::class)
     fun draw() {
-        trees.draw(camera.viewProjectionMatrix)
-        grass.draw(camera.viewProjectionMatrix)
+        trees.draw(camera)
+        grass.draw(camera.viewProjectionMatrix, camera.eyePosition)
+        buldings.draw(camera)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 
@@ -101,6 +105,7 @@ class StrategyGame(
             camera.viewProjectionMatrix,
             textures,
             ShaderLoader.shaderProgramTerrain,
+            camera.eyePosition,
             //trees.items.map { it.position }
         )
     }

@@ -7,11 +7,14 @@
 
         uniform mat4 uMVPMatrix;
         uniform float wave;
-        uniform vec2 position[256];
+        uniform vec2 position[512];
+        uniform vec3 eyePosition;
         in vec4 vPosition;
         in vec3 vNormal;
         in vec2 a_TexCoordinate;
         out vec2 texCoord;
+        out vec2 texCoordPosition;
+        out float fogFactor;
 
         void main() {
 
@@ -19,9 +22,15 @@
             vec4 outPos = vPosition;
             outPos.xz = outPos.xz + position[gl_InstanceID];
 
-            outPos.x = outPos.x + sin( wave + outPos.x + outPos.y ) * 0.5 * outPos.y;
-            outPos.z = outPos.z + cos( wave + outPos.x + outPos.y ) * 0.1 * outPos.y;
-            outPos.y = outPos.y - sin( wave + outPos.x + outPos.y ) * 0.5 * outPos.y;
+            float winter = sin( wave + outPos.x + outPos.y + float(gl_InstanceID) );
+
+            outPos.x = outPos.x + winter * 0.3 * outPos.y;
+            outPos.y = outPos.y - abs(winter * 0.15 * outPos.y);
+
+            texCoordPosition.y = (outPos.z + 10.0) / 20.0;
+            texCoordPosition.x = (outPos.x + 20.0) / 40.0;
+
+            fogFactor = min(1.0, distance(eyePosition, outPos.xyz) * 0.03);
 
             gl_Position = uMVPMatrix * vec4(outPos.xyz, 1.0);
 
@@ -36,7 +45,10 @@
         precision mediump float;
 
         uniform sampler2D u_Texture;
+        uniform sampler2D shadowTexture;
         in vec2 texCoord;
+        in vec2 texCoordPosition;
+        in float fogFactor;
 
         out vec4 gl_FragColor;
 
@@ -47,6 +59,14 @@
         if(color.a<0.5){
             discard;
         }
+
+        color = color * texture(shadowTexture, texCoordPosition);
+
+        float fogFixed = max(fogFactor, 0.75);
+        fogFixed = fogFixed - 0.75;
+        fogFixed = fogFixed * 4.0;
+
+        color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
         gl_FragColor = color;
         }

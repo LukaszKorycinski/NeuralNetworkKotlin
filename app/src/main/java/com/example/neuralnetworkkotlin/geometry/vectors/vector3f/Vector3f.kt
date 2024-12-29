@@ -1,9 +1,10 @@
-package com.example.neuralnetworkkotlin.geometry.vectors
+package com.example.neuralnetworkkotlin.geometry.vectors.vector3f
 
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 import kotlin.math.pow
 import kotlin.math.sqrt
+
 
 fun Vector3f.distance (vector: Vector3f): Float =
     sqrt(
@@ -18,3 +19,7 @@ fun Vector2f.distance (vector: Vector2f): Float =
         (this.x - vector.x).pow(2)
                 +
                 (this.y - vector.y).pow(2))
+
+operator fun Vector3f.times(b: Float): Vector3f {
+    return Vector3f(x * b, y * b, z * b)
+}

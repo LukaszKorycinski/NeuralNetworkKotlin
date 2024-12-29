@@ -4,14 +4,14 @@ package com.example.neuralnetworkkotlin.gameLogic.strategy
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.Animations
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.geometry.vectors.angleRadians
-import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.minus
 import com.example.neuralnetworkkotlin.geometry.vectors.normalizeOrLow
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
 import com.example.neuralnetworkkotlin.geometry.vectors.times
+
 import com.example.neuralnetworkkotlin.helpers.Collision
-import timber.log.Timber
 import java.util.UUID
 import javax.vecmath.Vector2f
 import kotlin.math.PI

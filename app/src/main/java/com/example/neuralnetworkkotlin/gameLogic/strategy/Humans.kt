@@ -63,6 +63,7 @@ class Humans(val collision: Collision) {
                 MODELS_3D.BANNER,
                 position = banner.position,
                 wave = banner.wave.value,
+                waveWalk = banner.humans.firstOrNull()?.waveWalk ?: 0f,
                 selected = banner.isSelected
             )
         }

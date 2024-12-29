@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20
+import android.opengl.GLES31
 import androidx.core.content.ContextCompat
 import com.example.neuralnetworkkotlin.R
+import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
@@ -16,6 +18,7 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 
 class Terrain(context: Context) {
 
@@ -28,10 +31,10 @@ class Terrain(context: Context) {
     val size = 10.0f
 
     val layerCoords = floatArrayOf(
-        size,  0f,-size,      // top left
-        size,  0f, size,      // bottom left
-        -size,  0f, size,      // bottom right
-        -size,  0f,-size       // top right
+        size * 2f,  0f,-size,      // top left
+        size * 2f,  0f, size,      // bottom left
+        -size * 2f,  0f, size,      // bottom right
+        -size * 2f,  0f,-size       // top right
     )
 
 
@@ -83,10 +86,20 @@ class Terrain(context: Context) {
 
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
+    private fun setVariable3F(model: MODELS_3D, value: Vector3f, name: String) {
+        val handler = GLES31.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            name
+        )
+        GLES31.glUniform3f(handler, value.x, value.y, value.z)
+    }
 
-    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int, /*treePositions: List<Vector2f>*/) {
+    fun drawTerrain(mvpMatrix: FloatArray, textures: TexturesLoader, shader: Int, eyePosition: Vector3f) {
 
         GLES20.glUseProgram(shader)
+
+        setVariable3F(MODELS_3D.GRASS, eyePosition, "eyePosition")
+
         val propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
         GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
 
@@ -114,17 +127,6 @@ class Terrain(context: Context) {
         GLES20.glUniform1i(texHandlerTerrain4, 4)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_TERRAIN.id])
-/*        val treePositionsHandle = GLES20.glGetUniformLocation(
-            shader,
-            "treePositions"
-        )*/
-/*        GLES20.glUniform2fv(
-            treePositionsHandle,
-            treePositions.size,
-            treePositions.flatMap { listOf(it.x, it.y) }.toFloatArray(),
-            0
-        )*/
-
 
         positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
             val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")

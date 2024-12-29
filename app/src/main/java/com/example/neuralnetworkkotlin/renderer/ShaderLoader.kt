@@ -18,6 +18,7 @@ enum class Shaders {
     TREE,
     LEAFS,
     GRASS,
+    BASIC_FOG,
 }
 
 class ShaderLoader(context : Context){
@@ -33,6 +34,7 @@ class ShaderLoader(context : Context){
         var shaderProgramTree: Int = 0
         var shaderProgramLeafs: Int = 0
         var shaderProgramGrass: Int = 0
+        var shaderProgramBasicFog: Int = 0
 
 
         fun getShaderProgram(shader: Shaders) : Int{
@@ -47,6 +49,7 @@ class ShaderLoader(context : Context){
                 Shaders.TREE -> shaderProgramTree
                 Shaders.LEAFS -> shaderProgramLeafs
                 Shaders.GRASS -> shaderProgramGrass
+                Shaders.BASIC_FOG -> shaderProgramBasicFog
             }
         }
     }
@@ -79,6 +82,13 @@ class ShaderLoader(context : Context){
             GLES31.glLinkProgram(it)
         }
 
+        val basicFogVertexShader: Int = loadShader(GLES31.GL_VERTEX_SHADER, R.string.vs_basic_fog, context)
+        val basicFogFragmentShader: Int = loadShader(GLES31.GL_FRAGMENT_SHADER,  R.string.ps_bacic_fog, context)
+        shaderProgramBasicFog = GLES31.glCreateProgram().also {
+            GLES31.glAttachShader(it, basicFogVertexShader)
+            GLES31.glAttachShader(it, basicFogFragmentShader)
+            GLES31.glLinkProgram(it)
+        }
 
 
         val basicVertexShader: Int = loadShader(GLES31.GL_VERTEX_SHADER, R.string.vs_basic, context)

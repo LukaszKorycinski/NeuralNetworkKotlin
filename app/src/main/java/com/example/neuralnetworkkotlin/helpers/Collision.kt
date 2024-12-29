@@ -1,7 +1,7 @@
 package com.example.neuralnetworkkotlin.helpers
 
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
 import java.util.UUID
 import javax.vecmath.Vector2f
 

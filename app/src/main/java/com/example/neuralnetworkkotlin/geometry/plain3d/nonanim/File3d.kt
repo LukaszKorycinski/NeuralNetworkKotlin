@@ -11,10 +11,12 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.Drawer
 import com.example.neuralnetworkkotlin.geometry.plain3d.Loader
 import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
+import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import java.nio.FloatBuffer
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 
 class File3d(val context: Context, val textures: TexturesLoader) {
 
@@ -65,12 +67,20 @@ class File3d(val context: Context, val textures: TexturesLoader) {
     }
 
     fun draw(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector2f = Vector2f(0f)) {
-        drawer.bindProgram(loadedModels[model.index].modelInterface)
+
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
 
     fun drawInstanced(mvpMatrix: FloatArray, model: MODELS_3D, quantity: Int, instancedBuffer: FloatBuffer) {
         drawer.drawInstanced(mvpMatrix, loadedModels[model.index], quantity, instancedBuffer)
+    }
+
+    fun setVariable3F(model: MODELS_3D, value: Vector3f, name: String) {
+        val handler = GLES31.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            name
+        )
+        GLES31.glUniform3f(handler, value.x, value.y, value.z)
     }
 
     fun setVariableF(model: MODELS_3D, value: Float, name: String) {
@@ -79,6 +89,17 @@ class File3d(val context: Context, val textures: TexturesLoader) {
             name
         )
         GLES31.glUniform1f(handler, value)
+    }
+
+    fun setVariableTexture1(model: MODELS_3D, texture: TEXTURES, name: String) {
+        val handler = GLES31.glGetUniformLocation(
+            ShaderLoader.getShaderProgram(model.shader),
+            name
+        )
+        GLES31.glUniform1i(handler, 1)
+        GLES31.glActiveTexture(GLES20.GL_TEXTURE1)
+
+        GLES31.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[texture.id])
     }
 
     fun setVariableMatrix4fv(model: MODELS_3D, value: FloatArray, name: String) {
@@ -96,7 +117,6 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         wave: Float,
         kind: Int
     ) {
-        drawer.bindProgram(model)
         setVariableF(model, wave, "wave")
         setVariableF(model, kind.toFloat(), "kind")
 
@@ -115,10 +135,11 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         model: MODELS_3D,
         position: Vector2f = Vector2f(0f),
         wave: Float,
+        waveWalk: Float,
         selected: Boolean
     ) {
         drawer.bindProgram(model)
-        drawer.drawBanner(mvpMatrix, loadedModels[model.index], position, wave, selected)
+        drawer.drawBanner(mvpMatrix, loadedModels[model.index], position, wave, waveWalk, selected)
     }
 
     fun bindProgram(model: MODELS_3D) {

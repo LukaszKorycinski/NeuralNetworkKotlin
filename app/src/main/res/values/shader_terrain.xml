@@ -2,22 +2,29 @@
 <resources>
 
         <string name="vs_terrain">
+        "#version 300 es\n"
 
         uniform mat4 uMVPMatrix;
-        attribute vec4 vPosition;
-        attribute vec3 vNormal;
-        attribute vec2 a_TexCoordinate;
-        varying vec2 texCoord;
+        uniform vec3 eyePosition;
+        in vec4 vPosition;
+        in vec3 vNormal;
+        in vec2 a_TexCoordinate;
+        out vec2 texCoord;
+        out float fogFactor;
 
         void main() {
 
             gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
+
+
+            fogFactor = min(1.0, distance(eyePosition, vPosition.xyz) * 0.03);
 
             texCoord = a_TexCoordinate;
         }
     </string>
 
     <string name="ps_terrain"><![CDATA[
+        "#version 300 es\n"
 
         precision mediump float;
         uniform sampler2D u_Texture;
@@ -25,22 +32,32 @@
         uniform sampler2D u_TextureTerrain2;
         uniform sampler2D u_TextureTerrain3;
         uniform sampler2D shadowTexture;
-        varying vec2 texCoord;
+        in vec2 texCoord;
+        in float fogFactor;
+
+        out vec4 gl_FragColor;
+
 
         void main() {
 
-        vec4 alpha = texture2D(u_Texture, texCoord);
+        vec4 alpha = texture(u_Texture, texCoord);
 
         vec2 texCoordPosition = texCoord - vec2(0.5, 0.5);
         texCoordPosition = -texCoordPosition * 20.0;
 
-        vec4 color = texture2D(u_TextureTerrain, texCoordPosition);
-        vec4 color2 = texture2D(u_TextureTerrain2, texCoordPosition);
-        vec4 color3 = texture2D(u_TextureTerrain3, texCoordPosition);
+        vec4 color = texture(u_TextureTerrain, texCoordPosition);
+        vec4 color2 = texture(u_TextureTerrain2, texCoordPosition);
+        vec4 color3 = texture(u_TextureTerrain3, texCoordPosition);
 
         vec4 finalColor = (color*alpha.r + color2*alpha.g + color3*alpha.b);
 
-        finalColor = finalColor * texture2D(shadowTexture, texCoord);
+        finalColor = finalColor * texture(shadowTexture, texCoord);
+
+        float fogFixed = max(fogFactor, 0.75);
+        fogFixed = fogFixed - 0.75;
+        fogFixed = fogFixed * 4.0;
+
+        finalColor = mix(finalColor, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
         gl_FragColor = finalColor;
         }

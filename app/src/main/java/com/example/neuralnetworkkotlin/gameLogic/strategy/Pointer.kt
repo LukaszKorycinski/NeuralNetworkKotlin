@@ -20,6 +20,7 @@ object Pointer {
             MODELS_3D.BANNER,
             position,
             wave = wave.value,
+            waveWalk = 0f,
             selected = false
         )
     }

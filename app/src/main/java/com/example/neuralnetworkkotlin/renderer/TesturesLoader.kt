@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import com.example.neuralnetworkkotlin.R
-import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
 import javax.vecmath.Vector2f
 import kotlin.math.min
 import kotlin.math.max
@@ -31,6 +31,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     LEAF_CHANNELS(15, R.drawable.leafchannels),
     SHADOW_TERRAIN(16, R.drawable.terain_shadow),
     GRASS(17, R.drawable.grass),
+    MILL(18, R.drawable.mill),
 }
 
 
@@ -47,21 +48,22 @@ class TexturesLoader(var context: Context) {
 
     //for 515x512
     fun burnPointsShadows(trees: List<Vector2f>) {
-        shadowBitmap = Bitmap.createBitmap(125, 125, Bitmap.Config.ARGB_8888)
+        shadowBitmap = Bitmap.createBitmap(125, 64, Bitmap.Config.ARGB_8888)
 
         val resolution = 125
+        val resolutionF = 125f
 
         for (x in 0 until resolution) {
-            for (y in 0 until resolution) {
+            for (y in 0 until resolution/2) {
 
                 val closestDistance = trees.minOf { tree ->
                     Vector2f(
-                        ((tree.x+10f) * .5f) * resolution * .1f,
-                        ((tree.y+10f) * .5f) * resolution * .1f,
+                        ((tree.x+20f) * .025f) * resolutionF,
+                        ((tree.y+10f) * .5f) * resolutionF * .05f,
                     ).distance(Vector2f(x.toFloat(), y.toFloat()))
                 }
 
-                val shadowRadius = 8f
+                val shadowRadius = 4f
 
                 val shadow = max(min(shadowRadius, closestDistance), shadowRadius * .3f)
 

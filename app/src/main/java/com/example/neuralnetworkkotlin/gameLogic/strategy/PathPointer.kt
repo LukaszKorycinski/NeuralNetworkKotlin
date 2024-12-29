@@ -2,7 +2,7 @@ package com.example.neuralnetworkkotlin.gameLogic.strategy
 
 import android.opengl.GLES20
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
-import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX

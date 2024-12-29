@@ -2,17 +2,15 @@ package com.example.neuralnetworkkotlin.gameLogic.strategy
 
 import com.example.neuralnetworkkotlin.ext.toRadians
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
-import com.example.neuralnetworkkotlin.geometry.vectors.distance
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
 import com.example.neuralnetworkkotlin.geometry.vectors.times
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.Wave
-import timber.log.Timber
 import java.util.ArrayList
 import java.util.UUID
 import javax.vecmath.Vector2f
-import kotlin.math.abs
 
 private const val RANDOM_SOLDIERS_QTY = 14
 private const val FORMATION_DENSITY = 0.35f

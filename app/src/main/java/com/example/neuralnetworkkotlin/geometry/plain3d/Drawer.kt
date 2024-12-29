@@ -8,6 +8,8 @@ import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
+import com.example.neuralnetworkkotlin.helpers.rotateX
+import com.example.neuralnetworkkotlin.helpers.rotateZ
 import com.example.neuralnetworkkotlin.helpers.scale
 import com.example.neuralnetworkkotlin.helpers.translate
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
@@ -30,16 +32,21 @@ open class Drawer(val textures: TexturesLoader) {
         model: Loader,
         position: Vector2f = Vector2f(0f),
         wave: Float,
+        waveWalk: Float,
         selected: Boolean
     ) {
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
 
+
+
         Matrix.translateM(tmpMatrix, 0, position.x,  if(selected) sin(wave)*.25f else 0f, position.y)
-//        if (selected) {
-//            tmpMatrix.rotateZ(sin(wave)*10f)
-//        }
+        tmpMatrix.rotateZ(sin(waveWalk*.5f)*2.5f)
+
+        //if (selected) {
+
+        //}
 
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
