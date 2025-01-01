@@ -66,7 +66,7 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.drawPrepared(mvpMatrix, loadedModels[model.index], human.position)
     }
 
-    fun draw(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector2f = Vector2f(0f)) {
+    fun draw(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector2f = Vector3f(0f)) {
 
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }

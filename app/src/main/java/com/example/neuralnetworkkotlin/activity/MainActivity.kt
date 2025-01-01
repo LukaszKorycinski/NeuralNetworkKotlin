@@ -1,7 +1,6 @@
 package com.example.neuralnetworkkotlin.activity
 
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.app.AppCompatActivity
 import com.example.neuralnetworkkotlin.R
@@ -17,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.minus
 import kotlinx.android.synthetic.main.activity_main.plus
 import kotlinx.android.synthetic.main.activity_main.right
 import kotlinx.android.synthetic.main.activity_main.seekBar
+import kotlinx.android.synthetic.main.activity_main.seekBarValue
 import kotlinx.android.synthetic.main.activity_main.switchMode
 import kotlinx.android.synthetic.main.activity_main.up
 import javax.vecmath.Vector2f
@@ -43,6 +43,18 @@ class MainActivity : AppCompatActivity() {
         seekBar.setOnSeekBarChangeListener(object: android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
                 glSurfaceView.renderer.strategyGame.setWarpeonAngle(seekBar!!.progress.toFloat().toRadians())
+            }
+
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {
+            }
+        })
+
+        seekBarValue.setOnSeekBarChangeListener(object: android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+                glSurfaceView.renderer.strategyGame.setValue(seekBar!!.progress.toFloat())
             }
 
             override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {

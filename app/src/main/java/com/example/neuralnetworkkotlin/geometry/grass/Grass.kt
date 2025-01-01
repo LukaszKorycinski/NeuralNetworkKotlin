@@ -18,7 +18,7 @@ class Grass(val file3Df: File3d) {
     var instancedBuffer: FloatBuffer? = null
     var instancedBuffer2: FloatBuffer? = null
 
-    val QUANTITY = 512
+    val QUANTITY = 128
 
     init {
         generateRandomGrass()

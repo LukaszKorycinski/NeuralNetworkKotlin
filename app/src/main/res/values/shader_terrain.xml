@@ -49,7 +49,7 @@
         vec4 color2 = texture(u_TextureTerrain2, texCoordPosition);
         vec4 color3 = texture(u_TextureTerrain3, texCoordPosition);
 
-        vec4 finalColor = (color*alpha.r + color2*alpha.g + color3*alpha.b);
+        vec4 finalColor = color;
 
         finalColor = finalColor * texture(shadowTexture, texCoord);
 

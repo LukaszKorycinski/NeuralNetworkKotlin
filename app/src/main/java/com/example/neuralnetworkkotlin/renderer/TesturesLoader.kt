@@ -31,7 +31,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     LEAF_CHANNELS(15, R.drawable.leafchannels),
     SHADOW_TERRAIN(16, R.drawable.terain_shadow),
     GRASS(17, R.drawable.grass),
-    MILL(18, R.drawable.mill),
+    NORD(18, R.drawable.nord),
 }
 
 
@@ -48,6 +48,7 @@ class TexturesLoader(var context: Context) {
 
     //for 515x512
     fun burnPointsShadows(trees: List<Vector2f>) {
+        //TODO Use getPixels() to get all the pixels, modify the values in the byte[], then call setPixels() to store all the pixels at once.
         shadowBitmap = Bitmap.createBitmap(125, 64, Bitmap.Config.ARGB_8888)
 
         val resolution = 125

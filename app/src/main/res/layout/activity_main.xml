@@ -139,4 +139,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switchMode"/>
 
+
+
+    <SeekBar
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarValue"
+            android:max="200"
+            android:progress="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seekBar"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

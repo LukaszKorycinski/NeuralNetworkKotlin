@@ -8,49 +8,120 @@ import android.opengl.GLES20
 import android.opengl.GLES31
 import androidx.core.content.ContextCompat
 import com.example.neuralnetworkkotlin.R
-import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
+import com.example.neuralnetworkkotlin.renderer.Shaders
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import com.example.neuralnetworkkotlin.viewgroups.COORDS_PER_VERTEX
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
+import kotlin.time.times
 
 class Terrain(context: Context) {
 
     var bitmap:Bitmap
 
+    lateinit var layerCoords: FloatArray
+    lateinit var textureCoords: FloatArray
+    private lateinit var drawOrder: ShortArray
+
+
+    lateinit var vertexBufferCoords: FloatBuffer
+    lateinit var indicesBuffer: ShortBuffer
+    lateinit var vertexBufferTextCoords: FloatBuffer
+    lateinit var pixels: IntArray
+
+    val size = 40.0f
+    val resolution = Vector2f(16f, 8f)
+
+    var dupa = .0f
+
     init {
         bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
+        build()
     }
 
-    val size = 10.0f
+    fun getHeight(x: Int, z: Int): Float{
+        return pixels[z * bitmap.width + x].toFloat()
+    }
 
-    val layerCoords = floatArrayOf(
-        size * 2f,  0f,-size,      // top left
-        size * 2f,  0f, size,      // bottom left
-        -size * 2f,  0f, size,      // bottom right
-        -size * 2f,  0f,-size       // top right
-    )
+    fun build(){
 
+        val pixels = IntArray(bitmap.width * bitmap.height)
+        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
 
-    val textureCoords = floatArrayOf(
-        1.0f, 0.0f,      // top left
-        1.0f, 1.0f,      // bottom left
-        0.0f, 1f,      // bottom right
-        0.0f, 0.0f       // top right
-    )
+        val tmpCoords = mutableListOf<Float>()
+        val tmpTexCoords = mutableListOf<Float>()
+        val tmpDrawOrder = mutableListOf<Short>()
 
 
-    private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3) // order to draw vertices
+        val tailSize = size / resolution.x
 
-    private val vertexBufferBackground: FloatBuffer =
-        // (# of coordinate values * 4 bytes per float)
-        ByteBuffer.allocateDirect(layerCoords.size * 4)
+        val halfX = tailSize * resolution.x / 2f
+        val halfZ = tailSize * resolution.y / 2f
+
+        // Iterate over the resolution (rows and columns of the grid)
+        for (y in 0 until resolution.y.toInt()) {
+            for (x in 0 until resolution.x.toInt()) {
+                // Współrzędne wierzchołków
+                val posX = x * tailSize +dupa
+
+                val colour = bitmap.getPixel(x, y)
+                val red = Color.red(colour)
+                val green = Color.green(colour)
+                val blue = Color.blue(colour)
+                val alpha = Color.alpha(colour)
+
+                Timber.d("x: $x, y: $y, red: $red")
+
+                val posY = red * .01f // Wysokość z tekstury
+                val posZ = y * tailSize +dupa
+
+                // Dodaj współrzędne wierzchołków (x, y, z)
+                tmpCoords.add(posX-halfX)
+                tmpCoords.add(posY)
+                tmpCoords.add(posZ-halfZ)
+
+                // Współrzędne tekstury (UV)
+                val texCoordX = x / (resolution.x )
+                val texCoordY = y / (resolution.y )
+                tmpTexCoords.add(texCoordX)
+                tmpTexCoords.add(texCoordY)
+
+                // Indeksowanie wierzchołków (indeksowanie trójkątów)
+                if (x < resolution.x.toInt() - 1 && y < resolution.y.toInt() - 1) {
+                    val topLeft = y * resolution.x.toInt() + x
+                    val topRight = y * resolution.x.toInt() + (x + 1)
+                    val bottomLeft = (y + 1) * resolution.x.toInt() + x
+                    val bottomRight = (y + 1) * resolution.x.toInt() + (x + 1)
+
+                    // Pierwszy trójkąt
+                    tmpDrawOrder.add(topLeft.toShort())
+                    tmpDrawOrder.add(bottomLeft.toShort())
+                    tmpDrawOrder.add(topRight.toShort())
+
+                    // Drugi trójkąt
+                    tmpDrawOrder.add(topRight.toShort())
+                    tmpDrawOrder.add(bottomLeft.toShort())
+                    tmpDrawOrder.add(bottomRight.toShort())
+                }
+            }
+        }
+
+        layerCoords = tmpCoords.toFloatArray()
+        textureCoords = tmpTexCoords.toFloatArray()
+        drawOrder = tmpDrawOrder.toShortArray()
+
+        fillBuffers()
+    }
+
+    fun fillBuffers(){
+        vertexBufferCoords = ByteBuffer.allocateDirect(layerCoords.size * 4)
             .run {
                 order(ByteOrder.nativeOrder())
                 asFloatBuffer().apply {
@@ -58,11 +129,7 @@ class Terrain(context: Context) {
                     position(0)
                 }
             }
-
-    // initialize byte buffer for the draw list
-    private val drawListBufferTrack: ShortBuffer =
-        // (# of coordinate values * 2 bytes per short)
-        ByteBuffer.allocateDirect(drawOrder.size * 2).run {
+        indicesBuffer = ByteBuffer.allocateDirect(drawOrder.size * 2).run {
             order(ByteOrder.nativeOrder())
             asShortBuffer().apply {
                 put(drawOrder)
@@ -70,9 +137,7 @@ class Terrain(context: Context) {
             }
         }
 
-    private val vertexBufferTextCoords: FloatBuffer =
-        // (# of coordinate values * 4 bytes per float)
-        ByteBuffer.allocateDirect(textureCoords.size * 4)
+        vertexBufferTextCoords = ByteBuffer.allocateDirect(textureCoords.size * 4)
             .run {
                 order(ByteOrder.nativeOrder())
                 asFloatBuffer().apply {
@@ -80,15 +145,14 @@ class Terrain(context: Context) {
                     position(0)
                 }
             }
+    }
 
-
-    private var positionHandle: Int = 0
 
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
-    private fun setVariable3F(model: MODELS_3D, value: Vector3f, name: String) {
+    private fun setVariable3F(shader: Shaders, value: Vector3f, name: String) {
         val handler = GLES31.glGetUniformLocation(
-            ShaderLoader.getShaderProgram(model.shader),
+            ShaderLoader.getShaderProgram(shader),
             name
         )
         GLES31.glUniform3f(handler, value.x, value.y, value.z)
@@ -98,7 +162,7 @@ class Terrain(context: Context) {
 
         GLES20.glUseProgram(shader)
 
-        setVariable3F(MODELS_3D.GRASS, eyePosition, "eyePosition")
+        setVariable3F(Shaders.TERRAIN, eyePosition, "eyePosition")
 
         val propertyHandler = GLES20.glGetUniformLocation(shader, "uMVPMatrix")
         GLES20.glUniformMatrix4fv(propertyHandler, 1, false, mvpMatrix, 0)
@@ -128,39 +192,39 @@ class Terrain(context: Context) {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_TERRAIN.id])
 
-        positionHandle = GLES20.glGetAttribLocation(shader, "vPosition").also {
-            val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
 
-            GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
+        val positionHandle = GLES20.glGetAttribLocation(shader, "vPosition")
+        GLES20.glEnableVertexAttribArray(positionHandle)
+
+       GLES20.glVertexAttribPointer(
+           positionHandle,
+           COORDS_PER_VERTEX,
+           GLES20.GL_FLOAT,
+           false,
+           vertexStride,
+           vertexBufferCoords
+       )
+
+       val mTextureCoordinateHandle = GLES20.glGetAttribLocation(shader, "a_TexCoordinate")
+       GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle)
+
+       GLES20.glVertexAttribPointer(
+           mTextureCoordinateHandle,
+           2,
+           GLES20.GL_FLOAT,
+           false,
+           2 * 4,
+           vertexBufferTextCoords
+       )
 
 
-            GLES20.glVertexAttribPointer(
-                mTextureCoordinateHandle,
-                2,
-                GLES20.GL_FLOAT,
-                false,
-                2 * 4,
-                vertexBufferTextCoords
-            )
+       GLES20.glDrawElements(
+           GLES20.GL_TRIANGLES, drawOrder.size,
+           GLES20.GL_UNSIGNED_SHORT, indicesBuffer
+       )
 
-            GLES20.glEnableVertexAttribArray(it)
+            //GLES20.glDisableVertexAttribArray(positionHandle)
 
-            GLES20.glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT,
-                false,
-                vertexStride,
-                vertexBufferBackground
-            )
-
-            GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, drawOrder.size,
-                GLES20.GL_UNSIGNED_SHORT, drawListBufferTrack
-            )
-
-            GLES20.glDisableVertexAttribArray(it)
-        }
     }
 
 

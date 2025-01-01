@@ -14,7 +14,7 @@ class Buldings(val file3Df: File3d) {
         items.add(
             BuldingData(
                 position = Vector2f(0f, 0f),
-                model = MODELS_3D.Mill
+                model = MODELS_3D.NORD
             )
         )
     }

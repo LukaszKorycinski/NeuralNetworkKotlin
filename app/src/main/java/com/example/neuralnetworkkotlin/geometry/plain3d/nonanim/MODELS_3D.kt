@@ -22,5 +22,5 @@ enum class MODELS_3D(
     MEN(7, R.raw.men, Shaders.HUMAN_ANIM, TEXTURES.MEN, TEXTURES.MEN_ALPHA),
     GRASS(8, R.raw.grass, Shaders.GRASS, TEXTURES.GRASS),
     GRASS2(9, R.raw.grass2, Shaders.GRASS, TEXTURES.GRASS),
-    Mill(10, R.raw.mill, Shaders.BASIC_FOG, TEXTURES.MILL),
+    NORD(10, R.raw.nord, Shaders.BASIC_FOG, TEXTURES.NORD),
 }
