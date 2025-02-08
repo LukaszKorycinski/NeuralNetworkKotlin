@@ -2,9 +2,10 @@ package com.example.neuralnetworkkotlin.geometry.trees
 
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 
 class TreeData(
-    val position: Vector2f,
+    val position: Vector3f,
     var wave: Float,
     val kindIndexL: Int,
     val modelTree: MODELS_3D,

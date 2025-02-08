@@ -20,9 +20,10 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
-import kotlin.time.times
 
 class Terrain(context: Context) {
+
+    private val heightMul = .1f
 
     var bitmap:Bitmap
 
@@ -35,6 +36,7 @@ class Terrain(context: Context) {
     lateinit var indicesBuffer: ShortBuffer
     lateinit var vertexBufferTextCoords: FloatBuffer
     lateinit var pixels: IntArray
+    lateinit var redChannel: IntArray
 
     val size = 40.0f
     val resolution = Vector2f(16f, 8f)
@@ -43,17 +45,50 @@ class Terrain(context: Context) {
 
     init {
         bitmap = (ContextCompat.getDrawable(context, R.drawable.terrain) as BitmapDrawable).bitmap
-        build()
     }
 
-    fun getHeight(x: Int, z: Int): Float{
-        return pixels[z * bitmap.width + x].toFloat()
+    fun getHeight(xIn: Float, zIn: Float): Float{
+
+        val x = (xIn + 20f) / resolution.x
+        val z = (zIn + 10f) / resolution.y
+
+        // Przekształcenie współrzędnych do indeksów w tablicy bitmap
+        val xi = x.toInt()
+        val zi = z.toInt()
+
+        // Obliczenie części ułamkowej dla obu współrzędnych
+        val xf = x - xi
+        val zf = z - zi
+
+        // Indeksy czterech punktów wokół (xi, zi)
+        val x0 = xi
+        val x1 = if (x0 + 1 < resolution.x) x0 + 1 else x0
+        val z0 = zi
+        val z1 = if (z0 + 1 < resolution.y) z0 + 1 else z0
+
+        // Pobranie kolorów z bitmapy w punktach (x0, z0), (x1, z0), (x0, z1), (x1, z1)
+        val topLeft = redChannel[(x0 + z0 * resolution.x).toInt()]
+        val topRight = redChannel[(x1 + z0 * resolution.x).toInt()]
+        val bottomLeft = redChannel[(x0 + z1 * resolution.x).toInt()]
+        val bottomRight = redChannel[(x1 + z1 * resolution.x).toInt()]
+
+        // Interpolacja najpierw w osi x (między topLeft i topRight)
+        val topInterpolated = topLeft + (topRight - topLeft) * xf
+        val bottomInterpolated = bottomLeft + (bottomRight - bottomLeft) * xf
+
+        // Interpolacja w osi z (między topInterpolated i bottomInterpolated)
+        return redChannel[(x0 + z0 * resolution.x).toInt()] * heightMul
     }
 
     fun build(){
 
-        val pixels = IntArray(bitmap.width * bitmap.height)
+        pixels = IntArray(bitmap.width * bitmap.height)
         bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+
+        redChannel = IntArray(bitmap.width * bitmap.height)
+        for (i in pixels.indices) {
+            redChannel[i] = Color.red(pixels[i])
+        }
 
         val tmpCoords = mutableListOf<Float>()
         val tmpTexCoords = mutableListOf<Float>()
@@ -71,15 +106,17 @@ class Terrain(context: Context) {
                 // Współrzędne wierzchołków
                 val posX = x * tailSize +dupa
 
-                val colour = bitmap.getPixel(x, y)
-                val red = Color.red(colour)
-                val green = Color.green(colour)
-                val blue = Color.blue(colour)
-                val alpha = Color.alpha(colour)
+                //val colour = getHeight(x.toFloat(), y.toFloat())
+                val red = getHeight(x.toFloat(), y.toFloat())//colour//Color.red(colour)
+//                val green = Color.green(colour)
+//                val blue = Color.blue(colour)
+//                val alpha = Color.alpha(colour)
 
-                Timber.d("x: $x, y: $y, red: $red")
 
-                val posY = red * .01f // Wysokość z tekstury
+
+                val posY = red // Wysokość z tekstury
+                Timber.d("x: $x, y: $y, red: $red, height: $posY")
+
                 val posZ = y * tailSize +dupa
 
                 // Dodaj współrzędne wierzchołków (x, y, z)

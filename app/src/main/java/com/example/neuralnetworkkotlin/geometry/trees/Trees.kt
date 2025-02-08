@@ -1,14 +1,17 @@
 package com.example.neuralnetworkkotlin.geometry.trees
 
 import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.distance
+import timber.log.Timber
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 import kotlin.math.PI
 import kotlin.random.Random
 
-class Trees(val file3Df: File3d) {
+class Trees(val file3Df: File3d, val terrain: Terrain) {
     var items: ArrayList<TreeData> = ArrayList()
     var wave = 0f
 
@@ -17,18 +20,26 @@ class Trees(val file3Df: File3d) {
         val densityY = 20f
         for (i in 0..28) {
             val randomModel = Random.nextBoolean()
+
+            val position = Vector2f(
+                (Random.nextFloat() - .5f) * densityX,
+                (Random.nextFloat() - .5f) * densityY,
+            )
+            Timber.e("index: $i, position: $position")
+            Timber.e("height: ${terrain.getHeight(position.x, position.y)}")
             items.add(
                 TreeData(
-                    Vector2f(
-                        (Random.nextFloat() - .5f) * densityX,
-                        (Random.nextFloat() - .5f) * densityY,
+                    Vector3f(
+                        position.x,
+                        terrain.getHeight(position.x, position.y),
+                        position.y,
                     ), wave = Random.nextFloat() * 6f, kindIndexL = 0,//Random.nextInt(0, 4),
                     modelTree = if (randomModel) MODELS_3D.TREE else MODELS_3D.TREE2,
                     modelLeaf = if (randomModel) MODELS_3D.LEAFS else MODELS_3D.LEAFS2
                 )
             )
         }
-        items = items. filter {it.position.distance(Vector2f(0f, 0f)) > 2f} as ArrayList<TreeData>
+        items = items. filter {it.position.distance(Vector3f(0f, 0f, 0f)) > 2f} as ArrayList<TreeData>
     }
 
 

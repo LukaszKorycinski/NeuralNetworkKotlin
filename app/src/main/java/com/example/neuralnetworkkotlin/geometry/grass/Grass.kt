@@ -1,5 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.grass
 
+import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.helpers.Wave
@@ -11,7 +13,7 @@ import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 import kotlin.random.Random
 
-class Grass(val file3Df: File3d) {
+class Grass(val file3Df: File3d, val terrain: Terrain) {
     private var items: ArrayList<GrassData> = ArrayList()
     private var wave = Wave(0f)
 
@@ -32,11 +34,18 @@ class Grass(val file3Df: File3d) {
         val densityY = 20f
         items.clear()
         for (i in 0..QUANTITY) {
+
+            val position = Vector2f(
+                (Random.nextFloat() - .5f) * densityX,
+                (Random.nextFloat() - .5f) * densityY,
+            )
+
             items.add(
                 GrassData(
-                    position = Vector2f(
-                        (Random.nextFloat() - .5f) * densityX,
-                        (Random.nextFloat() - .5f) * densityY,
+                    position = Vector3f(
+                        position.x,
+                        terrain.getHeight(position.x, position.y),
+                        position.y,
                     ), wave = Random.nextFloat() * 6f, kindIndexL = 0,
                     model = MODELS_3D.GRASS
                 )
@@ -60,23 +69,21 @@ class Grass(val file3Df: File3d) {
         instancedBuffer2?.position(0)
     }
 
-    fun draw(mvpMatrix: FloatArray, eyePosition: Vector3f) {
+    fun draw(camera: Camera) {
 
         wave += 0.03f
         file3Df.bindProgram(MODELS_3D.GRASS)
-        file3Df.setVariable3F(MODELS_3D.GRASS, eyePosition, "eyePosition")
+        file3Df.setVariable3F(MODELS_3D.GRASS, camera.eyePosition, "eyePosition")
         instancedBuffer?.let {
-
-
             file3Df.setVariableF(MODELS_3D.GRASS, wave.value, "wave")
             file3Df.setVariableTexture1(MODELS_3D.GRASS, TEXTURES.SHADOW_TERRAIN, "shadowTexture")
-            file3Df.drawInstanced(mvpMatrix, MODELS_3D.GRASS, QUANTITY, it)
+            file3Df.drawInstanced(camera.viewProjectionMatrix, MODELS_3D.GRASS, QUANTITY, it)
         }
 
         instancedBuffer2?.let {
             file3Df.setVariableF(MODELS_3D.GRASS2, wave.value, "wave")
             file3Df.setVariableTexture1(MODELS_3D.GRASS2, TEXTURES.SHADOW_TERRAIN,"shadowTexture")
-            file3Df.drawInstanced(mvpMatrix, MODELS_3D.GRASS2, QUANTITY, it)
+            file3Df.drawInstanced(camera.viewProjectionMatrix, MODELS_3D.GRASS2, QUANTITY, it)
         }
 
 

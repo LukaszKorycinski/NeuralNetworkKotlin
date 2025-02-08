@@ -10,6 +10,7 @@ import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
 import com.example.neuralnetworkkotlin.geometry.plain3d.Drawer
 import com.example.neuralnetworkkotlin.geometry.plain3d.Loader
 import com.example.neuralnetworkkotlin.geometry.plain3d.data.LoaderType
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.Vector3f
 import com.example.neuralnetworkkotlin.renderer.ShaderLoader
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
 import com.example.neuralnetworkkotlin.renderer.TexturesLoader
@@ -66,7 +67,7 @@ class File3d(val context: Context, val textures: TexturesLoader) {
         drawer.drawPrepared(mvpMatrix, loadedModels[model.index], human.position)
     }
 
-    fun draw(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector2f = Vector3f(0f)) {
+    fun draw(mvpMatrix: FloatArray, model: MODELS_3D, position: Vector3f = Vector3f(0f)) {
 
         drawer.draw(mvpMatrix, loadedModels[model.index], position)
     }
@@ -113,7 +114,7 @@ class File3d(val context: Context, val textures: TexturesLoader) {
     fun drawTrees(
         mvpMatrix: FloatArray,
         model: MODELS_3D,
-        position: Vector2f = Vector2f(0f),
+        position: Vector3f = Vector3f(0f),
         wave: Float,
         kind: Int
     ) {
@@ -122,7 +123,7 @@ class File3d(val context: Context, val textures: TexturesLoader) {
 
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
+        Matrix.translateM(tmpMatrix, 0, position.x, position.y, position.z)
 
         setVariableMatrix4fv(model, tmpMatrix, "uWorldMatrix")
 

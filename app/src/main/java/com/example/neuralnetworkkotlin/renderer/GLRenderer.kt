@@ -10,6 +10,7 @@ import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.dumpY
 import com.example.neuralnetworkkotlin.helpers.Collision
 import com.example.neuralnetworkkotlin.helpers.ControlHelper
 import com.example.neuralnetworkkotlin.viewgroups.BackGround
@@ -73,7 +74,7 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         textures.loadTexture()
         shaderLoader = ShaderLoader(context)
 
-        textures.burnPointsShadows(strategyGame.trees.items.map { it.position })
+        textures.burnPointsShadows(strategyGame.trees.items.map { it.position.dumpY() })
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glDepthFunc(GLES20.GL_LEQUAL)

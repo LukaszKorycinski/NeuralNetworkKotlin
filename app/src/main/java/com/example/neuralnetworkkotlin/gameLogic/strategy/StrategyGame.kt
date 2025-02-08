@@ -28,9 +28,9 @@ class StrategyGame(
     private lateinit var terrain: Terrain
     private val collision = Collision()
     private val humans = Humans(collision)
-    val trees = Trees(file3Df)
-    val grass = Grass(file3Df)
-    val buldings = Buldings(file3Df)
+    lateinit var trees: Trees
+    lateinit var grass: Grass
+    lateinit var buldings: Buldings
 
     fun setWarpeonAngle(angle: Float){
         humans.banners.forEach { banner ->
@@ -53,6 +53,10 @@ class StrategyGame(
 
     fun onSurfaceCreated() {
         terrain = Terrain(context)
+        terrain.build()
+        trees = Trees(file3Df, terrain)
+        grass = Grass(file3Df, terrain)
+        buldings = Buldings(file3Df)
 
         humans.banners.add(Banner().makeBanner())
         //humans.banners.add(Banner().makeBanner(Vector2f(2.7f, 0f)))
@@ -81,7 +85,7 @@ class StrategyGame(
     @OptIn(ExperimentalTime::class)
     fun draw() {
         trees.draw(camera)
-        grass.draw(camera.viewProjectionMatrix, camera.eyePosition)
+        grass.draw(camera)
         buldings.draw(camera)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }

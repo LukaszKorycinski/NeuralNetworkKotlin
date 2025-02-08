@@ -8,6 +8,7 @@ import android.opengl.Matrix
 import com.example.neuralnetworkkotlin.gameLogic.strategy.Human
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.geometry.vectors.Vector2f
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.Vector3f
 import com.example.neuralnetworkkotlin.helpers.rotateX
 import com.example.neuralnetworkkotlin.helpers.rotateZ
 import com.example.neuralnetworkkotlin.helpers.scale
@@ -18,6 +19,7 @@ import com.example.neuralnetworkkotlin.renderer.TexturesLoader
 import timber.log.Timber
 import java.nio.FloatBuffer
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 import kotlin.math.sin
 
 open class Drawer(val textures: TexturesLoader) {
@@ -73,13 +75,13 @@ open class Drawer(val textures: TexturesLoader) {
             textures.textureHandle[model.model3d.textureAlpha?.id ?: 0]
         )
 
-        draw(model, position)
+        draw(model)
     }
 
-    fun draw(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f)) {
+    fun draw(mvpMatrix: FloatArray, model: Loader, position: Vector3f = Vector3f(0f)) {
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, 0.0f, position.y)
+        Matrix.translateM(tmpMatrix, 0, position.x, position.y, position.z)
 
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),
@@ -87,7 +89,7 @@ open class Drawer(val textures: TexturesLoader) {
         )
         Matrix.multiplyMM(tmpMatrix, 0, mvpMatrix, 0, tmpMatrix, 0)
         GLES20.glUniformMatrix4fv(iVPMatrix, 1, false, tmpMatrix, 0)
-        draw(model, position)
+        draw(model)
     }
 
     fun drawPrepared(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f)){
@@ -216,7 +218,7 @@ open class Drawer(val textures: TexturesLoader) {
 
 
 
-    fun draw(model: Loader, position: Vector2f = Vector2f(0f)) {
+    fun draw(model: Loader) {
 
         bindTexture(model.model3d.texture.id, model.model3d.shader)
 
