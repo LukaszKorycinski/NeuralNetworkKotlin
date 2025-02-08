@@ -54,18 +54,18 @@ class Grass(val file3Df: File3d, val terrain: Terrain) {
     }
 
     private fun buildInstancedBuffer() {
-        val vbb = ByteBuffer.allocateDirect((QUANTITY+1) * 4 * 2)
+        val vbb = ByteBuffer.allocateDirect((QUANTITY+1) * 4 * 3)
         vbb.order(ByteOrder.nativeOrder())
         instancedBuffer = vbb.asFloatBuffer()
-        instancedBuffer?.put(items.flatMap { listOf(it.position.x, it.position.y) }.toFloatArray())
+        instancedBuffer?.put(items.flatMap { listOf(it.position.x, it.position.y, it.position.z) }.toFloatArray())
         instancedBuffer?.position(0)
     }
 
     private fun buildInstancedBuffer2() {
-        val vbb = ByteBuffer.allocateDirect((QUANTITY+1) * 4 * 2)
+        val vbb = ByteBuffer.allocateDirect((QUANTITY+1) * 4 * 3)
         vbb.order(ByteOrder.nativeOrder())
         instancedBuffer2 = vbb.asFloatBuffer()
-        instancedBuffer2?.put(items.flatMap { listOf(it.position.x, it.position.y) }.toFloatArray())
+        instancedBuffer2?.put(items.flatMap { listOf(it.position.x, it.position.y, it.position.z) }.toFloatArray())
         instancedBuffer2?.position(0)
     }
 

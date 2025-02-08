@@ -7,7 +7,7 @@
 
         uniform mat4 uMVPMatrix;
         uniform float wave;
-        uniform vec2 position[128];
+        uniform vec3 position[128];
         uniform vec3 eyePosition;
         in vec4 vPosition;
         in vec3 vNormal;
@@ -20,9 +20,9 @@
 
 
             vec4 outPos = vPosition;
-            outPos.xz = outPos.xz + position[gl_InstanceID];
+            outPos.xyz = outPos.xyz + position[gl_InstanceID];
 
-            float winter = sin( wave + outPos.x + outPos.y + float(gl_InstanceID) );
+            float winter = sin( wave + outPos.x + outPos.z + float(gl_InstanceID) );
 
             outPos.x = outPos.x + winter * 0.3 * outPos.y;
             outPos.y = outPos.y - abs(winter * 0.15 * outPos.y);

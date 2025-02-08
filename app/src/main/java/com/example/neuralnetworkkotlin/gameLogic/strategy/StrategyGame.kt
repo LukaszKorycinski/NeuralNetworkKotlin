@@ -86,7 +86,7 @@ class StrategyGame(
     fun draw() {
         trees.draw(camera)
         grass.draw(camera)
-        buldings.draw(camera)
+        //buldings.draw(camera)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 

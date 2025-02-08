@@ -48,7 +48,7 @@ class Terrain(context: Context) {
     }
 
     fun getHeight(xIn: Float, zIn: Float): Float{
-
+return 0f
         val x = (xIn + 20f) / resolution.x
         val z = (zIn + 10f) / resolution.y
 

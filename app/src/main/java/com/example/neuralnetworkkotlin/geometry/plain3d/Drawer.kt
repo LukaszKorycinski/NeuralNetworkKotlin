@@ -196,7 +196,7 @@ open class Drawer(val textures: TexturesLoader) {
             shaderId,
             "position"
         )
-        GLES31.glUniform2fv(
+        GLES31.glUniform3fv(
             uniformBlockHandle,
             quantity,
             instancedBuffer
