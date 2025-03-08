@@ -40,7 +40,7 @@
         in vec3 worldPos;
         in float fogFactor;
 
-        out vec4 gl_FragColor;
+        out vec4 fragColor;
 
         void main() {
 
@@ -67,7 +67,7 @@
 
         color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
-        gl_FragColor = color;
+        fragColor = color;
         }
 
     ]]></string>
@@ -84,7 +84,7 @@
         in vec3 worldPos;
         in float fogFactor;
 
-        out vec4 gl_FragColor;
+        out vec4 fragColor;
 
         void main() {
 
@@ -111,7 +111,7 @@
 
         color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
-        gl_FragColor = color;
+        fragColor = color;
         }
 
     ]]></string>

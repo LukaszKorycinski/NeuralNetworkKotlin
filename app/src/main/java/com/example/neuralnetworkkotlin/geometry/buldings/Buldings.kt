@@ -1,6 +1,7 @@
 package com.example.neuralnetworkkotlin.geometry.buldings
 
 import com.example.neuralnetworkkotlin.geometry.Camera
+import com.example.neuralnetworkkotlin.geometry.Terrain
 import com.example.neuralnetworkkotlin.geometry.grass.GrassData
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
@@ -9,14 +10,14 @@ import java.util.Vector
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
 
-class Buldings(val file3Df: File3d) {
+class Buldings(val file3Df: File3d, terrain: Terrain) {
     private var items: ArrayList<BuldingData> = ArrayList()
 
     init {
         items.add(
             BuldingData(
-                position = Vector3f(0f),
-                model = MODELS_3D.NORD
+                position = Vector3f(3f, terrain.getHeight(3f, 2f), 2f),
+                model = MODELS_3D.CASTLE
             )
         )
     }

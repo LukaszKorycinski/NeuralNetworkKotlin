@@ -20,10 +20,12 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import javax.vecmath.Vector2f
 import javax.vecmath.Vector3f
+import kotlin.math.max
+import kotlin.math.min
 
 class Terrain(context: Context) {
 
-    private val heightMul = .1f
+
 
     var bitmap:Bitmap
 
@@ -39,7 +41,8 @@ class Terrain(context: Context) {
     lateinit var redChannel: IntArray
 
     val size = 40.0f
-    val resolution = Vector2f(16f, 8f)
+    val resolution = Vector2f(16f, 16f)
+    private val heightMul = .2f
 
     var dupa = .0f
 
@@ -48,35 +51,38 @@ class Terrain(context: Context) {
     }
 
     fun getHeight(xIn: Float, zIn: Float): Float{
-return 0f
-        val x = (xIn + 20f) / resolution.x
-        val z = (zIn + 10f) / resolution.y
+//        return 0f
+        val x = xIn / resolution.x
+        val xSafe = max(0f, min(x, resolution.x - 1f))
+        val z = zIn / resolution.y
+        val zSafe = max(0f, min(z, resolution.y - 1f))
 
         // Przekształcenie współrzędnych do indeksów w tablicy bitmap
-        val xi = x.toInt()
-        val zi = z.toInt()
+        val xi = xSafe.toInt()
+        val zi = zSafe.toInt()
 
         // Obliczenie części ułamkowej dla obu współrzędnych
-        val xf = x - xi
-        val zf = z - zi
+        //val xf = xSafe - xi
+        //val zf = zSafe - zi
 
         // Indeksy czterech punktów wokół (xi, zi)
         val x0 = xi
-        val x1 = if (x0 + 1 < resolution.x) x0 + 1 else x0
+        //val x1 = if (x0 + 1 < resolution.x) x0 + 1 else x0
         val z0 = zi
-        val z1 = if (z0 + 1 < resolution.y) z0 + 1 else z0
+        //val z1 = if (z0 + 1 < resolution.y) z0 + 1 else z0
 
         // Pobranie kolorów z bitmapy w punktach (x0, z0), (x1, z0), (x0, z1), (x1, z1)
-        val topLeft = redChannel[(x0 + z0 * resolution.x).toInt()]
-        val topRight = redChannel[(x1 + z0 * resolution.x).toInt()]
-        val bottomLeft = redChannel[(x0 + z1 * resolution.x).toInt()]
-        val bottomRight = redChannel[(x1 + z1 * resolution.x).toInt()]
-
-        // Interpolacja najpierw w osi x (między topLeft i topRight)
-        val topInterpolated = topLeft + (topRight - topLeft) * xf
-        val bottomInterpolated = bottomLeft + (bottomRight - bottomLeft) * xf
+//        val topLeft = redChannel[(x0 + z0 * resolution.x).toInt()]
+//        val topRight = redChannel[(x1 + z0 * resolution.x).toInt()]
+//        val bottomLeft = redChannel[(x0 + z1 * resolution.x).toInt()]
+//        val bottomRight = redChannel[(x1 + z1 * resolution.x).toInt()]
+//
+//        // Interpolacja najpierw w osi x (między topLeft i topRight)
+//        val topInterpolated = topLeft + (topRight - topLeft) * xf
+//        val bottomInterpolated = bottomLeft + (bottomRight - bottomLeft) * xf
 
         // Interpolacja w osi z (między topInterpolated i bottomInterpolated)
+        Timber.e("height for x: $x0 z: $z0")
         return redChannel[(x0 + z0 * resolution.x).toInt()] * heightMul
     }
 
@@ -94,35 +100,26 @@ return 0f
         val tmpTexCoords = mutableListOf<Float>()
         val tmpDrawOrder = mutableListOf<Short>()
 
-
         val tailSize = size / resolution.x
 
-        val halfX = tailSize * resolution.x / 2f
-        val halfZ = tailSize * resolution.y / 2f
+        // Iterate over the resolution (rows and columns of the grid)gfGF
 
-        // Iterate over the resolution (rows and columns of the grid)
         for (y in 0 until resolution.y.toInt()) {
             for (x in 0 until resolution.x.toInt()) {
                 // Współrzędne wierzchołków
-                val posX = x * tailSize +dupa
 
-                //val colour = getHeight(x.toFloat(), y.toFloat())
-                val red = getHeight(x.toFloat(), y.toFloat())//colour//Color.red(colour)
-//                val green = Color.green(colour)
-//                val blue = Color.blue(colour)
-//                val alpha = Color.alpha(colour)
+                val posX = x * tailSize
+                val posZ = y * tailSize
 
+                val posY = getHeight(posX, posZ) // red channel
+                Timber.e("terrain:")
+                Timber.d("x: $x, y: $y height: $posY")
 
-
-                val posY = red // Wysokość z tekstury
-                Timber.d("x: $x, y: $y, red: $red, height: $posY")
-
-                val posZ = y * tailSize +dupa
 
                 // Dodaj współrzędne wierzchołków (x, y, z)
-                tmpCoords.add(posX-halfX)
+                tmpCoords.add(posX)
                 tmpCoords.add(posY)
-                tmpCoords.add(posZ-halfZ)
+                tmpCoords.add(posZ)
 
                 // Współrzędne tekstury (UV)
                 val texCoordX = x / (resolution.x )

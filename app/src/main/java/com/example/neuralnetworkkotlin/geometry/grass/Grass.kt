@@ -6,6 +6,7 @@ import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.MODELS_3D
 import com.example.neuralnetworkkotlin.helpers.Wave
 import com.example.neuralnetworkkotlin.renderer.TEXTURES
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -20,7 +21,7 @@ class Grass(val file3Df: File3d, val terrain: Terrain) {
     var instancedBuffer: FloatBuffer? = null
     var instancedBuffer2: FloatBuffer? = null
 
-    val QUANTITY = 128
+    val QUANTITY = 256
 
     init {
         generateRandomGrass()
@@ -36,10 +37,11 @@ class Grass(val file3Df: File3d, val terrain: Terrain) {
         for (i in 0..QUANTITY) {
 
             val position = Vector2f(
-                (Random.nextFloat() - .5f) * densityX,
-                (Random.nextFloat() - .5f) * densityY,
+                Random.nextFloat() * densityX,
+                Random.nextFloat()* densityY,
             )
-
+            Timber.e("grass:")
+            Timber.d("x: ${position.x}, y: ${position.y}, red: ${terrain.getHeight(position.x, position.y)}")
             items.add(
                 GrassData(
                     position = Vector3f(

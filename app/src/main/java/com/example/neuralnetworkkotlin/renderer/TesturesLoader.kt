@@ -31,7 +31,7 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     LEAF_CHANNELS(15, R.drawable.leafchannels),
     SHADOW_TERRAIN(16, R.drawable.terain_shadow),
     GRASS(17, R.drawable.grass),
-    NORD(18, R.drawable.nord),
+    CASTLE(18, R.drawable.castle),
 }
 
 
@@ -49,18 +49,18 @@ class TexturesLoader(var context: Context) {
     //for 515x512
     fun burnPointsShadows(trees: List<Vector2f>) {
         //TODO Use getPixels() to get all the pixels, modify the values in the byte[], then call setPixels() to store all the pixels at once.
-        shadowBitmap = Bitmap.createBitmap(125, 64, Bitmap.Config.ARGB_8888)
+        shadowBitmap = Bitmap.createBitmap(125, 125, Bitmap.Config.ARGB_8888)
 
         val resolution = 125
         val resolutionF = 125f
 
         for (x in 0 until resolution) {
-            for (y in 0 until resolution/2) {
+            for (y in 0 until resolution) {
 
                 val closestDistance = trees.minOf { tree ->
                     Vector2f(
-                        ((tree.x+20f) * .025f) * resolutionF,
-                        ((tree.y+10f) * .5f) * resolutionF * .05f,
+                        (tree.x * .025f) * resolutionF,
+                        (tree.y * .025f) * resolutionF,
                     ).distance(Vector2f(x.toFloat(), y.toFloat()))
                 }
 

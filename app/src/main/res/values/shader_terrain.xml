@@ -35,7 +35,7 @@
         in vec2 texCoord;
         in float fogFactor;
 
-        out vec4 gl_FragColor;
+        out vec4 fragColor;
 
 
         void main() {
@@ -59,7 +59,7 @@
 
         finalColor = mix(finalColor, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
-        gl_FragColor = finalColor;
+        fragColor = finalColor;
         }
 
     ]]></string>

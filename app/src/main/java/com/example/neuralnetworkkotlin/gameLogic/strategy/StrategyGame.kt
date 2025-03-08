@@ -56,7 +56,7 @@ class StrategyGame(
         terrain.build()
         trees = Trees(file3Df, terrain)
         grass = Grass(file3Df, terrain)
-        buldings = Buldings(file3Df)
+        buldings = Buldings(file3Df, terrain)
 
         humans.banners.add(Banner().makeBanner())
         //humans.banners.add(Banner().makeBanner(Vector2f(2.7f, 0f)))
@@ -86,7 +86,7 @@ class StrategyGame(
     fun draw() {
         trees.draw(camera)
         grass.draw(camera)
-        //buldings.draw(camera)
+        buldings.draw(camera)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 

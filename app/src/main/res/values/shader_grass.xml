@@ -7,7 +7,7 @@
 
         uniform mat4 uMVPMatrix;
         uniform float wave;
-        uniform vec3 position[128];
+        uniform vec3 position[256];
         uniform vec3 eyePosition;
         in vec4 vPosition;
         in vec3 vNormal;
@@ -24,11 +24,11 @@
 
             float winter = sin( wave + outPos.x + outPos.z + float(gl_InstanceID) );
 
-            outPos.x = outPos.x + winter * 0.3 * outPos.y;
-            outPos.y = outPos.y - abs(winter * 0.15 * outPos.y);
+            outPos.x = outPos.x + winter * 0.3 * vPosition.y;
+            outPos.y = outPos.y - abs(winter * 0.15 * vPosition.y);
 
-            texCoordPosition.y = (outPos.z + 10.0) / 20.0;
-            texCoordPosition.x = (outPos.x + 20.0) / 40.0;
+            texCoordPosition.y = outPos.z / 40.0;
+            texCoordPosition.x = outPos.x / 40.0;
 
             fogFactor = min(1.0, distance(eyePosition, outPos.xyz) * 0.03);
 
@@ -50,7 +50,7 @@
         in vec2 texCoordPosition;
         in float fogFactor;
 
-        out vec4 gl_FragColor;
+        out vec4 fragColor;
 
         void main() {
 
@@ -68,7 +68,7 @@
 
         color = mix(color, vec4(0.5, 0.7, 1.0, 1.0), fogFixed);
 
-        gl_FragColor = color;
+        fragColor = color;
         }
 
     ]]></string>

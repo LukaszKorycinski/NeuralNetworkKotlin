@@ -22,11 +22,10 @@ class Trees(val file3Df: File3d, val terrain: Terrain) {
             val randomModel = Random.nextBoolean()
 
             val position = Vector2f(
-                (Random.nextFloat() - .5f) * densityX,
-                (Random.nextFloat() - .5f) * densityY,
+                Random.nextFloat() * densityX,
+                Random.nextFloat() * densityY,
             )
-            Timber.e("index: $i, position: $position")
-            Timber.e("height: ${terrain.getHeight(position.x, position.y)}")
+
             items.add(
                 TreeData(
                     Vector3f(
