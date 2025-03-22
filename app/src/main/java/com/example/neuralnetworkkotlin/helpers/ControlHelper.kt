@@ -23,29 +23,30 @@ class ControlHelper {
 
     fun zDownKey(action: MotionEvent){
         when(action.action){
-            MotionEvent.ACTION_DOWN -> upZ = true
-            MotionEvent.ACTION_UP -> upZ = false
+            MotionEvent.ACTION_DOWN -> down = true
+            MotionEvent.ACTION_UP -> down = false
         }
     }
 
     fun zUpKey(action: MotionEvent){
-        when(action.action){
-            MotionEvent.ACTION_DOWN -> downZ = true
-            MotionEvent.ACTION_UP -> downZ = false
-        }
-    }
 
-    fun upKey(action: MotionEvent){
         when(action.action){
             MotionEvent.ACTION_DOWN -> up = true
             MotionEvent.ACTION_UP -> up = false
         }
     }
 
+    fun upKey(action: MotionEvent){
+        when(action.action){
+            MotionEvent.ACTION_DOWN -> downZ = true
+            MotionEvent.ACTION_UP -> downZ = false
+        }
+    }
+
     fun downKey(action: MotionEvent){
         when(action.action){
-            MotionEvent.ACTION_DOWN -> down = true
-            MotionEvent.ACTION_UP -> down = false
+            MotionEvent.ACTION_DOWN -> upZ = true
+            MotionEvent.ACTION_UP -> upZ = false
         }
     }
 

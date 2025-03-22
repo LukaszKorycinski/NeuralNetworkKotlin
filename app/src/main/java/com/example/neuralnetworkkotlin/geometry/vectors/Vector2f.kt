@@ -54,3 +54,4 @@ fun Vector2f.normalize(desireL: Float = 1.0f): Vector2f{
     val currentL = sqrt(x * x + y * y)
     return Vector2f((x/currentL)*desireL, (y/currentL*desireL))
 }
+

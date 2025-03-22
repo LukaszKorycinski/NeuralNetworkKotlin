@@ -41,8 +41,10 @@ class Terrain(context: Context) {
     lateinit var redChannel: IntArray
 
     val size = 40.0f
-    val resolution = Vector2f(16f, 16f)
-    private val heightMul = .2f
+    val resolution = Vector2f(32f, 32f)
+    private val heightMul = .03f
+
+    val textureSpace = resolution.x / size
 
     var dupa = .0f
 
@@ -52,13 +54,13 @@ class Terrain(context: Context) {
 
     fun getHeight(xIn: Float, zIn: Float): Float{
 //        return 0f
-        val x = xIn / resolution.x
-        val xSafe = max(0f, min(x, resolution.x - 1f))
-        val z = zIn / resolution.y
-        val zSafe = max(0f, min(z, resolution.y - 1f))
+        val x = xIn * textureSpace /// resolution.x // 1/16
+        val xSafe = max(0f, min(x, resolution.x - 1f))  // 1/16 = 0.0625
+        val z = zIn * textureSpace /// resolution.y
+        val zSafe = max(0f, min(z, resolution.y - 1f)) //0
 
         // Przekształcenie współrzędnych do indeksów w tablicy bitmap
-        val xi = xSafe.toInt()
+        val xi = xSafe.toInt() // 0
         val zi = zSafe.toInt()
 
         // Obliczenie części ułamkowej dla obu współrzędnych
@@ -66,9 +68,9 @@ class Terrain(context: Context) {
         //val zf = zSafe - zi
 
         // Indeksy czterech punktów wokół (xi, zi)
-        val x0 = xi
+        val x0 = xi //* resolution.x
         //val x1 = if (x0 + 1 < resolution.x) x0 + 1 else x0
-        val z0 = zi
+        val z0 = zi //* resolution.y
         //val z1 = if (z0 + 1 < resolution.y) z0 + 1 else z0
 
         // Pobranie kolorów z bitmapy w punktach (x0, z0), (x1, z0), (x0, z1), (x1, z1)
@@ -82,7 +84,6 @@ class Terrain(context: Context) {
 //        val bottomInterpolated = bottomLeft + (bottomRight - bottomLeft) * xf
 
         // Interpolacja w osi z (między topInterpolated i bottomInterpolated)
-        Timber.e("height for x: $x0 z: $z0")
         return redChannel[(x0 + z0 * resolution.x).toInt()] * heightMul
     }
 
@@ -224,7 +225,12 @@ class Terrain(context: Context) {
         val texHandlerTerrain4 = GLES20.glGetUniformLocation(shader, "shadowTexture")
         GLES20.glUniform1i(texHandlerTerrain4, 4)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE4)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_TERRAIN.id])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_ON_TERRAIN.id])
+
+        val texHandlerShadowMap = GLES20.glGetUniformLocation(shader, "shadowMapTexture")
+        GLES20.glUniform1i(texHandlerShadowMap, 5)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE5)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.textureHandle[TEXTURES.SHADOW_MAP_TERRAIN.id])
 
 
         val positionHandle = GLES20.glGetAttribLocation(shader, "vPosition")

@@ -11,11 +11,12 @@
         in vec2 a_TexCoordinate;
         out vec2 texCoord;
         out float fogFactor;
+        out float height;
 
         void main() {
 
             gl_Position = uMVPMatrix * vec4(vPosition.xyz, 1.0);
-
+            height = vPosition.y;
 
             fogFactor = min(1.0, distance(eyePosition, vPosition.xyz) * 0.03);
 
@@ -32,26 +33,31 @@
         uniform sampler2D u_TextureTerrain2;
         uniform sampler2D u_TextureTerrain3;
         uniform sampler2D shadowTexture;
+        uniform sampler2D shadowMapTexture;
         in vec2 texCoord;
         in float fogFactor;
-
+        in float height;
         out vec4 fragColor;
 
+        vec4 interpolateTerrainTexture(float y, vec4 col1, vec4 col2, vec4 col3) {
+            float t1 = smoothstep(0.1, 0.4, y);
+            float t2 = smoothstep(0.55, 0.8, y);
+
+            vec4 midColor = mix(col1, col2, t1);
+            return mix(midColor, col3, t2);
+        }
 
         void main() {
 
         vec4 alpha = texture(u_Texture, texCoord);
 
-        vec2 texCoordPosition = texCoord - vec2(0.5, 0.5);
-        texCoordPosition = -texCoordPosition * 20.0;
+        vec2 texCoordPosition = -texCoord * 5.0;
 
         vec4 color = texture(u_TextureTerrain, texCoordPosition);
         vec4 color2 = texture(u_TextureTerrain2, texCoordPosition);
         vec4 color3 = texture(u_TextureTerrain3, texCoordPosition);
 
-        vec4 finalColor = color;
-
-        finalColor = finalColor * texture(shadowTexture, texCoord);
+        vec4 finalColor = interpolateTerrainTexture(height * 0.125, color, color2, color3) * texture(shadowTexture, texCoord) * texture(shadowMapTexture, texCoord);
 
         float fogFixed = max(fogFactor, 0.75);
         fogFixed = fogFixed - 0.75;

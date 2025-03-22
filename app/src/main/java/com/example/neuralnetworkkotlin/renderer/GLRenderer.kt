@@ -81,10 +81,6 @@ class GLRenderer(val context: Context) : GLSurfaceView.Renderer {
         GLES20.glDepthMask( true )
     }
 
-
-
-    val coli = Collision()
-
     var time = System.currentTimeMillis()
     var fps = MutableLiveData<Int>()
     var frame = MutableLiveData<Int>()

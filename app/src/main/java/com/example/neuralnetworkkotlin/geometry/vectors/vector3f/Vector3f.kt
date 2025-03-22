@@ -8,6 +8,8 @@ import kotlin.math.sqrt
 fun Vector3f(x: Float) = Vector3f(x, x, x)
 fun Vector3f.dumpY() = Vector2f(x, z)
 
+fun Vector3f.xz() = Vector2f(x, z)
+
 fun Vector3f.distance (vector: Vector3f): Float =
     sqrt(
         (this.x - vector.x).pow(2)

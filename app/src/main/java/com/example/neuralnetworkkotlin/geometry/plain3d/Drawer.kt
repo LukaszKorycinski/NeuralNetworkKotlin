@@ -92,10 +92,10 @@ open class Drawer(val textures: TexturesLoader) {
         draw(model)
     }
 
-    fun drawPrepared(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f)){
+    fun drawPrepared(mvpMatrix: FloatArray, model: Loader, position: Vector2f = Vector2f(0f), height: Float){
         val tmpMatrix = FloatArray(16)
         Matrix.setIdentityM(tmpMatrix, 0)
-        Matrix.translateM(tmpMatrix, 0, position.x, 0.3f, position.y)
+        Matrix.translateM(tmpMatrix, 0, position.x, height, position.y)
 
         val iVPMatrix = GLES20.glGetUniformLocation(
             ShaderLoader.getShaderProgram(model.model3d.shader),

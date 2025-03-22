@@ -29,9 +29,10 @@ enum class TEXTURES(val id: Int, val resId: Int) {
     SKY(13, R.drawable.sky),
     COWS_TEXTURE(14, R.drawable.cows_texture),
     LEAF_CHANNELS(15, R.drawable.leafchannels),
-    SHADOW_TERRAIN(16, R.drawable.terain_shadow),
-    GRASS(17, R.drawable.grass),
-    CASTLE(18, R.drawable.castle),
+    SHADOW_ON_TERRAIN(16, R.drawable.terain_shadow),
+    SHADOW_MAP_TERRAIN(17, R.drawable.terain_shadow),
+    GRASS(18, R.drawable.grass),
+    CASTLE(19, R.drawable.castle),
 }
 
 
@@ -44,7 +45,7 @@ class TexturesLoader(var context: Context) {
     val textureHandle = IntArray(TEXTURES_QTY + 1)
 
     private var shadowBitmap: Bitmap? = null
-    private var shadowBitmapBackup: Bitmap? = null
+    //private var shadowBitmapBackup: Bitmap? = null
 
     //for 515x512
     fun burnPointsShadows(trees: List<Vector2f>) {
@@ -74,7 +75,7 @@ class TexturesLoader(var context: Context) {
             }
         }
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[TEXTURES.SHADOW_TERRAIN.id])
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[TEXTURES.SHADOW_ON_TERRAIN.id])
 
         GLES20.glTexParameteri(
             GLES20.GL_TEXTURE_2D,
@@ -99,21 +100,20 @@ class TexturesLoader(var context: Context) {
         )
 
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, shadowBitmap, 0)
+        //shadowBitmapBackup!!.recycle()
         shadowBitmap!!.recycle()
     }
 
     fun clearShadow() {
-        shadowBitmap = shadowBitmapBackup!!.copy(shadowBitmapBackup!!.config, true)
-
+        //shadowBitmap = shadowBitmapBackup!!.copy(shadowBitmapBackup!!.config, true)
     }
 
 
     fun loadTexture() {
         GLES20.glGenTextures(TEXTURES_QTY, textureHandle, 0)
 
-
         TEXTURES.values().forEach { texture ->
-            if (texture == TEXTURES.SHADOW_TERRAIN) return@forEach
+            if (texture == TEXTURES.SHADOW_ON_TERRAIN) return@forEach
 
             val options = BitmapFactory.Options()
             options.inScaled = true // No pre-scaling
@@ -156,6 +156,8 @@ class TexturesLoader(var context: Context) {
                     GLES20.GL_REPEAT
                 )
             }
+
+
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
             bitmap.recycle()

@@ -10,10 +10,12 @@ import com.example.neuralnetworkkotlin.geometry.vectors.normalizeOrLow
 import com.example.neuralnetworkkotlin.geometry.vectors.plus
 import com.example.neuralnetworkkotlin.geometry.vectors.rotate
 import com.example.neuralnetworkkotlin.geometry.vectors.times
+import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.Vector3f
 
 import com.example.neuralnetworkkotlin.helpers.Collision
 import java.util.UUID
 import javax.vecmath.Vector2f
+import javax.vecmath.Vector3f
 import kotlin.math.PI
 import kotlin.random.Random
 
@@ -24,8 +26,9 @@ private const val PRECISION = 0.02f
 data class Human(
     var look: Look,
     var position: Vector2f = Vector2f(0f),
+    var height: Float = 1f,
     var velocity: Vector2f = Vector2f(0f),
-    var box: Vector2f = Vector2f(0.1f, 0.1f),
+    var box: Vector2f = Vector2f(0f),
     var health: Int = 10,
     var angle: Float = 0f,
     var wave: Float = 0f,
@@ -33,9 +36,9 @@ data class Human(
     var waveSword: Float = 0f,
     var isCenturion: Boolean = false,
 ) {
+
     val uuid: UUID = UUID.randomUUID()
     var destination: Vector2f = Vector2f(0f)
-
 
     fun isOnDestination() = isOnPlace(destination)
     private fun isOnPlace(place: Vector2f) = place.distance(position) < PRECISION
@@ -48,7 +51,9 @@ data class Human(
         calculateVelocity(centurionDistance)
 
         move(collision)
+        this.height = collision.terrain.getHeight(position.x, position.y)
     }
+
 
     private fun calculateVelocity(centurionDistance: Float) {
         look.direction = if (velocity.x > 0) Direction.RIGHT else Direction.LEFT

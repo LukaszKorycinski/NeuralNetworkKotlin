@@ -16,7 +16,7 @@ class Buldings(val file3Df: File3d, terrain: Terrain) {
     init {
         items.add(
             BuldingData(
-                position = Vector3f(3f, terrain.getHeight(3f, 2f), 2f),
+                position = Vector3f(9f, terrain.getHeight(9f, 14f), 14f),
                 model = MODELS_3D.CASTLE
             )
         )

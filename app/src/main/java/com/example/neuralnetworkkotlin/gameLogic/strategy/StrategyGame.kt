@@ -26,8 +26,8 @@ class StrategyGame(
     val context: Context
 ) {
     private lateinit var terrain: Terrain
-    private val collision = Collision()
-    private val humans = Humans(collision)
+    private lateinit var collision: Collision
+    private lateinit var humans: Humans
     lateinit var trees: Trees
     lateinit var grass: Grass
     lateinit var buldings: Buldings
@@ -54,6 +54,8 @@ class StrategyGame(
     fun onSurfaceCreated() {
         terrain = Terrain(context)
         terrain.build()
+        collision = Collision(terrain)
+        humans = Humans(collision)
         trees = Trees(file3Df, terrain)
         grass = Grass(file3Df, terrain)
         buldings = Buldings(file3Df, terrain)

@@ -11,7 +11,7 @@ class Triangle(val a: Vector2f, val b: Vector2f, val c: Vector2f)
 
 class Line(val v: Vector2f, val w: Vector2f)
 
-class Collision {
+class Collision(val terrain: Terrain) {
     private val circles = mutableListOf<Circle>()
 
     fun setCircles(list: List<Circle>) {
@@ -28,10 +28,9 @@ class Collision {
         return false
     }
 
-    fun terrainColision(position: Vector2f, terrain: Terrain): Boolean {
+    fun terrainColision(position: Vector2f): Boolean {
         return terrain.collision(Vector2f(position.x/4, position.y/4))
     }
-
 
     fun pointTriangleColision(s: Vector2f, triangle: Triangle):Boolean{
         val as_x = (s.x - triangle.a.x)
