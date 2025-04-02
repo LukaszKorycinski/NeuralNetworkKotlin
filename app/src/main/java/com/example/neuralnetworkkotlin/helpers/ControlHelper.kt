@@ -89,6 +89,7 @@ class ControlHelper {
     private val forest = PositionRotation(Vector3f(0.0f, -4.9999976f, -14.490022f), Vector3f(23.20005f, 0.0f, 0.0f))
 
     val positionRotation = strategy
+    val lightPosition = PositionRotation(Vector3f(10.0f, -4.499998f, 0f), Vector3f(57.399696f, 0.0f, 0.0f))
 
     fun updatePosition(): Vector3f {
 //        Timber.e("position: ${positionRotation.position.x}f, ${positionRotation.position.y}f, ${positionRotation.position.z}f")

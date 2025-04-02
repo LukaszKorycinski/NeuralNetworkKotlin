@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.MotionEvent
 import com.example.neuralnetworkkotlin.geometry.Camera
 import com.example.neuralnetworkkotlin.geometry.Terrain
-import com.example.neuralnetworkkotlin.geometry.buldings.Buldings
+import com.example.neuralnetworkkotlin.geometry.buldings.Buildings
 import com.example.neuralnetworkkotlin.geometry.grass.Grass
 import com.example.neuralnetworkkotlin.geometry.plain3d.anim.File3dA
 import com.example.neuralnetworkkotlin.geometry.plain3d.nonanim.File3d
@@ -30,7 +30,7 @@ class StrategyGame(
     private lateinit var humans: Humans
     lateinit var trees: Trees
     lateinit var grass: Grass
-    lateinit var buldings: Buldings
+    lateinit var buildings: Buildings
 
     fun setWarpeonAngle(angle: Float){
         humans.banners.forEach { banner ->
@@ -58,7 +58,7 @@ class StrategyGame(
         humans = Humans(collision)
         trees = Trees(file3Df, terrain)
         grass = Grass(file3Df, terrain)
-        buldings = Buldings(file3Df, terrain)
+        buildings = Buildings(file3Df, terrain)
 
         humans.banners.add(Banner().makeBanner())
         //humans.banners.add(Banner().makeBanner(Vector2f(2.7f, 0f)))
@@ -85,10 +85,10 @@ class StrategyGame(
     }
 
     @OptIn(ExperimentalTime::class)
-    fun draw() {
+    fun normalPass() {
         trees.draw(camera)
         grass.draw(camera)
-        buldings.draw(camera)
+        buildings.draw(camera)
 
         measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
 
@@ -103,6 +103,34 @@ class StrategyGame(
                 textures
             )
         }.let { /*Timber.w("pathPointer.draw $it")*/ }
+
+        //playable.draw(file3DA, camera)
+        terrain.drawTerrain(
+            camera.viewProjectionMatrix,
+            textures,
+            ShaderLoader.shaderProgramTerrain,
+            camera.eyePosition,
+            //trees.items.map { it.position }
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun shadowPass() {
+        trees.draw(camera)
+        //grass.draw(camera)
+        buildings.draw(camera)
+
+//        measureTime { Pointer.draw(file3Df, camera) }.let { /*Timber.w("Pointer.draw time $it")*/ }
+//        measureTime { humans.draw(file3Df, file3DA, camera) }.let { /*Timber.w("humans.draw time $it")*/ }
+//
+//        measureTime {
+//            humans.pathPointer.draw(
+//                camera.viewProjectionMatrix,
+//                TEXTURES.PATH.id,
+//                ShaderLoader.shaderProgramBasic,
+//                textures
+//            )
+//        }.let { /*Timber.w("pathPointer.draw $it")*/ }
 
         //playable.draw(file3DA, camera)
         terrain.drawTerrain(

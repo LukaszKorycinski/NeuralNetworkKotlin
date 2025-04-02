@@ -38,11 +38,12 @@ enum class TEXTURES(val id: Int, val resId: Int) {
 
 class TexturesLoader(var context: Context) {
 
-    companion object {
-        val TEXTURES_QTY = TEXTURES.values().size
-    }
-
+    val TEXTURES_QTY = TEXTURES.values().size
+    val shadowMappingTexSize = 512
     val textureHandle = IntArray(TEXTURES_QTY + 1)
+    val shadowMappingTextureHandle = IntArray(1)
+    var shadowMappingFBO = IntArray(1)
+    var shadowMappingFBORenderBuffer = IntArray(1)
 
     private var shadowBitmap: Bitmap? = null
     //private var shadowBitmapBackup: Bitmap? = null

@@ -3,6 +3,7 @@ package com.example.neuralnetworkkotlin.geometry
 import android.opengl.GLU
 import android.opengl.Matrix
 import android.view.MotionEvent
+import com.example.neuralnetworkkotlin.geometry.vectors.PositionRotation
 import com.example.neuralnetworkkotlin.geometry.vectors.vector3f.times
 import com.example.neuralnetworkkotlin.helpers.getIdentityMatrix
 import com.example.neuralnetworkkotlin.helpers.rotateX
@@ -20,15 +21,15 @@ class Camera {
 
     var eyePosition = Vector3f(0f, 0f, 0f)
 
-    fun setUpFrame(position: Vector3f, rotation: Vector3f) {
+    fun setUpFrame(positionRotation: PositionRotation) {
         val tmpMatrix = getIdentityMatrix()
-        tmpMatrix.rotateX(rotation.x)
+        tmpMatrix.rotateX(positionRotation.rotation.x)
         tmpMatrix.translate(
-            position.x,
-            position.y,
-            position.z,
+            positionRotation.position.x,
+            positionRotation.position.y,
+            positionRotation.position.z,
         )
-        eyePosition = position * -1f
+        eyePosition = positionRotation.position * -1f
         viewMatrix = tmpMatrix
 
 
@@ -38,7 +39,8 @@ class Camera {
         Matrix.multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
     }
 
-    fun perspectiveINV() {
+    fun perspectiveINV(renderResolution: Vector2f) {
+        this.renderResolution = renderResolution
         val ratio: Float = renderResolution.x / renderResolution.y
         Matrix.perspectiveM(projectionMatrix,0,40.0f, ratio, 3.0f, 150.0f)
     }
